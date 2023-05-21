@@ -5,7 +5,7 @@ export class Link extends Component<{ to: string }> {
 		:host {
 			display: contents;
 		}
-		
+
 		a {
 			text-decoration: none;
 		}
@@ -15,7 +15,7 @@ export class Link extends Component<{ to: string }> {
 		}
 
 		a, a:visited {
-			color: var(--accent-1-2);
+			color: var(--accent-1-3);
 		}
 	`;
 

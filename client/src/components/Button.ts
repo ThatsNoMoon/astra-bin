@@ -9,39 +9,39 @@ type ButtonType = {
 export const types = Object.freeze({
 	primary: Object.freeze({
 		color: "black",
-		bg: "var(--primary-4)",
+		bg: "var(--palette-primary-4)",
 		weight: "500",
 	}),
 	"primary-alt": Object.freeze({
-		color: "var(--primary-0)",
-		bg: "var(--bg-2)",
+		color: "var(--primary-1)",
+		bg: "var(--bg-3)",
 	}),
 	"accent-one": Object.freeze({
 		color: "white",
-		bg: "var(--accent-1-4)",
+		bg: "var(--palette-accent-1-4)",
 		weight: "500",
 	}),
 	"accent-one-alt": Object.freeze({
-		color: "var(--accent-1-0)",
-		bg: "var(--bg-2)",
+		color: "var(--accent-1-1)",
+		bg: "var(--bg-3)",
 	}),
 	"accent-two": Object.freeze({
 		color: "white",
-		bg: "var(--accent-2-4)",
+		bg: "var(--palette-accent-2-4)",
 		weight: "500",
 	}),
 	"accent-two-alt": Object.freeze({
-		color: "var(--accent-2-1)",
-		bg: "var(--bg-2)",
+		color: "var(--accent-2-2)",
+		bg: "var(--bg-3)",
 	}),
 	danger: Object.freeze({
 		color: "white",
-		bg: "var(--danger-4)",
+		bg: "var(--palette-danger-4)",
 		weight: "500",
 	}),
 	"danger-alt": Object.freeze({
-		color: "var(--danger-1)",
-		bg: "var(--bg-2)",
+		color: "var(--danger-2)",
+		bg: "var(--bg-3)",
 	}),
 });
 
@@ -56,6 +56,7 @@ export class Button extends Component<{
 
 		button {
 			font-family: inherit;
+			font-size: inherit;
 			border: none;
 			padding: 1rem;
 			border-radius: 0.5rem;

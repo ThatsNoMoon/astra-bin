@@ -28,7 +28,7 @@ register(class AppRoot extends Component {
 			display: flex;
 			flex-direction: column;
 			background-color: var(--bg-4);
-			color: var(--fg-0);
+			color: var(--fg-1);
 		}
 
 		.buttons {

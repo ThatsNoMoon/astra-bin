@@ -91,7 +91,7 @@ const palette = {
 };
 
 function generateCssVars(prefix: string, values: ReadonlyArray<string>): string {
-	return values.map((v, i) => `--${prefix}-${i}: ${v};`).join('\n');
+	return values.map((v, i) => `--${prefix}-${i + 1}: ${v};`).join('\n');
 }
 
 const paletteRules = [
