@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "plugins": [],
+        "target": "es2015",
+        "module": "es2020",
+        "moduleResolution": "node",
+        "lib": [
+            "es2022",
+            "dom",
+        ],
+        "jsx": "react",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "useDefineForClassFields": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        "forceConsistentCasingInFileNames": true,
+        "importsNotUsedAsValues": "error",
+        "useUnknownInCatchVariables": true,
+        "allowSyntheticDefaultImports": true,
+    }
+}
