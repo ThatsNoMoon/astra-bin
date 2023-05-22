@@ -1,6 +1,7 @@
 import { Component, css, html } from "destiny-ui";
 import { Button } from "./Button";
 import { RouterLink } from "../routing/Router";
+import { Heading } from "./typography";
 
 export class Navbar extends Component {
 	static override styles = css`
@@ -15,13 +16,15 @@ export class Navbar extends Component {
 
 		h1 {
 			margin: 0;
-			font-size: var(--fs-7);
+			font-size: var(--fs-5);
+			color: var(--fg-2);
+			font-weight: 300;
 			flex-grow: 1;
 		}
 	`;
 
 	override template = html`
-		<h1>
+		<${Heading} prop:level=${1}>
 			<${RouterLink}
 				prop:to=${"/"}
 				prop:color=${"inherit"}
@@ -29,13 +32,13 @@ export class Navbar extends Component {
 			>
 				Bin Star
 			</${RouterLink}>
-		</h1>
+		</${Heading}>
 		<${RouterLink}
 			prop:to=${"/"}
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button}>
+			<${Button} prop:size=${"s"}>
 				New paste
 			</${Button}>
 		</${RouterLink}>
@@ -44,8 +47,17 @@ export class Navbar extends Component {
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button} prop:type=${"neutral"}>
+			<${Button} prop:type=${"neutral"} prop:size=${"s"}>
 				Settings
+			</${Button}>
+		</${RouterLink}>
+		<${RouterLink}
+			prop:to=${"/about"}
+			prop:color=${"inherit"}
+			prop:underline=${"none"}
+		>
+			<${Button} prop:type=${"neutral"} prop:size=${"s"}>
+				About
 			</${Button}>
 		</${RouterLink}>
 	`;

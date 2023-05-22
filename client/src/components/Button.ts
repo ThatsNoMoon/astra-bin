@@ -80,8 +80,29 @@ export const types = Object.freeze({
 	}),
 });
 
+type ButtonSize = {
+	font: string;
+	padding: string;
+};
+
+export const sizes = {
+	s: {
+		font: "var(--fs-1)",
+		padding: "0.4rem",
+	},
+	m: {
+		font: "var(--fs-2)",
+		padding: "0.6rem",
+	},
+	l: {
+		font: "var(--fs-3)",
+		padding: "1rem",
+	},
+};
+
 export class Button extends Component<{
 	type?: keyof typeof types;
+	size?: keyof typeof sizes;
 }> {
 	static override styles = css`
 		:host {
@@ -90,9 +111,9 @@ export class Button extends Component<{
 
 		button {
 			font-family: inherit;
-			font-size: inherit;
+			font-size: var(--button-size);
 			border: none;
-			padding: 1rem;
+			padding: var(--button-padding);
 			border-radius: 0.5rem;
 			color: var(--button-color);
 			background-color: var(--button-base);
@@ -126,8 +147,7 @@ export class Button extends Component<{
 		this.#disabled.value = value;
 	}
 
-	constructor() {
-		super();
+	connectedCallback() {
 		const type: Readonly<ButtonType> = types[this.type ?? "primary"];
 		this.style.setProperty("--button-color", type.color);
 		const bg = type.bg ?? {
@@ -145,6 +165,10 @@ export class Button extends Component<{
 			"--button-disabled-color",
 			type.disabledColor ?? "var(--fg-2)"
 		);
+
+		const size: Readonly<ButtonSize> = sizes[this.size ?? "m"];
+		this.style.setProperty("--button-size", size.font);
+		this.style.setProperty("--button-padding", size.padding);
 	}
 
 	override template = html`

@@ -1,4 +1,4 @@
-import { Component, TemplateResult, computed } from "destiny-ui";
+import { Component, TemplateResult, computed, css } from "destiny-ui";
 import { location } from "./location";
 import { Link } from "../components/Link";
 
@@ -9,6 +9,11 @@ export class Router extends Component<{
 	routes: Routes;
 	notFound: RouteTarget;
 }> {
+	static override styles = css`
+		:host {
+			display: contents;
+		}
+	`;
 	override template = computed(() => {
 		const [component, args] = this.#destructurePath(location.value);
 		return component(args);

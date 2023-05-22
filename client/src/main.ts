@@ -1,27 +1,13 @@
 import { Component, css, html, reactive, register } from "destiny-ui";
-import { Router, RouterLink } from "./routing/Router";
+import { Router } from "./routing/Router";
 import { CreatePaste } from "./components/CreatePaste";
 import { ViewPaste } from "./components/ViewPaste";
 import { NotFound } from "./components/NotFound";
 import { ThemeName, themeRules } from "./theme";
 import { Settings } from "./components/Settings";
-import { Button, types as buttonTypes } from "./components/Button";
-import "./root.css";
 import { Navbar } from "./components/Navbar";
-
-class DisableButton extends Button {
-	#timer: number | undefined;
-	connectedCallback() {
-		this.addEventListener("click", () => {
-			this.disabled = true;
-			this.#timer = setTimeout(() => (this.disabled = false), 10000);
-		});
-	}
-
-	disconnectedCallback() {
-		clearTimeout(this.#timer);
-	}
-}
+import "./root.css";
+import { About } from "./pages/About";
 
 register(
 	class AppRoot extends Component {
@@ -32,8 +18,8 @@ register(
 				:host {
 					font-family: "Inter", system-ui, "Helvetica", "Arial",
 						sans-serif;
+					width: 100%;
 					min-height: 100%;
-					min-width: 100%;
 					display: flex;
 					flex-direction: column;
 					background-color: var(--bg-4);
@@ -42,10 +28,14 @@ register(
 					--color-transition: color var(--transition-time),
 						background-color var(--transition-time);
 					transition: var(--color-transition);
+					// overflow-y: scroll;
+					// overflow-x: hidden;
 				}
 
 				main {
 					padding: 1rem;
+					height: 100%;
+					width: 100%;
 				}
 			`,
 		];
@@ -69,6 +59,7 @@ register(
 							html`<${Settings}
 								prop:theme=${this.#theme.pass}
 							/>`,
+						"/about": () => html`<${About} />`,
 					}}
 					prop:notFound=${() => html`<${NotFound} />`}
 				/>
