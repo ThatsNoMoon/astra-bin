@@ -12,36 +12,36 @@ export class Settings extends Component<{ theme: ReactiveValue<ThemeName> }> {
 	override template = html`
 		<div class="container">
 			<${Button}
-				prop:type=${"accent-one"}
-				prop:disabled=${computed(() => this.theme.value === "dark").pass}
+				prop:type=${"accent-1"}
+				prop:disabled=${computed(() => this.theme.value === "dark")}
 				on:click=${() => this.theme.value = "dark"}
 			>
 				Dark theme
 			</${Button}>
 			<${Button}
-				prop:type=${"accent-one"}
-				prop:disabled=${computed(() => this.theme.value === "dim").pass}
+				prop:type=${"accent-1"}
+				prop:disabled=${computed(() => this.theme.value === "dim")}
 				on:click=${() => this.theme.value = "dim"}
 			>
 				Dim theme
 			</${Button}>
 			<${Button}
-				prop:type=${"accent-two"}
-				prop:disabled=${computed(() => this.theme.value === "auto").pass}
+				prop:type=${"accent-2"}
+				prop:disabled=${computed(() => this.theme.value === "auto")}
 				on:click=${() => this.theme.value = "auto"}
 			>
 				Automatic theme
 			</${Button}>
 			<${Button}
 				prop:type=${"primary"}
-				prop:disabled=${computed(() => this.theme.value === "pale").pass}
+				prop:disabled=${computed(() => this.theme.value === "pale")}
 				on:click=${() => this.theme.value = "pale"}
 			>
 				Pale theme
 			</${Button}>
 			<${Button}
 				prop:type=${"primary"}
-				prop:disabled=${computed(() => this.theme.value === "light").pass}
+				prop:disabled=${computed(() => this.theme.value === "light")}
 				on:click=${() => this.theme.value = "light"}
 			>
 				Light theme

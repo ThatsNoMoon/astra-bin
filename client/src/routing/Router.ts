@@ -1,4 +1,4 @@
-import { Component, TemplateResult, computed, html } from "destiny-ui";
+import { Component, TemplateResult, computed } from "destiny-ui";
 import { location } from "./location";
 import { Link } from "../components/Link";
 
@@ -32,12 +32,11 @@ export class Router extends Component<{ routes: Routes, notFound: RouteTarget }>
 }
 
 export class RouterLink extends Link {
-	override template = html`
-		<a href=${this.to} on:click=${(event: Event) => {
+	override connectedCallback(): void {
+	    super.connectedCallback();
+	    this.addEventListener("click", (event) => {
 			location.value = this.to;
 			event.preventDefault();
-		}}>
-			<slot />
-		</a>
-	`;
+		});
+	}
 }
