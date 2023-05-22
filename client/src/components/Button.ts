@@ -1,4 +1,10 @@
-import { Component, ReadonlyReactiveValue, css, html, reactive } from "destiny-ui";
+import {
+	Component,
+	ReadonlyReactiveValue,
+	css,
+	html,
+	reactive,
+} from "destiny-ui";
 
 type ButtonType = {
 	color: string;
@@ -10,7 +16,7 @@ type ButtonType = {
 		disabled: string;
 	};
 	weight?: string;
-}
+};
 
 export const types = Object.freeze({
 	neutral: Object.freeze({
@@ -75,7 +81,7 @@ export const types = Object.freeze({
 });
 
 export class Button extends Component<{
-	type?: keyof typeof types,
+	type?: keyof typeof types;
 }> {
 	static override styles = css`
 		:host {
@@ -114,7 +120,7 @@ export class Button extends Component<{
 
 	#disabled = reactive(this.disabled);
 	set disabled(value: boolean) {
-		if (value as unknown instanceof ReadonlyReactiveValue) {
+		if ((value as unknown) instanceof ReadonlyReactiveValue) {
 			value = (value as unknown as ReadonlyReactiveValue<boolean>).value;
 		}
 		this.#disabled.value = value;

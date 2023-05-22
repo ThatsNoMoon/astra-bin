@@ -2,7 +2,7 @@ import { reactive } from "destiny-ui";
 
 export const location = reactive(new URL(window.location.href).pathname);
 location.bind(updateHistory);
-window.addEventListener("popstate", event => {
+window.addEventListener("popstate", (event) => {
 	location.set(event.state, { noUpdate: [updateHistory] });
 });
 

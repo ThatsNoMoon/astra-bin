@@ -1,21 +1,21 @@
-import { Component, css, html, reactive, register } from 'destiny-ui'
-import { Router, RouterLink } from './routing/Router';
-import { CreatePaste } from './components/CreatePaste';
-import { ViewPaste } from './components/ViewPaste';
-import { NotFound } from './components/NotFound';
-import { ThemeName, themeRules } from './theme';
-import { Settings } from './components/Settings';
-import { Button, types as buttonTypes } from './components/Button';
+import { Component, css, html, reactive, register } from "destiny-ui";
+import { Router, RouterLink } from "./routing/Router";
+import { CreatePaste } from "./components/CreatePaste";
+import { ViewPaste } from "./components/ViewPaste";
+import { NotFound } from "./components/NotFound";
+import { ThemeName, themeRules } from "./theme";
+import { Settings } from "./components/Settings";
+import { Button, types as buttonTypes } from "./components/Button";
 import "./root.css";
-import { Navbar } from './components/Navbar';
+import { Navbar } from "./components/Navbar";
 
 class DisableButton extends Button {
-	#timer: number | undefined
+	#timer: number | undefined;
 	connectedCallback() {
 		this.addEventListener("click", () => {
 			this.disabled = true;
-			this.#timer = setTimeout(() => this.disabled = false, 10000);
-		})
+			this.#timer = setTimeout(() => (this.disabled = false), 10000);
+		});
 	}
 
 	disconnectedCallback() {
@@ -23,47 +23,56 @@ class DisableButton extends Button {
 	}
 }
 
-register(class AppRoot extends Component {
-	#theme = reactive<ThemeName>("auto");
-	static override styles = [themeRules, css`
-		:host {		
-			font-family: 'Inter', system-ui, 'Helvetica', 'Arial', sans-serif;
-			min-height: 100%;
-			min-width: 100%;
-			display: flex;
-			flex-direction: column;
-			background-color: var(--bg-4);
-			color: var(--fg-1);
-			--transition-time: 0.2s;
-			--color-transition:
-				color var(--transition-time),
-				background-color var(--transition-time);
-			transition: var(--color-transition);
+register(
+	class AppRoot extends Component {
+		#theme = reactive<ThemeName>("auto");
+		static override styles = [
+			themeRules,
+			css`
+				:host {
+					font-family: "Inter", system-ui, "Helvetica", "Arial",
+						sans-serif;
+					min-height: 100%;
+					min-width: 100%;
+					display: flex;
+					flex-direction: column;
+					background-color: var(--bg-4);
+					color: var(--fg-1);
+					--transition-time: 0.2s;
+					--color-transition: color var(--transition-time),
+						background-color var(--transition-time);
+					transition: var(--color-transition);
+				}
+
+				main {
+					padding: 1rem;
+				}
+			`,
+		];
+
+		connectedCallback() {
+			this.#theme.bind((theme) => {
+				this.classList.remove("auto", "dark", "dim", "pale", "light");
+				this.classList.add(theme);
+			});
 		}
 
-		main {
-			padding: 1rem;
-		}
-	`];
-
-	connectedCallback() {
-		this.#theme.bind((theme) => {
-			this.classList.remove("auto", "dark", "dim", "pale", "light");
-			this.classList.add(theme);
-		});		
+		override template = html`
+			<${Navbar} />
+			<main>
+				<${Router}
+					prop:routes=${{
+						"/": () => html`<${CreatePaste} />`,
+						"/p": ([id]: [string]) =>
+							html`<${ViewPaste} prop:paste=${id} />`,
+						"/settings": () =>
+							html`<${Settings}
+								prop:theme=${this.#theme.pass}
+							/>`,
+					}}
+					prop:notFound=${() => html`<${NotFound} />`}
+				/>
+			</main>
+		`;
 	}
-
-	override template = html`
-		<${Navbar} />
-		<main>
-			<${Router}
-				prop:routes=${{
-					"/": () => html`<${CreatePaste} />`,
-					"/p": ([id]: [string]) => html`<${ViewPaste} prop:paste=${id} />`,
-					"/settings": () => html`<${Settings} prop:theme=${this.#theme.pass} />`,
-				}}
-				prop:notFound=${() => html`<${NotFound} />`}
-			/>
-		</main>
-	`;
-})
+);

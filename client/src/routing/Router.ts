@@ -2,10 +2,13 @@ import { Component, TemplateResult, computed } from "destiny-ui";
 import { location } from "./location";
 import { Link } from "../components/Link";
 
-export type RouteTarget = (args: ReadonlyArray<string>) => TemplateResult
+export type RouteTarget = (args: ReadonlyArray<string>) => TemplateResult;
 export type Routes = Record<string, RouteTarget>;
 
-export class Router extends Component<{ routes: Routes, notFound: RouteTarget }> {
+export class Router extends Component<{
+	routes: Routes;
+	notFound: RouteTarget;
+}> {
 	override template = computed(() => {
 		const [component, args] = this.#destructurePath(location.value);
 		return component(args);
@@ -33,8 +36,8 @@ export class Router extends Component<{ routes: Routes, notFound: RouteTarget }>
 
 export class RouterLink extends Link {
 	override connectedCallback(): void {
-	    super.connectedCallback();
-	    this.addEventListener("click", (event) => {
+		super.connectedCallback();
+		this.addEventListener("click", (event) => {
 			location.value = this.to;
 			event.preventDefault();
 		});

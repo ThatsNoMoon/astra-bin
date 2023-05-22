@@ -35,7 +35,7 @@ const palette = {
 	},
 	fg: [
 		"hsl(235, 85%, 92%)",
-		"hsl(236, 24%, 78%)", 
+		"hsl(236, 24%, 78%)",
 		"hsl(236, 18%, 67%)",
 		"hsl(240, 10%, 55%)",
 		"hsl(240, 10%, 44%)",
@@ -90,8 +90,11 @@ const palette = {
 	],
 };
 
-function generateCssVars(prefix: string, values: ReadonlyArray<string>): string {
-	return values.map((v, i) => `--${prefix}-${i + 1}: ${v};`).join('\n');
+function generateCssVars(
+	prefix: string,
+	values: ReadonlyArray<string>
+): string {
+	return values.map((v, i) => `--${prefix}-${i + 1}: ${v};`).join("\n");
 }
 
 const paletteRules = [
@@ -100,7 +103,7 @@ const paletteRules = [
 	generateCssVars("palette-accent-1", palette.accentOne),
 	generateCssVars("palette-accent-2", palette.accentTwo),
 	generateCssVars("palette-danger", palette.danger),
-].join('\n');
+].join("\n");
 
 const darkerRules = [
 	generateCssVars("fg", palette.fg),
@@ -108,17 +111,15 @@ const darkerRules = [
 	generateCssVars("accent-1", palette.accentOne),
 	generateCssVars("accent-2", palette.accentTwo),
 	generateCssVars("danger", palette.danger),
-].join('\n');
+].join("\n");
 
-const darkRules = [
-	generateCssVars("bg", palette.bg.dark),
-	darkerRules,
-].join('\n');
+const darkRules = [generateCssVars("bg", palette.bg.dark), darkerRules].join(
+	"\n"
+);
 
-const dimRules = [
-	generateCssVars("bg", palette.bg.dim),
-	darkerRules
-].join('\n');
+const dimRules = [generateCssVars("bg", palette.bg.dim), darkerRules].join(
+	"\n"
+);
 
 const lighterRules = [
 	generateCssVars("fg", palette.fg.reverse()),
@@ -126,23 +127,21 @@ const lighterRules = [
 	generateCssVars("accent-1", palette.accentOne.reverse()),
 	generateCssVars("accent-2", palette.accentTwo.reverse()),
 	generateCssVars("danger", palette.danger.reverse()),
-].join('\n');
+].join("\n");
 
-const lightRules = [
-	generateCssVars("bg", palette.bg.light),
-	lighterRules
-].join('\n');
+const lightRules = [generateCssVars("bg", palette.bg.light), lighterRules].join(
+	"\n"
+);
 
-const paleRules = [
-	generateCssVars("bg", palette.bg.pale),
-	lighterRules
-].join('\n');
+const paleRules = [generateCssVars("bg", palette.bg.pale), lighterRules].join(
+	"\n"
+);
 
 export const themeRules = css`
 	:host {
 		${paletteRules}
 	}
-	
+
 	:host(.auto) {
 		${darkRules}
 	}
@@ -152,7 +151,8 @@ export const themeRules = css`
 	}
 
 	@media (prefers-color-scheme: light) {
-		:host(.auto), :host(.auto.auto-dim) {
+		:host(.auto),
+		:host(.auto.auto-dim) {
 			${lightRules}
 		}
 

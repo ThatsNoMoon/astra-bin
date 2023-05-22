@@ -1,9 +1,10 @@
 @font-face {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: normal;
 	font-stretch: normal;
-	src: url('https://storage.thatsnomoon.dev/fonts/Inter-Regular.woff2') format('woff2');
+	src: url("https://storage.thatsnomoon.dev/fonts/Inter-Regular.woff2")
+		format("woff2");
 }
 
 * {
@@ -26,7 +27,8 @@
 	font-size: var(--fs-3);
 }
 
-body, html {
+body,
+html {
 	margin: 0;
 	padding: 0;
 	height: 100%;

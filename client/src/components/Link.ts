@@ -1,9 +1,9 @@
 import { Component, css, html } from "destiny-ui";
 
 type LinkProps = {
-	to: string,
-	color?: string,
-	underline?: "none" | "hover" | "always"
+	to: string;
+	color?: string;
+	underline?: "none" | "hover" | "always";
 };
 
 export class Link extends Component<LinkProps> {
@@ -12,7 +12,8 @@ export class Link extends Component<LinkProps> {
 			display: contents;
 		}
 
-		a.none, a.hover {
+		a.none,
+		a.hover {
 			text-decoration: none;
 		}
 
@@ -20,14 +21,18 @@ export class Link extends Component<LinkProps> {
 			text-decoration: underline;
 		}
 
-		a, a:visited {
+		a,
+		a:visited {
 			color: var(--link-color);
 			transition: var(--color-transition);
 		}
 	`;
 
 	connectedCallback() {
-		this.style.setProperty("--link-color", this.color ?? "var(--accent-1-3)");
+		this.style.setProperty(
+			"--link-color",
+			this.color ?? "var(--accent-1-3)"
+		);
 	}
 
 	override template = html`
