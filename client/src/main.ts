@@ -32,8 +32,8 @@ register(
 				}
 
 				main {
-					padding: 1rem;
 					overflow-y: auto;
+					scrollbar-color: var(--bg-1) var(--bg-4);
 				}
 			`,
 		];

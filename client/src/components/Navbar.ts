@@ -35,10 +35,11 @@ export class Navbar extends Component {
 		</${Heading}>
 		<${RouterLink}
 			prop:to=${"/"}
+			prop:type=${"button"}
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button} prop:size=${"s"}>
+			<${Button} prop:size=${"s"} prop:tag=${"span"}>
 				New paste
 			</${Button}>
 		</${RouterLink}>
@@ -47,7 +48,7 @@ export class Navbar extends Component {
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button} prop:type=${"neutral"} prop:size=${"s"}>
+			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"span"}>
 				Settings
 			</${Button}>
 		</${RouterLink}>
@@ -56,7 +57,7 @@ export class Navbar extends Component {
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button} prop:type=${"neutral"} prop:size=${"s"}>
+			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"span"}>
 				About
 			</${Button}>
 		</${RouterLink}>

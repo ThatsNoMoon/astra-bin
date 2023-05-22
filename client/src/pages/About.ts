@@ -4,10 +4,12 @@ import { Heading } from "../components/typography";
 export class About extends Component {
 	static override styles = css`
 		:host {
+			box-sizing: border-box;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			width: 100%;
+			padding: 1.5rem;
 		}
 
 		#container {

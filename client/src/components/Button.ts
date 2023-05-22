@@ -103,13 +103,14 @@ export const sizes = {
 export class Button extends Component<{
 	type?: keyof typeof types;
 	size?: keyof typeof sizes;
+	tag?: "button" | "a" | "span" | "div";
 }> {
 	static override styles = css`
 		:host {
 			display: contents;
 		}
 
-		button {
+		#inner {
 			font-family: inherit;
 			font-size: var(--button-size);
 			border: none;
@@ -121,20 +122,20 @@ export class Button extends Component<{
 			transition: background-color 0.2s;
 		}
 
-		button:not(:disabled) {
+		#inner:not(:disabled) {
 			cursor: pointer;
 		}
 
-		button:disabled {
+		#inner:disabled {
 			color: var(--button-disabled-color);
 			background-color: var(--button-disabled);
 		}
 
-		button:hover:not(:disabled) {
+		#inner:hover:not(:disabled) {
 			background-color: var(--button-hover);
 		}
 
-		button:active:not(:disabled) {
+		#inner:active:not(:disabled) {
 			background-color: var(--button-active);
 		}
 	`;
@@ -172,6 +173,6 @@ export class Button extends Component<{
 	}
 
 	override template = html`
-		<button prop:disabled=${this.#disabled}><slot /></button>
+		<${this.tag ?? "button"} id="inner" prop:disabled=${this.#disabled}><slot /></${this.tag ?? "button"}>
 	`;
 }
