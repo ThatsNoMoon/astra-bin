@@ -17,6 +17,10 @@ export class About extends Component {
 		#container > div {
 			line-height: 1.5;
 		}
+
+		#container > ${Heading}:nth-child(1)::part(inner) {
+			margin-top: 0.75em;
+		}
 	`;
 	override template = html`
 		<div id="container">

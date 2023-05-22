@@ -3,11 +3,12 @@ import { Router } from "./routing/Router";
 import { CreatePaste } from "./components/CreatePaste";
 import { ViewPaste } from "./components/ViewPaste";
 import { NotFound } from "./components/NotFound";
-import { ThemeName, themeRules } from "./theme";
+import { ThemeName, rootRules, themeRules } from "./style";
 import { Settings } from "./components/Settings";
 import { Navbar } from "./components/Navbar";
-import "./root.css";
 import { About } from "./pages/About";
+
+document.adoptedStyleSheets = [rootRules.styleSheet];
 
 register(
 	class AppRoot extends Component {
@@ -28,14 +29,11 @@ register(
 					--color-transition: color var(--transition-time),
 						background-color var(--transition-time);
 					transition: var(--color-transition);
-					// overflow-y: scroll;
-					// overflow-x: hidden;
 				}
 
 				main {
 					padding: 1rem;
-					height: 100%;
-					width: 100%;
+					overflow-y: auto;
 				}
 			`,
 		];
