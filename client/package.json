@@ -4,28 +4,24 @@
 	"version": "0.0.0",
 	"type": "module",
 	"files": [
-		"dist",
-		"index.d.ts"
+		"dist"
 	],
-	"main": "./dist/counter.umd.cjs",
-	"module": "./dist/counter.js",
-	"types": "./index.d.ts",
-	"exports": {
-		"types": "./index.d.ts",
-		"import": "./dist/counter.js",
-		"require": "./dist/counter.umd.cjs"
-	},
+	"module": "./dist/main.js",
 	"scripts": {
 		"dev": "vite",
-		"build": "tsc && vite build"
+		"build": "tsc && npm run build-destiny && vite build",
+		"build-destiny": "cd node_modules/destiny-ui && npm run compile",
+		"deploy": "npm run build && wrangler pages deploy dist"
 	},
 	"devDependencies": {
+		"@types/node": "^20.2.3",
 		"prettier": "^2.8.8",
-		"typescript": "^4.6.0",
-		"vite": "^4.0.4"
+		"typescript": "^5.0.4",
+		"vite": "^4.0.4",
+		"wrangler": "^3.0.1"
 	},
 	"dependencies": {
-		"destiny-ui": "github:0kku/destiny"
+		"destiny-ui": "github:ThatsNoMoon/destiny#fix-package-main"
 	},
 	"prettier": {
 		"tabWidth": 4,

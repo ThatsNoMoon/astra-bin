@@ -1,14 +1,14 @@
 {
 	"compilerOptions": {
 		"plugins": [],
-		"target": "es2015",
+		"target": "es2021",
 		"module": "es2020",
 		"moduleResolution": "node",
-		"lib": ["es2022", "dom"],
+		"lib": ["es2022", "dom", "DOM.Iterable"],
 		"jsx": "react",
 		"sourceMap": true,
 		"outDir": "./dist",
-		"rootDir": "./src",
+		"rootDir": ".",
 		"useDefineForClassFields": true,
 		"strict": true,
 		"noUnusedLocals": true,
@@ -19,8 +19,9 @@
 		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 		"forceConsistentCasingInFileNames": true,
-		"importsNotUsedAsValues": "error",
+		"verbatimModuleSyntax": true,
 		"useUnknownInCatchVariables": true,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true,
 	}
 }

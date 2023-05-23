@@ -1,4 +1,5 @@
-import { Component, TemplateResult, computed, css } from "destiny-ui";
+import { Component, computed, css } from "destiny-ui";
+import type { TemplateResult } from "destiny-ui";
 import { location } from "./location";
 import { Link } from "../components/Link";
 

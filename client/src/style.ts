@@ -179,12 +179,6 @@ export const themeRules = css`
 `;
 
 export const rootRules = css`
-	@font-face {
-		font-family: "Inter";
-		src: url("https://storage.thatsnomoon.dev/fonts/Inter-Variable.woff2")
-			format("woff2");
-	}
-
 	* {
 		box-sizing: border-box;
 	}

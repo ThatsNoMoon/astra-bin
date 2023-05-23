@@ -5,7 +5,8 @@ import {
 	css,
 	html,
 } from "destiny-ui";
-import { ThemeName, themeRules } from "../style";
+import { themeRules } from "../style";
+import type { ThemeName } from "../style";
 import { Heading } from "./typography";
 import { Button } from "./Button";
 
@@ -141,10 +142,17 @@ class ThemeSelector extends Component<{
 				width: 100%;
 			}
 
+			#container {
+				box-sizing: border-box;
+				padding: 0.5rem;
+				height: 100%;
+				width: 100%;
+			}
+
 			#content {
 				display: grid;
-				margin: 0.5rem;
 				height: 100%;
+				width: 100%;
 				grid-template-rows: repeat(6, calc(100% / 6));
 			}
 
@@ -198,35 +206,37 @@ class ThemeSelector extends Component<{
 			on:click=${() => (this.theme.value = this.demoTheme)}
 		>
 			<div id="nav" />
-			<div id="content">
-				<${SkeletonRow} prop:width=${"80%"}>
-					<${Skeleton} class="fg" prop:grow=${3} />
-					<${Skeleton} class="fg" prop:grow=${1.5} />
-					<${Skeleton} class="fg" prop:grow=${2.5} />
-				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"100%"}>
-					<${Skeleton} class="fg" prop:grow=${1} />
-					<${Skeleton} class="fg" prop:grow=${4} />
-					<${Skeleton} class="fg" prop:grow=${1.5} />
-				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"75%"}>
-					<${Skeleton} class="accent-1" prop:grow=${1} />
-					<${Skeleton} class="bg-3" prop:grow=${1} />
-					<${Skeleton} class="primary" prop:grow=${1} />
-				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"100%"}>
-					<${Skeleton} class="bg-4" prop:grow=${1} />
-				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"100%"}>
-					<${Skeleton} class="fg" prop:grow=${2} />
-					<${Skeleton} class="fg" prop:grow=${1.5} />
-					<${Skeleton} class="fg" prop:grow=${2} />
-				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"90%"}>
-					<${Skeleton} class="bg-1" prop:grow=${1} />
-					<${Skeleton} class="accent-2" prop:grow=${1} />
-					<${Skeleton} class="danger" prop:grow=${1} />
-				</${SkeletonRow}>
+			<div id="container">
+				<div id="content">
+					<${SkeletonRow} prop:width=${"80%"}>
+						<${Skeleton} class="fg" prop:grow=${3} />
+						<${Skeleton} class="fg" prop:grow=${1.5} />
+						<${Skeleton} class="fg" prop:grow=${2.5} />
+					</${SkeletonRow}>
+					<${SkeletonRow} prop:width=${"100%"}>
+						<${Skeleton} class="fg" prop:grow=${1} />
+						<${Skeleton} class="fg" prop:grow=${4} />
+						<${Skeleton} class="fg" prop:grow=${1.5} />
+					</${SkeletonRow}>
+					<${SkeletonRow} prop:width=${"75%"}>
+						<${Skeleton} class="accent-1" prop:grow=${1} />
+						<${Skeleton} class="bg-3" prop:grow=${1} />
+						<${Skeleton} class="primary" prop:grow=${1} />
+					</${SkeletonRow}>
+					<${SkeletonRow} prop:width=${"100%"}>
+						<${Skeleton} class="bg-4" prop:grow=${1} />
+					</${SkeletonRow}>
+					<${SkeletonRow} prop:width=${"100%"}>
+						<${Skeleton} class="fg" prop:grow=${2} />
+						<${Skeleton} class="fg" prop:grow=${1.5} />
+						<${Skeleton} class="fg" prop:grow=${2} />
+					</${SkeletonRow}>
+					<${SkeletonRow} prop:width=${"90%"}>
+						<${Skeleton} class="bg-1" prop:grow=${1} />
+						<${Skeleton} class="accent-2" prop:grow=${1} />
+						<${Skeleton} class="danger" prop:grow=${1} />
+					</${SkeletonRow}>
+				</div>
 			</div>
 		</button>
 	`;
