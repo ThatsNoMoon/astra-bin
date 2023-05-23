@@ -1,11 +1,11 @@
 import { Component, css, html, reactive, register } from "destiny-ui";
 import { Router } from "./routing/Router";
-import { CreatePaste } from "./components/CreatePaste";
-import { ViewPaste } from "./components/ViewPaste";
+import { CreatePaste } from "./pages/CreatePaste";
+import { ViewPaste } from "./pages/ViewPaste";
 import { NotFound } from "./components/NotFound";
 import { rootRules, themeRules } from "./style";
 import type { ThemeName } from "./style";
-import { Settings } from "./components/Settings";
+import { Settings } from "./pages/Settings";
 import { Navbar } from "./components/Navbar";
 import { About } from "./pages/About";
 

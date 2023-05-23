@@ -7,8 +7,8 @@ import {
 } from "destiny-ui";
 import { themeRules } from "../style";
 import type { ThemeName } from "../style";
-import { Heading } from "./typography";
-import { Button } from "./Button";
+import { Heading } from "../components/typography";
+import { Button } from "../components/Button";
 
 const themeLabels: Record<ThemeName, string> = {
 	dark: "Deep space",
