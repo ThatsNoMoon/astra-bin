@@ -52,8 +52,8 @@ register(
 				<${Router}
 					prop:routes=${{
 						"/": () => html`<${CreatePaste} />`,
-						"/p": ([id]: [string]) =>
-							html`<${ViewPaste} prop:paste=${id} />`,
+						"/p": ([key]: [string]) =>
+							html`<${ViewPaste} prop:key=${key} />`,
 						"/settings": () =>
 							html`<${Settings}
 								prop:theme=${this.#theme.pass}

@@ -3,7 +3,7 @@ use std::iter::repeat_with;
 use futures_util::{stream, StreamExt};
 use rand::{seq::SliceRandom, thread_rng};
 use worker::{
-	console_log, event, Context, Env, Error, Request, Response, Router,
+	console_log, event, Context, Env, Error, Headers, Request, Response, Router,
 };
 
 use crate::utils::Context as _;
@@ -56,7 +56,7 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 				.boxed_local()
 				.next()
 				.await
-				.context("Failed to generate key")?;
+				.expect("Failed to generate key");
 
 			kv.put(&key, contents)
 				.context("Failed to create paste")?
@@ -65,7 +65,11 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 				.await
 				.context("Failed to create paste")?;
 
-			Response::ok(key)
+			let client_host = ctx.var("CLIENT_ORIGIN")?.to_string();
+			let mut headers = Headers::new();
+			headers.set("Access-Control-Allow-Origin", &client_host)?;
+
+			Response::ok(key).map(|resp| resp.with_headers(headers))
 		})
 		.get_async("/p/:id", |_, ctx| async move {
 			console_log!("Retrieving paste");
@@ -80,10 +84,17 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 				.await
 				.context("Failed to retrieve paste")?;
 
-			match paste {
+			let resp = match paste {
 				Some(p) => Response::ok(p),
 				None => Response::error("Paste not found", 404),
-			}
+			};
+
+			resp.and_then(|resp| {
+				let client_host = ctx.var("CLIENT_ORIGIN")?.to_string();
+				let mut headers = Headers::new();
+				headers.set("Access-Control-Allow-Origin", &client_host)?;
+				Ok(resp.with_headers(headers))
+			})
 		})
 		.run(req, env)
 		.await
