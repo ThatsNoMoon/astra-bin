@@ -1,0 +1,23 @@
+[package]
+name = "astra-bin"
+authors = ["ThatsNoMoon <git@thatsnomoon.dev>"]
+license = "AGPL-3.0"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+cfg-if = "1.0.0"
+console_error_panic_hook = { version = "0.1.7", optional = true }
+futures-util = "0.3.28"
+getrandom = { version = "0.2.9", features = ["js"] }
+rand = "0.8.5"
+worker = "0.0.16"
+
+[profile.release]
+opt-level = "s"

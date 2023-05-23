@@ -1,0 +1,36 @@
+name = "astra-bin"
+main = "build/worker/shim.mjs"
+compatibility_date = "2023-05-18"
+
+workers_dev = false
+[[kv_namespaces]]
+binding = "pastes"
+id = "..."
+
+[vars]
+WORKERS_RS_VERSION = "0.0.16"
+MAX_PASTE_LENGTH = "100000"
+KEY_LENGTH = "5"
+PASTE_TTL = "604800"
+
+[env.production.route]
+pattern = "astra-bin.example.com"
+custom_domain = true
+
+[env.staging]
+name = "astra-bin-staging"
+
+workers_dev = true
+
+[[env.staging.kv_namespaces]]
+binding = "pastes"
+id = "..."
+
+[env.staging.vars]
+WORKERS_RS_VERSION = "0.0.16"
+MAX_PASTE_LENGTH = "100000"
+KEY_LENGTH = "5"
+PASTE_TTL = "300"
+
+[build]
+command = "cargo install -q worker-build --version 0.0.9 && worker-build --release"
