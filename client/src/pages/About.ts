@@ -27,7 +27,7 @@ export class About extends Component {
 	override template = html`
 		<div id="container">
 			<${Heading} prop:level=${2}>
-				About Bin Star
+				About Astra Bin
 			</${Heading}>
 			<div>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus mattis rhoncus urna neque viverra justo. Varius sit amet mattis vulputate enim. Placerat vestibulum lectus mauris ultrices eros in cursus turpis massa. Sit amet cursus sit amet dictum sit amet. Pellentesque id nibh tortor id aliquet. Nunc id cursus metus aliquam eleifend mi in nulla posuere. Maecenas volutpat blandit aliquam etiam erat velit scelerisque in. Purus semper eget duis at tellus at urna. Augue mauris augue neque gravida in fermentum et sollicitudin. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Diam maecenas ultricies mi eget mauris pharetra et ultrices neque. Leo vel orci porta non pulvinar neque. A iaculis at erat pellentesque adipiscing commodo elit. Nullam non nisi est sit. Quis eleifend quam adipiscing vitae proin sagittis nisl. Sit amet tellus cras adipiscing enim eu turpis. Dictum sit amet justo donec enim diam vulputate ut. Laoreet sit amet cursus sit amet dictum sit amet justo. Sit amet aliquam id diam maecenas ultricies mi.
