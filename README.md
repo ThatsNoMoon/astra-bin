@@ -1,2 +1,2 @@
-# bin-star
+# astra-bin
 

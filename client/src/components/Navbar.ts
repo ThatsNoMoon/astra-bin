@@ -30,7 +30,7 @@ export class Navbar extends Component {
 				prop:color=${"inherit"}
 				prop:underline=${"none"}
 			>
-				Bin Star
+				Astra Bin
 			</${RouterLink}>
 		</${Heading}>
 		<${RouterLink}
