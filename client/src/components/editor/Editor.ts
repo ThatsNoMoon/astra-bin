@@ -25,7 +25,7 @@ export class Editor extends Component<{ editor: ReactiveValue<Ace.Editor> }> {
 		const container = await this.#container;
 		const { ace } = await aceModule;
 		const editor = ace.edit(container);
-		editor.setTheme("ace/theme/monokai");
+		editor.setTheme("ace/theme/cobalt");
 		editor.session.setMode("ace/mode/javascript");
 		editor.renderer.attachToShadowRoot();
 		this.editor.value = editor;

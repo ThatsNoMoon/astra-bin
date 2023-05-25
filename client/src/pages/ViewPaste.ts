@@ -4,7 +4,6 @@ import type { Ace } from "ace-builds";
 import { ensure } from "../util";
 
 export class ViewPaste extends Component<{ key: string }> {
-	// #paste = reactive("Loading...");
 	#editor = new ReactiveValue<Ace.Editor | undefined>(undefined);
 
 	async connectedCallback() {
