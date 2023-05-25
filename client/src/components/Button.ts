@@ -148,6 +148,8 @@ export class Button extends Component<{
 		this.#disabled.value = value;
 	}
 
+	#tag = this.tag ?? "button";
+
 	connectedCallback() {
 		const type: Readonly<ButtonType> = types[this.type ?? "primary"];
 		this.style.setProperty("--button-color", type.color);
@@ -173,6 +175,6 @@ export class Button extends Component<{
 	}
 
 	override template = html`
-		<${this.tag ?? "button"} id="inner" prop:disabled=${this.#disabled}><slot /></${this.tag ?? "button"}>
+		<${this.#tag} id="inner" prop:disabled=${this.#disabled}><slot /></${this.#tag}>
 	`;
 }

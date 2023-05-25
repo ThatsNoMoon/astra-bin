@@ -21,6 +21,7 @@
 		"wrangler": "^3.0.1"
 	},
 	"dependencies": {
+		"ace-builds": "^1.22.0",
 		"destiny-ui": "github:ThatsNoMoon/destiny#fix-package-main"
 	},
 	"prettier": {
