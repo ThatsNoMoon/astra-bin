@@ -18,10 +18,12 @@
 		"prettier": "^2.8.8",
 		"typescript": "^5.0.4",
 		"vite": "^4.0.4",
+		"vite-plugin-monaco-editor": "^1.1.0",
 		"wrangler": "^3.0.1"
 	},
 	"dependencies": {
-		"destiny-ui": "github:ThatsNoMoon/destiny#fix-package-main"
+		"destiny-ui": "github:ThatsNoMoon/destiny#fix-package-main",
+		"monaco-editor": "^0.38.0"
 	},
 	"prettier": {
 		"tabWidth": 4,

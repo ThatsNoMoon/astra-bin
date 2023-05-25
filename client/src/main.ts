@@ -35,6 +35,7 @@ register(
 				main {
 					overflow-y: auto;
 					scrollbar-color: var(--bg-1) var(--bg-4);
+					flex-grow: 1;
 				}
 			`,
 		];
