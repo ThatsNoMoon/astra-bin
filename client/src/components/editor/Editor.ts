@@ -1,7 +1,8 @@
-import { Component, Ref, css, html } from "destiny-ui";
+import { Component, ReactiveValue, Ref, css, html } from "destiny-ui";
+import type { Ace } from "ace-builds";
 const aceModule = import("./ace");
 
-export class Editor extends Component {
+export class Editor extends Component<{ editor: ReactiveValue<Ace.Editor> }> {
 	static override styles = css`
 		:host {
 			display: contents;
@@ -27,6 +28,7 @@ export class Editor extends Component {
 		editor.setTheme("ace/theme/monokai");
 		editor.session.setMode("ace/mode/javascript");
 		editor.renderer.attachToShadowRoot();
+		this.editor.value = editor;
 	}
 
 	override template = html`

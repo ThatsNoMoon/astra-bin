@@ -1,14 +1,22 @@
-import { Component, html, reactive } from "destiny-ui";
+import { Component, ReactiveValue, html } from "destiny-ui";
+import { Editor } from "../components/editor/Editor";
+import type { Ace } from "ace-builds";
+import { ensure } from "../util";
 
 export class ViewPaste extends Component<{ key: string }> {
-	#paste = reactive("Loading...");
+	// #paste = reactive("Loading...");
+	#editor = new ReactiveValue<Ace.Editor | undefined>(undefined);
 
-	connectedCallback() {
-		fetch(`${import.meta.env.VITE_API_ROOT}/p/${this.key}`)
-			.then((res) => res.text())
-			.then((contents) => (this.#paste.value = contents));
+	async connectedCallback() {
+		const paste = await fetch(`${import.meta.env.VITE_API_ROOT}/p/${this.key}`)
+			.then((res) => res.text());
+
+		const editor = await ensure(this.#editor);
+		editor.setValue(paste);
+		editor.selection.clearSelection();
+		editor.setReadOnly(true);
 	}
 	override template = html`
-		<pre><code>${this.#paste}</code></pre>
+		<${Editor} prop:editor=${this.#editor.pass} />
 	`;
 }
