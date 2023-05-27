@@ -21,7 +21,7 @@ export class About extends Component {
 		}
 
 		#container > ${Heading}:nth-child(1)::part(inner) {
-			margin-top: 0.75em;
+			margin-top: 1.5rem;
 		}
 	`;
 	override template = html`

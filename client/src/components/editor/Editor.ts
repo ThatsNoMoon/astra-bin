@@ -18,7 +18,7 @@ export class Editor extends Component<{
 			min-height: 100%;
 			width: 100%;
 			height: 100%;
-			font-size: var(--fs-3);
+			font-size: var(--fs-1);
 			font-family: inherit;
 		}
 	`;

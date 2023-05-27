@@ -183,28 +183,6 @@ export const rootRules = css`
 		box-sizing: border-box;
 	}
 
-	:root {
-		--fs-1: 12px;
-		--fs-2: 14px;
-		--fs-3: 16px;
-		--fs-4: 18px;
-		--fs-5: 20px;
-		--fs-6: 24px;
-		--fs-7: 30px;
-		--fs-8: 36px;
-		--fs-9: 48px;
-		--fs-10: 60px;
-		--fs-11: 72px;
-
-		font-size: var(--fs-3);
-
-		--system-ui: -apple-system, BlinkMacSystemFont, avenir next, avenir,
-			segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto,
-			arial, sans-serif;
-		--monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console,
-			monospace;
-	}
-
 	body,
 	html {
 		margin: 0;

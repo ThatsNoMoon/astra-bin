@@ -6,7 +6,7 @@ import { Heading } from "./typography";
 export class Navbar extends Component {
 	static override styles = css`
 		:host {
-			padding: 1rem;
+			padding: 0.75rem 1rem;
 			background-color: var(--bg-3);
 			transition: var(--color-transition);
 			display: flex;
@@ -16,7 +16,7 @@ export class Navbar extends Component {
 
 		h1 {
 			margin: 0;
-			font-size: var(--fs-5);
+			font-size: var(--fs-3);
 			color: var(--fg-2);
 			font-weight: 300;
 			font-variation-settings: "wght" 300;

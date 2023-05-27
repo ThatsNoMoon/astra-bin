@@ -31,7 +31,7 @@ export const types = Object.freeze({
 			active: "var(--palette-primary-1)",
 			disabled: "var(--palette-primary-1)",
 		},
-		weight: "500",
+		weight: "450",
 	}),
 	"primary-alt": Object.freeze({
 		color: "var(--primary-1)",
@@ -96,7 +96,7 @@ export const sizes = {
 	},
 	l: {
 		font: "var(--fs-3)",
-		padding: "1rem",
+		padding: "0.7rem",
 	},
 };
 

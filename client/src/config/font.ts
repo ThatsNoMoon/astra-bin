@@ -1,4 +1,4 @@
-import { ReactiveValue, ReadonlyReactiveValue } from "destiny-ui";
+import { ReactiveValue, ReadonlyReactiveValue, css, reactive } from "destiny-ui";
 
 export type FontSpec = {
 	family: string;
@@ -8,6 +8,7 @@ export type FontSpec = {
 
 export type FontPair = {
 	body: ReadonlyReactiveValue<FontSpec>;
+	scale: ReadonlyReactiveValue<number>;
 	mono: ReadonlyReactiveValue<FontSpec>;
 };
 
@@ -16,6 +17,7 @@ const storage = "https://storage.thatsnomoon.dev/fonts";
 const outfit = {
 	family: `"Outfit"`,
 	label: "Outfit",
+	scale: 1.12,
 	variants: [
 		new FontFace("Outfit", `url(${storage}/Outfit-Variable.woff2`, {
 			display: "swap",
@@ -47,10 +49,12 @@ const fragment = {
 
 export const presets = {
 	outfit: {
+		scale: new ReadonlyReactiveValue(1.1),
 		body: new ReadonlyReactiveValue<FontSpec>(outfit),
 		mono: new ReadonlyReactiveValue<FontSpec>(fragment),
 	},
 	jetbrains: {
+		scale: new ReadonlyReactiveValue(1),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Inter"`,
 			label: "Inter",
@@ -83,6 +87,7 @@ export const presets = {
 		}),
 	},
 	source: {
+		scale: new ReadonlyReactiveValue(1.18),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Source Sans"`,
 			label: "Source Sans",
@@ -127,6 +132,7 @@ export const presets = {
 		}),
 	},
 	fira: {
+		scale: new ReadonlyReactiveValue(1.05),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Firava"`,
 			label: "Firava",
@@ -151,6 +157,7 @@ export const presets = {
 		}),
 	},
 	plex: {
+		scale: new ReadonlyReactiveValue(1.05),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"IBM Plex Sans"`,
 			label: "IBM Plex Sans",
@@ -195,6 +202,7 @@ export const presets = {
 		}),
 	},
 	space: {
+		scale: new ReadonlyReactiveValue(1),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Space Grotesk"`,
 			label: "Space Grotesk",
@@ -231,6 +239,7 @@ export const presets = {
 		}),
 	},
 	system: {
+		scale: new ReadonlyReactiveValue(1),
 		body: new ReadonlyReactiveValue({
 			family: "var(--system-ui)",
 			label: "System UI",
@@ -241,6 +250,7 @@ export const presets = {
 		}),
 	},
 	custom: {
+		scale: reactive(1),
 		body: new ReactiveValue<FontSpec>(outfit),
 		mono: new ReactiveValue<FontSpec>(fragment),
 	},
@@ -255,3 +265,24 @@ export function addFont(font: FontSpec) {
 		document.fonts.add(variant);
 	}
 }
+
+export const fontVars = css`
+	:host {
+		--fs-scale: 1;
+		--fs-1: calc(16px * var(--fs-scale));
+		--fs-2: calc(18px * var(--fs-scale));
+		--fs-3: calc(20px * var(--fs-scale));
+		--fs-4: calc(24px * var(--fs-scale));
+		--fs-5: calc(30px * var(--fs-scale));
+		--fs-6: calc(36px * var(--fs-scale));
+		--fs-7: calc(48px * var(--fs-scale));
+		--fs-8: calc(60px * var(--fs-scale));
+		--fs-9: calc(72px * var(--fs-scale));
+
+		--system-ui: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+			segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto,
+			arial, sans-serif;
+		--monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console,
+			monospace;
+	}
+`;

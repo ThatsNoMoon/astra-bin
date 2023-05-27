@@ -14,11 +14,11 @@ const themeLabels: Record<ThemeName, string> = {
 };
 
 const fontPresetLabels: Record<keyof typeof presets, string> = {
-	default: "Default",
-	source: "Source",
-	plex: "IBM Plex",
-	fira: "Fira",
 	outfit: "Outfit",
+	jetbrains: "Jetbrains",
+	source: "Source",
+	fira: "Fira",
+	plex: "IBM Plex",
 	space: "Space",
 	system: "System UI",
 	custom: "Custom",
@@ -122,8 +122,8 @@ class Demo extends Component<{}> {
 
 		label {
 			display: inline-block;
-			margin: 0 0 0.5em;
-			font-size: var(--fs-4);
+			margin: 0 0 0.5rem;
+			font-size: var(--fs-2);
 			font-weight: 325;
 			font-variation-settings: "wght" 325;
 		}
@@ -172,6 +172,10 @@ class FontSelector extends Component<{
 	fonts: ReactiveValue<FontPair>;
 }> {
 	static override styles = css`
+		:host {
+			--fs-scale: 1;
+		}
+		
 		${Demo}::part(inner) {
 			background-color: var(--bg-3);
 			width: 20rem;
@@ -179,13 +183,13 @@ class FontSelector extends Component<{
 		}
 
 		.name {
-			font-size: var(--fs-10);
-			height: var(--fs-10);
+			font-size: var(--fs-8);
+			height: var(--fs-8);
 		}
 
 		.demo-text {
-			font-size: var(--fs-4);
-			height: var(--fs-4);
+			font-size: var(--fs-2);
+			height: var(--fs-2);
 		}
 
 		#contents {

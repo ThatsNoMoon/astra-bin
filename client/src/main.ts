@@ -15,7 +15,12 @@ import { Settings } from "./pages/Settings";
 import { Navbar } from "./components/Navbar";
 import { About } from "./pages/About";
 import type { Config } from "./config";
-import { presets as fontPresets, type FontPair, addFont } from "./config/font";
+import {
+	presets as fontPresets,
+	type FontPair,
+	addFont,
+	fontVars,
+} from "./config/font";
 
 document.adoptedStyleSheets = [rootRules.styleSheet];
 
@@ -28,6 +33,7 @@ register(
 
 		static override styles = [
 			themeRules,
+			fontVars,
 			css`
 				:host {
 					width: 100%;
@@ -40,6 +46,7 @@ register(
 					--color-transition: color var(--transition-time),
 						background-color var(--transition-time);
 					transition: var(--color-transition);
+					font-size: var(--fs-1);
 				}
 
 				main {
@@ -58,13 +65,16 @@ register(
 
 			computed(
 				() => {
-					const fonts = this.#config.fonts.value;
+					const { body, mono, scale } = this.#config.fonts.value;
+					
 					this.style.setProperty(
 						"font-family",
-						`${fonts.body.value.family}, var(--system-ui)`
+						`${body.value.family}, var(--system-ui)`
 					);
-					addFont(fonts.body.value);
-					addFont(fonts.mono.value);
+					this.style.setProperty("--fs-scale", String(scale));
+
+					addFont(body.value);
+					addFont(mono.value);
 				},
 				{ dependents: [this] }
 			);
