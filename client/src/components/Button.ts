@@ -83,12 +83,14 @@ export const types = Object.freeze({
 type ButtonSize = {
 	font: string;
 	padding: string;
+	weight?: string | undefined;
 };
 
 export const sizes = {
 	s: {
 		font: "var(--fs-1)",
 		padding: "0.4rem",
+		weight: undefined,
 	},
 	m: {
 		font: "var(--fs-2)",
@@ -156,7 +158,11 @@ export class Button extends Component<{
 	#tag = this.tag ?? "button";
 
 	connectedCallback() {
+		const size: Readonly<ButtonSize> = sizes[this.size ?? "m"];
+		this.style.setProperty("--button-size", size.font);
+		this.style.setProperty("--button-padding", size.padding);
 		const type: Readonly<ButtonType> = types[this.type ?? "primary"];
+
 		this.style.setProperty("--button-color", type.color);
 		const bg = type.bg ?? {
 			base: "var(--bg-3)",
@@ -168,15 +174,18 @@ export class Button extends Component<{
 		this.style.setProperty("--button-hover", bg.hover);
 		this.style.setProperty("--button-active", bg.active);
 		this.style.setProperty("--button-disabled", bg.disabled);
-		this.style.setProperty("--button-weight", type.weight ?? "400");
 		this.style.setProperty(
 			"--button-disabled-color",
 			type.disabledColor ?? "var(--fg-2)"
 		);
 
-		const size: Readonly<ButtonSize> = sizes[this.size ?? "m"];
-		this.style.setProperty("--button-size", size.font);
-		this.style.setProperty("--button-padding", size.padding);
+		if ("weight" in size) {
+			if (size.weight !== undefined) {
+				this.style.setProperty("--button-weight", size.weight);
+			}
+		} else if (type.weight !== undefined) {
+			this.style.setProperty("--button-weight", type.weight);
+		}
 	}
 
 	override template = html`
