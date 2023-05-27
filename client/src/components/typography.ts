@@ -14,8 +14,6 @@ export class Heading extends Component<{ level: number }> {
 			font-size: var(--fs-4);
 			font-weight: 300;
 			font-variation-settings: "wght" 300;
-			margin: 0;
-			flex-grow: 1;
 		}
 
 		h2 {

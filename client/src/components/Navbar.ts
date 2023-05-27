@@ -1,7 +1,8 @@
-import { Component, css, html } from "destiny-ui";
+import { Component, css, html, reactive } from "destiny-ui";
 import { Button } from "./Button";
 import { RouterLink } from "../routing/Router";
 import { Heading } from "./typography";
+import { AddCircle, Info, Settings } from "../icons";
 
 export class Navbar extends Component {
 	static override styles = css`
@@ -14,15 +15,27 @@ export class Navbar extends Component {
 			gap: 1rem;
 		}
 
-		h1 {
+		${Heading}::part(inner) {
 			margin: 0;
-			font-size: var(--fs-3);
 			color: var(--fg-2);
-			font-weight: 300;
-			font-variation-settings: "wght" 300;
 			flex-grow: 1;
 		}
 	`;
+
+	#narrowButtons = reactive(false);
+
+	connectedCallback() {
+		const observer = new ResizeObserver(([me]) => {
+			if (me === undefined) {
+				return;
+			}
+
+			this.#narrowButtons.value =
+				window.matchMedia("(width < 550px)").matches;
+		});
+
+		observer.observe(this);
+	}
 
 	override template = html`
 		<${Heading} prop:level=${1}>
@@ -40,8 +53,9 @@ export class Navbar extends Component {
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button} prop:size=${"s"} prop:tag=${"span"}>
-				New paste
+			<${Button} prop:size=${"s"} prop:tag=${"div"}>
+				<${AddCircle} />
+				${this.#narrowButtons.truthy("New", "New paste")}
 			</${Button}>
 		</${RouterLink}>
 		<${RouterLink}
@@ -49,8 +63,9 @@ export class Navbar extends Component {
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"span"}>
-				Settings
+			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"div"}>
+				<${Settings} />
+				${this.#narrowButtons.falsy("Settings")}
 			</${Button}>
 		</${RouterLink}>
 		<${RouterLink}
@@ -58,8 +73,9 @@ export class Navbar extends Component {
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
 		>
-			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"span"}>
-				About
+			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"div"}>
+				<${Info} />
+				${this.#narrowButtons.falsy("About")}
 			</${Button}>
 		</${RouterLink}>
 	`;

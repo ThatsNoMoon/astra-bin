@@ -158,7 +158,7 @@ class Demo extends Component<{}> {
 	`;
 
 	override template = html`
-		<label for="demo"><slot name="label" /></label>
+		<label for="inner"><slot name="label" /></label>
 		<button id="inner" part="inner" destiny:data=${this.elementData}>
 			<slot />
 		</button>
@@ -172,10 +172,6 @@ class FontSelector extends Component<{
 	fonts: ReactiveValue<FontPair>;
 }> {
 	static override styles = css`
-		:host {
-			--fs-scale: 1;
-		}
-		
 		${Demo}::part(inner) {
 			background-color: var(--bg-3);
 			width: 20rem;

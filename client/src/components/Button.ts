@@ -103,7 +103,7 @@ export const sizes = {
 export class Button extends Component<{
 	type?: keyof typeof types;
 	size?: keyof typeof sizes;
-	tag?: "button" | "a" | "span" | "div";
+	tag?: "button" | "a" | "div";
 }> {
 	static override styles = css`
 		:host {
@@ -111,6 +111,10 @@ export class Button extends Component<{
 		}
 
 		#inner {
+			display: flex;
+			flex-direction: row;
+			gap: var(--button-padding);
+			align-items: center;
 			font-family: inherit;
 			font-size: var(--button-size);
 			border: none;

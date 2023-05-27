@@ -5,6 +5,7 @@ import type { Ace } from "ace-builds";
 import { ensure } from "../util";
 import { location } from "../routing/location";
 import type { Config } from "../config";
+import { Save } from "../icons";
 
 export class CreatePaste extends Component<{ config: Config }> {
 	static override styles = css`
@@ -40,7 +41,10 @@ export class CreatePaste extends Component<{ config: Config }> {
 
 	override template = html`
 		<div id="controls">
-			<${Button} on:click=${this.submit} prop:size=${"m"}>Save</${Button}>
+			<${Button} on:click=${this.submit} prop:size=${"m"}>
+				<${Save} />
+				Save
+			</${Button}>
 		</div>
 		<div id="container">
 			<${Editor} prop:editor=${this.#editor.pass} prop:config=${this.config}/>
