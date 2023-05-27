@@ -1,7 +1,6 @@
 import { Component, ReactiveValue, Ref, computed, css, html } from "destiny-ui";
 import type { Ace } from "ace-builds";
 import type { Config } from "../../config";
-const aceModule = import("./ace");
 
 export class Editor extends Component<{
 	editor: ReactiveValue<Ace.Editor>;
@@ -37,7 +36,7 @@ export class Editor extends Component<{
 		);
 
 		const container = await this.#container;
-		const { ace } = await aceModule;
+		const { ace } = await import("./ace");
 		const editor = ace.edit(container);
 		editor.setTheme("ace/theme/cobalt");
 		editor.session.setMode("ace/mode/javascript");
