@@ -22,7 +22,7 @@
 	},
 	"dependencies": {
 		"ace-builds": "^1.22.0",
-		"destiny-ui": "github:ThatsNoMoon/destiny#fix-package-main"
+		"destiny-ui": "github:0kku/destiny"
 	},
 	"prettier": {
 		"tabWidth": 4,
