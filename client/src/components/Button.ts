@@ -119,6 +119,7 @@ export class Button extends Component<{
 			color: var(--button-color);
 			background-color: var(--button-base);
 			font-weight: var(--button-weight);
+			font-variation-settings: "wght" var(--button-weight);
 			transition: background-color 0.2s;
 		}
 

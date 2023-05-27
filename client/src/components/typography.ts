@@ -13,6 +13,7 @@ export class Heading extends Component<{ level: number }> {
 		h1 {
 			font-size: var(--fs-5);
 			font-weight: 300;
+			font-variation-settings: "wght" 300;
 			margin: 0;
 			flex-grow: 1;
 		}
@@ -20,26 +21,31 @@ export class Heading extends Component<{ level: number }> {
 		h2 {
 			font-size: var(--fs-9);
 			font-weight: 150;
+			font-variation-settings: "wght" 150;
 		}
 
 		h3 {
 			font-size: var(--fs-8);
 			font-weight: 175;
+			font-variation-settings: "wght" 175;
 		}
 
 		h4 {
 			font-size: var(--fs-7);
 			font-weight: 200;
+			font-variation-settings: "wght" 200;
 		}
 
 		h5 {
 			font-size: var(--fs-6);
 			font-weight: 300;
+			font-variation-settings: "wght" 300;
 		}
 
 		h6 {
 			font-size: var(--fs-5);
 			font-weight: 300;
+			font-variation-settings: "wght" 300;
 		}
 	`;
 	

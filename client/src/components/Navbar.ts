@@ -19,6 +19,7 @@ export class Navbar extends Component {
 			font-size: var(--fs-5);
 			color: var(--fg-2);
 			font-weight: 300;
+			font-variation-settings: "wght" 300;
 			flex-grow: 1;
 		}
 	`;

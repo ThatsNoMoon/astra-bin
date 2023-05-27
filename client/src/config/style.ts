@@ -197,6 +197,12 @@ export const rootRules = css`
 		--fs-11: 72px;
 
 		font-size: var(--fs-3);
+
+		--system-ui: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+			segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto,
+			arial, sans-serif;
+		--monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console,
+			monospace;
 	}
 
 	body,
