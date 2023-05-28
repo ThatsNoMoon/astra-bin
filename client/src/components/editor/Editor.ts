@@ -37,10 +37,11 @@ export class Editor extends Component<{
 
 		const container = await this.#container;
 		const { ace } = await import("./ace");
-		const editor = ace.edit(container);
+		const editor: Ace.Editor = ace.edit(container);
 		editor.setTheme("ace/theme/cobalt");
 		editor.session.setMode("ace/mode/javascript");
 		editor.renderer.attachToShadowRoot();
+		editor.focus();
 		this.editor.value = editor;
 	}
 
