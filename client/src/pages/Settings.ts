@@ -207,20 +207,18 @@ class FontSelector extends Component<{
 	connectedCallback() {
 		addFont(this.#preset.body.value);
 		addFont(this.#preset.mono.value);
-		queueMicrotask(() => {
-			this.shadowRoot!.adoptedStyleSheets =
-				this.shadowRoot!.adoptedStyleSheets!.concat([
-					css`
-						.sans {
-							font-family: ${this.#preset.body.value.family};
-						}
+		this.shadowRoot!.adoptedStyleSheets =
+			this.shadowRoot!.adoptedStyleSheets!.concat([
+				css`
+					.sans {
+						font-family: ${this.#preset.body.value.family};
+					}
 
-						.mono {
-							font-family: ${this.#preset.mono.value.family};
-						}
-					`.styleSheet,
-				]);
-		});
+					.mono {
+						font-family: ${this.#preset.mono.value.family};
+					}
+				`.styleSheet,
+			]);
 	}
 
 	override template = html`

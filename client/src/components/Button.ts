@@ -149,9 +149,6 @@ export class Button extends Component<{
 
 	#disabled = reactive(this.disabled);
 	set disabled(value: boolean) {
-		if ((value as unknown) instanceof ReadonlyReactiveValue) {
-			value = (value as unknown as ReadonlyReactiveValue<boolean>).value;
-		}
 		this.#disabled.value = value;
 	}
 
