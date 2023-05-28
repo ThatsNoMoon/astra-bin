@@ -1,5 +1,17 @@
-import { Component, ReactiveValue, computed, css, html } from "destiny-ui";
-import { themeRules } from "../config/style";
+import {
+	Component,
+	ReactiveValue,
+	ReadonlyReactiveValue,
+	computed,
+	css,
+	html,
+} from "destiny-ui";
+import {
+	themeRules,
+	type ThemeConfig,
+	type DarkTheme,
+	type LightTheme,
+} from "../config/style";
 import type { ThemeName } from "../config/style";
 import { Heading } from "../components/typography";
 import type { Config } from "../config";
@@ -8,14 +20,13 @@ import { presets, type FontPair, addFont } from "../config/font";
 const themeLabels: Record<ThemeName, string> = {
 	dark: "Deep space",
 	dim: "Asteroid",
-	auto: "Sync with system",
 	pale: "Moonlight",
 	light: "Supernova",
 };
 
 const fontPresetLabels: Record<keyof typeof presets, string> = {
 	outfit: "Outfit",
-	jetbrains: "Jetbrains",
+	jetbrains: "JetBrains",
 	source: "Source",
 	fira: "Fira",
 	plex: "IBM Plex",
@@ -72,29 +83,35 @@ export class Settings extends Component<{ config: Config }> {
 		<section id="theme">
 			<${Heading} prop:level=${3}>UI Theme</${Heading}>
 			<div class="demo-section">
+				<${AutoSelector}
+					prop:theme=${this.config.theme}
+				/>
+				<${StaticSelector}
+					prop:theme=${this.config.theme}
+				/>
+			</div>
+			<div class="demo-section">
 				<${ThemeSelector}
-					prop:theme=${this.config.theme.pass}
+					prop:theme=${this.config.theme}
 					prop:demoTheme=${"dark"}
+					prop:autoTheme=${this.config.theme.autoDark.pass}
 				/>
 				<${ThemeSelector}
-					prop:theme=${this.config.theme.pass}
+					prop:theme=${this.config.theme}
 					prop:demoTheme=${"dim"}
+					prop:autoTheme=${this.config.theme.autoDark.pass}
 				/>
 			</div>
 			<div class="demo-section">
 				<${ThemeSelector}
-					prop:theme=${this.config.theme.pass}
-					prop:demoTheme=${"auto"}
-				/>
-			</div>
-			<div class="demo-section">
-				<${ThemeSelector}
-					prop:theme=${this.config.theme.pass}
+					prop:theme=${this.config.theme}
 					prop:demoTheme=${"light"}
+					prop:autoTheme=${this.config.theme.autoLight.pass}
 				/>
 				<${ThemeSelector}
-					prop:theme=${this.config.theme.pass}
+					prop:theme=${this.config.theme}
 					prop:demoTheme=${"pale"}
+					prop:autoTheme=${this.config.theme.autoLight.pass}
 				/>
 			</div>
 		</section>
@@ -113,7 +130,7 @@ export class Settings extends Component<{ config: Config }> {
 	`;
 }
 
-class Demo extends Component<{}> {
+class Demo extends Component {
 	static override captureProps = true;
 	static override styles = css`
 		:host {
@@ -135,10 +152,9 @@ class Demo extends Component<{}> {
 			border-radius: 1rem;
 			border: none;
 			padding: 0;
+			overflow: hidden;
 			display: flex;
 			flex-direction: column;
-			background-color: var(--bg-4);
-			overflow: hidden;
 			--skeleton-radius: 0.5rem;
 			transition: box-shadow 0.2s;
 		}
@@ -197,7 +213,11 @@ class FontSelector extends Component<{
 			justify-content: space-evenly;
 			overflow: hidden;
 			white-space: nowrap;
-			-webkit-mask-image: linear-gradient(90deg, var(--bg-3) 90%, transparent);
+			-webkit-mask-image: linear-gradient(
+				90deg,
+				var(--bg-3) 90%,
+				transparent
+			);
 			mask-image: linear-gradient(90deg, var(--bg-3) 90%, transparent);
 		}
 	`;
@@ -237,15 +257,101 @@ class FontSelector extends Component<{
 	`;
 }
 
-class ThemeSelector extends Component<{
-	demoTheme: ThemeName;
-	theme: ReactiveValue<ThemeName>;
+class AutoSelector extends Component<{ theme: ThemeConfig }> {
+	static override styles = css`
+		#slices {
+			position: relative;
+			height: 100%;
+			width: 100%;
+		}
+
+		.slice {
+			height: 100%;
+			width: 100%;
+		}
+
+		#dark {
+			clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+		}
+
+		#light {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			clip-path: polygon(100% 100%, 100% 0%, 0% 100%);
+		}
+	`;
+
+	override template = html`
+		<${Demo}
+			tabindex="0"
+			prop:disabled=${computed(() => this.theme.auto.value)}
+			on:click=${() => (this.theme.auto.value = true)}>
+			<span slot="label">Sync with system</span>
+			<div id="slices">
+				<div class="slice" id="dark">
+					<${ThemeSkeleton}
+						class=${this.theme.autoDark} />
+				</div>
+				<div class="slice" id="light">
+					<${ThemeSkeleton}
+						class=${this.theme.autoLight} />
+				</div>
+			</div>
+		</${Demo}>
+	`;
+}
+
+class StaticSelector extends Component<{ theme: ThemeConfig }> {
+	override template = html`
+		<${Demo}
+			tabindex="0"
+			prop:disabled=${computed(() => !this.theme.auto.value)}
+			on:click=${() => (this.theme.auto.value = false)}>
+			<span slot="label">Static theme</span>
+			<${ThemeSkeleton} class=${this.theme.static} />
+		</${Demo}>
+	`;
+}
+
+class ThemeSelector<Section extends ThemeName> extends Component<{
+	demoTheme: Section;
+	theme: ThemeConfig;
+	autoTheme: ReactiveValue<Section>;
 }> {
+	override template = html`
+		<${Demo}
+			tabindex="0"
+			prop:disabled=${computed(() => {
+				return this.theme.auto
+					.truthy(this.autoTheme.value, this.theme.static.value)
+					.pipe((selected) => selected === this.demoTheme).value;
+			})}
+			on:click=${() =>
+				((this.theme.auto.value
+					? this.autoTheme
+					: this.theme.static
+				).value = this.demoTheme)}>
+			<span slot="label">${themeLabels[this.demoTheme]}</span>
+			<${ThemeSkeleton} class=${this.demoTheme} />
+		</${Demo}>
+	`;
+}
+
+class ThemeSkeleton extends Component {
 	static override styles = [
 		themeRules,
 		css`
+			:host {
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+				height: 100%;
+			}
+
 			#nav {
 				background-color: var(--bg-3);
+				transition: var(--color-transition);
 				height: 1.5rem;
 				width: 100%;
 			}
@@ -255,6 +361,8 @@ class ThemeSelector extends Component<{
 				padding: 0.5rem;
 				height: 100%;
 				width: 100%;
+				background-color: var(--bg-4);
+				transition: var(--color-transition);
 			}
 
 			#content {
@@ -262,9 +370,6 @@ class ThemeSelector extends Component<{
 				height: 100%;
 				width: 100%;
 				grid-template-rows: repeat(6, calc(100% / 6));
-			}
-
-			.row {
 			}
 
 			.fg {
@@ -301,50 +406,40 @@ class ThemeSelector extends Component<{
 		`,
 	];
 
-	connectedCallback() {
-		this.classList.add(this.demoTheme);
-	}
-
 	override template = html`
-		<${Demo}
-			tabindex="0"
-			prop:disabled=${computed(() => this.theme.value === this.demoTheme)}
-			on:click=${() => (this.theme.value = this.demoTheme)}>
-			<span slot="label">${themeLabels[this.demoTheme]}</span>
-			<div id="nav" />
-			<div id="container">
-				<div id="content">
-					<${SkeletonRow} prop:width=${"80%"}>
-						<${Skeleton} class="fg" prop:grow=${3} />
-						<${Skeleton} class="fg" prop:grow=${1.5} />
-						<${Skeleton} class="fg" prop:grow=${2.5} />
-					</${SkeletonRow}>
-					<${SkeletonRow} prop:width=${"100%"}>
-						<${Skeleton} class="fg" prop:grow=${1} />
-						<${Skeleton} class="fg" prop:grow=${4} />
-						<${Skeleton} class="fg" prop:grow=${1.5} />
-					</${SkeletonRow}>
-					<${SkeletonRow} prop:width=${"75%"}>
-						<${Skeleton} class="accent-1" />
-						<${Skeleton} class="bg-3" />
-						<${Skeleton} class="primary" />
-					</${SkeletonRow}>
-					<${SkeletonRow} prop:width=${"100%"}>
-						<${Skeleton} class="bg-4" />
-					</${SkeletonRow}>
-					<${SkeletonRow} prop:width=${"100%"}>
-						<${Skeleton} class="fg" prop:grow=${2} />
-						<${Skeleton} class="fg" prop:grow=${1.5} />
-						<${Skeleton} class="fg" prop:grow=${2} />
-					</${SkeletonRow}>
-					<${SkeletonRow} prop:width=${"90%"}>
-						<${Skeleton} class="bg-1" />
-						<${Skeleton} class="accent-2" />
-						<${Skeleton} class="danger" />
-					</${SkeletonRow}>
-				</div>
+		<div id="nav" />
+		<div id="container">
+			<div id="content">
+				<${SkeletonRow} prop:width=${"75%"}>
+					<${Skeleton} class="fg" prop:grow=${3} />
+					<${Skeleton} class="fg" prop:grow=${1.5} />
+					<${Skeleton} class="fg" prop:grow=${2.5} />
+				</${SkeletonRow}>
+				<${SkeletonRow} prop:width=${"100%"}>
+					<${Skeleton} class="fg" prop:grow=${1} />
+					<${Skeleton} class="fg" prop:grow=${4} />
+					<${Skeleton} class="fg" prop:grow=${1.5} />
+				</${SkeletonRow}>
+				<${SkeletonRow} prop:width=${"80%"}>
+					<${Skeleton} class="accent-1" prop:grow=${1} />
+					<${Skeleton} class="bg-3" prop:grow=${0.8} />
+					<${Skeleton} class="primary" prop:grow=${1} />
+				</${SkeletonRow}>
+				<${SkeletonRow} prop:width=${"100%"}>
+					<${Skeleton} class="bg-4" />
+				</${SkeletonRow}>
+				<${SkeletonRow} prop:width=${"100%"}>
+					<${Skeleton} class="fg" prop:grow=${2} />
+					<${Skeleton} class="fg" prop:grow=${1.5} />
+					<${Skeleton} class="fg" prop:grow=${2} />
+				</${SkeletonRow}>
+				<${SkeletonRow} prop:width=${"90%"}>
+					<${Skeleton} class="bg-1" />
+					<${Skeleton} class="accent-2" />
+					<${Skeleton} class="danger" />
+				</${SkeletonRow}>
 			</div>
-		</${Demo}>
+		</div>
 	`;
 }
 
@@ -357,6 +452,7 @@ class SkeletonRow extends Component<{ width: string }> {
 			align-items: center;
 			gap: 0.5rem;
 			padding: 0.25rem;
+			transition: var(--color-transition);
 		}
 	`;
 
@@ -372,6 +468,7 @@ class Skeleton extends Component<{ grow?: number }> {
 			box-sizing: border-box;
 			border-radius: var(--skeleton-radius);
 			height: 100%;
+			transition: var(--color-transition);
 		}
 	`;
 

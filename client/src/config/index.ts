@@ -1,8 +1,8 @@
 import { ReactiveValue } from "destiny-ui";
-import type { ThemeName } from "./style";
+import type { ThemeConfig } from "./style";
 import type { FontPair } from "./font";
 
 export type Config = {
-	theme: ReactiveValue<ThemeName>;
+	theme: ThemeConfig;
 	fonts: ReactiveValue<FontPair>;
 };

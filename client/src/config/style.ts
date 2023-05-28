@@ -1,6 +1,15 @@
-import { css } from "destiny-ui";
+import { ReactiveValue, css } from "destiny-ui";
 
-export type ThemeName = "auto" | "dark" | "dim" | "pale" | "light";
+export type DarkTheme = "dark" | "dim";
+export type LightTheme = "light" | "pale";
+export type ThemeName = DarkTheme | LightTheme;
+
+export type ThemeConfig = {
+	auto: ReactiveValue<boolean>,
+	static: ReactiveValue<ThemeName>,
+	autoDark: ReactiveValue<"dark" | "dim">,
+	autoLight: ReactiveValue<"light" | "pale">,
+}
 
 const palette = {
 	bg: {

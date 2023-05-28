@@ -4,13 +4,14 @@ import {
 	computed,
 	css,
 	html,
+	reactive,
 	register,
 } from "destiny-ui";
 import { Router } from "./routing/Router";
 import { CreatePaste } from "./pages/CreatePaste";
 import { ViewPaste } from "./pages/ViewPaste";
 import { NotFound } from "./components/NotFound";
-import { rootRules, themeRules, type ThemeName } from "./config/style";
+import { type ThemeName, rootRules, themeRules, type DarkTheme, type LightTheme } from "./config/style";
 import { Settings } from "./pages/Settings";
 import { Navbar } from "./components/Navbar";
 import { About } from "./pages/About";
@@ -27,7 +28,12 @@ document.adoptedStyleSheets = [rootRules.styleSheet];
 register(
 	class AppRoot extends Component {
 		#config: Config = {
-			theme: new ReactiveValue<ThemeName>("auto"),
+			theme: {
+				autoDark: new ReactiveValue<DarkTheme>("dark"),
+				autoLight: new ReactiveValue<LightTheme>("light"),
+				static: new ReactiveValue<ThemeName>("dark"),
+				auto: reactive(true),
+			},
 			fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
 		};
 
@@ -57,16 +63,41 @@ register(
 			`,
 		];
 
+		updateAutoDark() {
+			this.classList.remove("auto-dark", "auto-dim");
+			this.classList.add(`auto-${this.#config.theme.autoDark.value}`);
+		}
+
+		updateAutoLight() {
+			this.classList.remove("auto-light", "auto-pale");
+			this.classList.add(`auto-${this.#config.theme.autoLight.value}`);
+		}
+
 		connectedCallback() {
-			this.#config.theme.bind((theme) => {
+			const { theme } = this.#config;
+			computed(() => {
 				this.classList.remove("auto", "dark", "dim", "pale", "light");
-				this.classList.add(theme);
+				if (theme.auto.value) {
+					this.classList.add("auto");
+					this.updateAutoDark();
+					this.updateAutoLight();
+				} else {
+					this.classList.remove("auto-dark", "auto-dim", "auto-light", "auto-pale")
+					this.classList.add(theme.static.value);
+				}
+			}, { dependents: [this] });
+
+			theme.autoDark.bind(() => {
+				this.updateAutoDark();
+			});
+			theme.autoLight.bind(() => {
+				this.updateAutoLight();
 			});
 
 			computed(
 				() => {
 					const { body, mono, scale } = this.#config.fonts.value;
-					
+
 					this.style.setProperty(
 						"font-family",
 						`${body.value.family}, var(--system-ui)`
