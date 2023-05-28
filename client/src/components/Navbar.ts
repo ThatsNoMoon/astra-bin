@@ -1,8 +1,9 @@
-import { Component, css, html, reactive } from "destiny-ui";
+import { Component, computed, css, html, reactive } from "destiny-ui";
 import { Button } from "./Button";
 import { RouterLink } from "../routing/Router";
 import { Heading } from "./typography";
 import { AddCircle, Info, Settings } from "../icons";
+import { location } from "../routing/location";
 
 export class Navbar extends Component {
 	static override styles = css`
@@ -62,8 +63,14 @@ export class Navbar extends Component {
 			prop:to=${"/settings"}
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
+			prop:disabledHere=${true}
 		>
-			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"div"}>
+			<${Button}
+				prop:type=${"neutral"}
+				prop:size=${"s"}
+				prop:tag=${"div"}
+				prop:disabled=${computed(() => location.value === "/settings")}
+			>
 				<${Settings} />
 				${this.#narrowButtons.falsy("Settings")}
 			</${Button}>
@@ -72,8 +79,14 @@ export class Navbar extends Component {
 			prop:to=${"/about"}
 			prop:color=${"inherit"}
 			prop:underline=${"none"}
+			prop:disabledHere=${true}
 		>
-			<${Button} prop:type=${"neutral"} prop:size=${"s"} prop:tag=${"div"}>
+			<${Button}
+				prop:type=${"neutral"}
+				prop:size=${"s"}
+				prop:tag=${"div"}
+				prop:disabled=${computed(() => location.value === "/about")}
+			>
 				<${Info} />
 				${this.#narrowButtons.falsy("About")}
 			</${Button}>

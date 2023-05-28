@@ -1,9 +1,17 @@
-import { Component, css, html } from "destiny-ui";
+import {
+	Component,
+	classNames,
+	computed,
+	css,
+	html,
+} from "destiny-ui";
+import { location } from "../routing/location";
 
 type LinkProps = {
 	to: string;
 	color?: string;
 	underline?: "none" | "hover" | "always";
+	disabledHere?: boolean;
 };
 
 export class Link extends Component<LinkProps> {
@@ -26,7 +34,15 @@ export class Link extends Component<LinkProps> {
 			color: var(--link-color);
 			transition: var(--color-transition);
 		}
+
+		a.no-target {
+			pointer-events: none;
+		}
 	`;
+
+	#disabled = computed(() => {
+		return Boolean(this.disabledHere) && location.value === this.to;
+	});
 
 	connectedCallback() {
 		this.style.setProperty(
@@ -36,7 +52,13 @@ export class Link extends Component<LinkProps> {
 	}
 
 	override template = html`
-		<a class=${this.underline ?? "hover"} href=${this.to}>
+		<a
+			class=${classNames({
+				[this.underline ?? "hover"]: true,
+				"no-target": this.#disabled,
+			})}
+			href=${this.to}
+		>
 			<slot />
 		</a>
 	`;
