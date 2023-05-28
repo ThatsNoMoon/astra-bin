@@ -191,26 +191,41 @@ class FontSelector extends Component<{
 		${Demo}::part(inner) {
 			background-color: var(--bg-3);
 			width: 20rem;
-			height: 15rem;
+			height: auto;
 		}
 
 		.name {
-			font-size: var(--fs-8);
-			height: var(--fs-8);
+			text-align: left;
+		}
+
+		.sans > .name {
+			font-size: var(--fs-7);
+			font-weight: 150;
+			font-variation-settings: "wght" 150;
+		}
+
+		:is(.sans, .name) > div {
+			height: 1.3em;
+		}
+
+		.mono > .name {
+			font-size: var(--fs-4);
 		}
 
 		.demo-text {
 			font-size: var(--fs-2);
-			height: var(--fs-2);
 		}
 
 		#contents {
+			box-sizing: border-box;
 			width: 100%;
 			height: 100%;
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
 			justify-content: space-evenly;
+			gap: 1.2rem;
+			padding: 1.2rem;
 			overflow: hidden;
 			white-space: nowrap;
 			-webkit-mask-image: linear-gradient(
@@ -248,10 +263,14 @@ class FontSelector extends Component<{
 			on:click=${() => (this.fonts.value = this.#preset)}>
 			<span slot="label">${fontPresetLabels[this.demoPreset]}</span>
 			<div id="contents">
-				<div class="sans name">${computed(() => this.#preset.body.value.label)}</div>
-				<div class="sans demo-text">${demoText}</div>
-				<div class="mono name">${computed(() => this.#preset.mono.value.label)}</div>
-				<div class="mono demo-text">${demoText}</div>
+				<div class="sans">
+					<div class="name">${computed(() => this.#preset.body.value.label)}</div>
+					<div class="demo-text">${demoText}</div>
+				</div>
+				<div class="mono">
+					<div class="name">${computed(() => this.#preset.mono.value.label)}</div>
+					<div class="demo-text">${demoText}</div>
+				</div>
 			</div>
 		</${Demo}>
 	`;
