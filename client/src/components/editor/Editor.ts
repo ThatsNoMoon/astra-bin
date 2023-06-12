@@ -20,6 +20,10 @@ export class Editor extends Component<{
 			font-size: var(--fs-1);
 			font-family: inherit;
 		}
+
+		#container.loading {
+			display: none;
+		}
 	`;
 
 	#container = new Ref();
@@ -38,7 +42,9 @@ export class Editor extends Component<{
 		const container = await this.#container;
 		const { ace } = await import("./ace");
 		const editor: Ace.Editor = ace.edit(container);
-		editor.setTheme("astra/theme/auto");
+		editor.setTheme("astra/theme/auto", () =>
+			container.classList.remove("loading")
+		);
 		editor.session.setMode("ace/mode/javascript");
 		editor.renderer.attachToShadowRoot();
 		editor.focus();
@@ -46,6 +52,6 @@ export class Editor extends Component<{
 	}
 
 	override template = html`
-		<div id="container" destiny:ref=${this.#container} />
+		<div id="container" class="loading" destiny:ref=${this.#container} />
 	`;
 }

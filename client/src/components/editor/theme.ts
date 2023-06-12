@@ -1,3 +1,9 @@
+import * as ace from "ace-builds";
+
+const define: (path: string, deps: string[], callback: Function) => void = (
+	ace as any
+).define;
+
 const cssText = `
 	.astra-auto {
 		color: var(--fg-1);
@@ -186,12 +192,11 @@ const cssText = `
 	}
 `;
 
-ace.define(
-	"astra/theme/auto",
-	["require", "exports", "module", "ace/lib/dom"],
-	function (require, exports, module) {
-		exports.isDark = true;
-		exports.cssClass = "astra-auto";
-		exports.cssText = cssText;
-	}
-);
+define("astra/theme/auto", ["require", "exports", "module", "ace/lib/dom"], (
+	_require: unknown,
+	exports: Record<string, unknown>
+) => {
+	exports["isDark"] = true;
+	exports["cssClass"] = "astra-auto";
+	exports["cssText"] = cssText;
+});
