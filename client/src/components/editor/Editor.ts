@@ -38,7 +38,7 @@ export class Editor extends Component<{
 		const container = await this.#container;
 		const { ace } = await import("./ace");
 		const editor: Ace.Editor = ace.edit(container);
-		editor.setTheme("ace/theme/cobalt");
+		editor.setTheme("astra/theme/auto");
 		editor.session.setMode("ace/mode/javascript");
 		editor.renderer.attachToShadowRoot();
 		editor.focus();

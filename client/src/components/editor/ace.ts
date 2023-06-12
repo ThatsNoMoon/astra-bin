@@ -1,4 +1,7 @@
-import ace from "ace-builds";
+import * as ace from "ace-builds";
+
+import autoTheme from "./theme-module?url";
+ace.config.setModuleUrl("astra/theme/auto", autoTheme);
 
 import extBeautify from "ace-builds/src-noconflict/ext-beautify?url";
 ace.config.setModuleUrl("ace/ext/beautify", extBeautify);
