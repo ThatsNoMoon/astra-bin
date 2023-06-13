@@ -5,10 +5,16 @@ import {
 	reactive,
 } from "destiny-ui";
 
+export type FontFaceData = {
+	family: string;
+	source: string;
+	descriptors?: FontFaceDescriptors;
+};
+
 export type FontSpec = {
 	family: string;
 	label: string;
-	variants?: ReadonlyArray<FontFace>;
+	variants?: ReadonlyArray<FontFaceData>;
 };
 
 export type FontPair = {
@@ -20,35 +26,39 @@ export type FontPair = {
 
 const storage = "https://storage.thatsnomoon.dev/fonts";
 
-const outfit = {
+const outfit: FontSpec = {
 	family: `"Outfit"`,
 	label: "Outfit",
 	variants: [
-		new FontFace("Outfit", `url(${storage}/Outfit-Variable.woff2`, {
-			display: "swap",
-		}),
+		{
+			family: "Outfit",
+			source: `url(${storage}/Outfit-Variable.woff2`,
+			descriptors: {
+				display: "swap",
+			}
+		},
 	],
 };
 
-const fragment = {
+const fragment: FontSpec = {
 	family: `"Fragment Mono"`,
 	label: "Fragment Mono",
 	variants: [
-		new FontFace(
-			"Fragment Mono",
-			`url(${storage}/FragmentMono-Regular.woff2`,
-			{
+		{
+			family: "Fragment Mono",
+			source: `url(${storage}/FragmentMono-Regular.woff2`,
+			descriptors: {
 				display: "swap",
-			}
-		),
-		new FontFace(
-			"Fragment Mono",
-			`url(${storage}/FragmentMono-Italic.woff2`,
-			{
+			},
+		},
+		{
+			family: "Fragment Mono",
+			source: `url(${storage}/FragmentMono-Italic.woff2`,
+			descriptors: {
 				display: "swap",
 				style: "italic",
 			}
-		),
+		},
 	],
 };
 
@@ -66,30 +76,34 @@ export const presets = {
 			family: `"Inter"`,
 			label: "Inter",
 			variants: [
-				new FontFace("Inter", `url(${storage}/Inter-Variable.woff2)`, {
-					display: "swap",
-				}),
+				{
+					family: "Inter",
+					source: `url(${storage}/Inter-Variable.woff2)`,
+					descriptors: {
+						display: "swap",
+					},
+				},
 			],
 		}),
 		mono: new ReadonlyReactiveValue<FontSpec>({
 			family: `"JetBrains Mono"`,
 			label: "JetBrains Mono",
 			variants: [
-				new FontFace(
-					"JetBrains Mono",
-					`url(${storage}/JetBrainsMono-Variable.woff2)`,
-					{
+				{
+					family: "JetBrains Mono",
+					source: `url(${storage}/JetBrainsMono-Variable.woff2)`,
+					descriptors: {
 						display: "swap",
-					}
-				),
-				new FontFace(
-					"JetBrains Mono",
-					`url(${storage}/JetBrainsMono-Variable-Italic.woff2)`,
-					{
+					},
+				},
+				{
+					family: "JetBrains Mono",
+					source: `url(${storage}/JetBrainsMono-Variable-Italic.woff2)`,
+					descriptors: {
 						style: "italic",
 						display: "swap",
-					}
-				),
+					},
+				},
 			],
 		}),
 	},
@@ -100,42 +114,42 @@ export const presets = {
 			family: `"Source Sans"`,
 			label: "Source Sans",
 			variants: [
-				new FontFace(
-					"Source Sans",
-					`url(${storage}/SourceSans3-Variable-Upright.woff2)`,
-					{
+				{
+					family: "Source Sans",
+					source: `url(${storage}/SourceSans3-Variable-Upright.woff2)`,
+					descriptors: {
 						display: "swap",
-					}
-				),
-				new FontFace(
-					"Source Sans",
-					`url(${storage}/SourceSans3-Variable-Italic.woff2)`,
-					{
-						display: "swap",
+					},
+				},
+				{
+					family: "Source Sans",
+					source: `url(${storage}/SourceSans3-Variable-Italic.woff2)`,
+					descriptors: {
 						style: "italic",
-					}
-				),
+						display: "swap",
+					},
+				},
 			],
 		}),
 		mono: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Source Code Pro"`,
 			label: "Source Code Pro",
 			variants: [
-				new FontFace(
-					"Source Code Pro",
-					`url(${storage}/SourceCodePro-Variable-Upright.woff2)`,
-					{
+				{
+					family: "Source Code Pro",
+					source: `url(${storage}/SourceCodePro-Variable-Upright.woff2)`,
+					descriptors: {
 						display: "swap",
-					}
-				),
-				new FontFace(
-					"Source Code Pro",
-					`url(${storage}/SourceCodePro-Variable-Italic.woff2)`,
-					{
-						display: "swap",
+					},
+				},
+				{
+					family: "Source Code Pro",
+					source: `url(${storage}/SourceCodePro-Variable-Italic.woff2)`,
+					descriptors: {
 						style: "italic",
-					}
-				),
+						display: "swap",
+					},
+				},
 			],
 		}),
 	},
@@ -146,22 +160,26 @@ export const presets = {
 			family: `"Firava"`,
 			label: "Firava",
 			variants: [
-				new FontFace("Firava", `url(${storage}/Firava.woff2)`, {
-					display: "swap",
-				}),
+				{
+					family: "Firava",
+					source: `url(${storage}/Firava.woff2)`,
+					descriptors: {
+						display: "swap",
+					}
+				},
 			],
 		}),
 		mono: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Fira Code"`,
 			label: "Fira Code",
 			variants: [
-				new FontFace(
-					"Fira Code",
-					`url(${storage}/FiraCode-Variable.woff2)`,
-					{
+				{
+					family: "Fira Code",
+					source: `url(${storage}/FiraCode-Variable.woff2)`,
+					descriptors: {
 						display: "swap",
 					}
-				),
+				},
 			],
 		}),
 	},
@@ -172,42 +190,42 @@ export const presets = {
 			family: `"IBM Plex Sans"`,
 			label: "IBM Plex Sans",
 			variants: [
-				new FontFace(
-					"IBM Plex Sans",
-					`url(${storage}/IBMPlexSans-Variable.woff2)`,
-					{
+				{
+					family: "IBM Plex Sans",
+					source: `url(${storage}/IBMPlexSans-Variable.woff2)`,
+					descriptors: {
 						display: "swap",
-					}
-				),
-				new FontFace(
-					"IBM Plex Sans",
-					`url(${storage}/IBMPlexSans-Variable-Italic.woff2)`,
-					{
-						display: "swap",
+					},
+				},
+				{
+					family: "IBM Plex Sans",
+					source: `url(${storage}/IBMPlexSans-Variable.woff2)`,
+					descriptors: {
 						style: "italic",
-					}
-				),
+						display: "swap",
+					},
+				},
 			],
 		}),
 		mono: new ReadonlyReactiveValue<FontSpec>({
 			family: `"IBM Plex Mono"`,
 			label: "IBM Plex Mono",
 			variants: [
-				new FontFace(
-					"IBM Plex Mono",
-					`url(${storage}/IBMPlexMono-Regular.woff2)`,
-					{
+				{
+					family: "IBM Plex Mono",
+					source: `url(${storage}/IBMPlexMono-Regular.woff2)`,
+					descriptors: {
 						display: "swap",
-					}
-				),
-				new FontFace(
-					"IBM Plex Mono",
-					`url(${storage}/IBMPlexMono-Italic.woff2)`,
-					{
-						display: "swap",
+					},
+				},
+				{
+					family: "IBM Plex Mono",
+					source: `url(${storage}/IBMPlexMono-Italic.woff2)`,
+					descriptors: {
 						style: "italic",
-					}
-				),
+						display: "swap",
+					},
+				},
 			],
 		}),
 	},
@@ -218,34 +236,34 @@ export const presets = {
 			family: `"Space Grotesk"`,
 			label: "Space Grotesk",
 			variants: [
-				new FontFace(
-					"Space Grotesk",
-					`url(${storage}/SpaceGrotesk-Variable.woff2`,
-					{
+				{
+					family: "Space Grotesk",
+					source: `url(${storage}/SpaceGrotesk-Variable.woff2`,
+					descriptors: {
 						display: "swap",
 					}
-				),
+				},
 			],
 		}),
 		mono: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Space Mono"`,
 			label: "Space Mono",
 			variants: [
-				new FontFace(
-					"Space Mono",
-					`url(${storage}/SpaceMono-Regular.woff2`,
-					{
+				{
+					family: "Space Mono",
+					source: `url(${storage}/SpaceMono-Regular.woff2`,
+					descriptors: {
 						display: "swap",
-					}
-				),
-				new FontFace(
-					"Space Mono",
-					`url(${storage}/SpaceMono-Italic.woff2`,
-					{
-						display: "swap",
+					},
+				},
+				{
+					family: "Space Mono",
+					source: `url(${storage}/SpaceMono-Italic.woff2`,
+					descriptors: {
 						style: "italic",
-					}
-				),
+						display: "swap",
+					},
+				},
 			],
 		}),
 	},
@@ -274,8 +292,8 @@ export function addFont(font: FontSpec) {
 		return;
 	}
 
-	for (const variant of font.variants) {
-		document.fonts.add(variant);
+	for (const { family, source, descriptors } of font.variants) {
+		document.fonts.add(new FontFace(family, source, descriptors));
 	}
 }
 
