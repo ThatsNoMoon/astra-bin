@@ -45,7 +45,7 @@ export class Editor extends Component<{
 		editor.setTheme("astra/theme/auto", () =>
 			container.classList.remove("loading")
 		);
-		editor.session.setMode("ace/mode/javascript");
+		editor.session.setMode("ace/mode/typescript");
 		editor.renderer.attachToShadowRoot();
 		editor.focus();
 		this.editor.value = editor;

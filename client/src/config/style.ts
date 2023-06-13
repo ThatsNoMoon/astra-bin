@@ -5,11 +5,11 @@ export type LightTheme = "light" | "pale";
 export type ThemeName = DarkTheme | LightTheme;
 
 export type ThemeConfig = {
-	auto: ReactiveValue<boolean>,
-	static: ReactiveValue<ThemeName>,
-	autoDark: ReactiveValue<"dark" | "dim">,
-	autoLight: ReactiveValue<"light" | "pale">,
-}
+	auto: ReactiveValue<boolean>;
+	static: ReactiveValue<ThemeName>;
+	autoDark: ReactiveValue<"dark" | "dim">;
+	autoLight: ReactiveValue<"light" | "pale">;
+};
 
 const palette = {
 	bg: {

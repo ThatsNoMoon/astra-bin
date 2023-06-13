@@ -12,7 +12,13 @@ import { Router } from "./routing/Router";
 import { CreatePaste } from "./pages/CreatePaste";
 import { ViewPaste } from "./pages/ViewPaste";
 import { NotFound } from "./components/NotFound";
-import { type ThemeName, rootRules, themeRules, type DarkTheme, type LightTheme } from "./config/style";
+import {
+	type ThemeName,
+	rootRules,
+	themeRules,
+	type DarkTheme,
+	type LightTheme,
+} from "./config/style";
 import { Settings } from "./pages/Settings";
 import { Navbar } from "./components/Navbar";
 import { About } from "./pages/About";
@@ -148,17 +154,31 @@ register(
 
 		connectedCallback() {
 			const { theme } = this.#config;
-			computed(() => {
-				this.classList.remove("auto", "dark", "dim", "pale", "light");
-				if (theme.auto.value) {
-					this.classList.add("auto");
-					this.updateAutoDark();
-					this.updateAutoLight();
-				} else {
-					this.classList.remove("auto-dark", "auto-dim", "auto-light", "auto-pale")
-					this.classList.add(theme.static.value);
-				}
-			}, { dependents: [this] });
+			computed(
+				() => {
+					this.classList.remove(
+						"auto",
+						"dark",
+						"dim",
+						"pale",
+						"light"
+					);
+					if (theme.auto.value) {
+						this.classList.add("auto");
+						this.updateAutoDark();
+						this.updateAutoLight();
+					} else {
+						this.classList.remove(
+							"auto-dark",
+							"auto-dim",
+							"auto-light",
+							"auto-pale"
+						);
+						this.classList.add(theme.static.value);
+					}
+				},
+				{ dependents: [this] }
+			);
 
 			theme.autoDark.bind(() => {
 				this.updateAutoDark();

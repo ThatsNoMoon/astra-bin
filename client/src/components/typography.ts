@@ -46,7 +46,7 @@ export class Heading extends Component<{ level: number }> {
 			font-variation-settings: "wght" 300;
 		}
 	`;
-	
+
 	override template = html`
 		<${`h${this.level}`} id="inner" part="inner">
 			<slot />

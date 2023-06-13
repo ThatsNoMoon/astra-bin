@@ -1,10 +1,4 @@
-import {
-	Component,
-	classNames,
-	computed,
-	css,
-	html,
-} from "destiny-ui";
+import { Component, classNames, computed, css, html } from "destiny-ui";
 import { location } from "../routing/location";
 
 type LinkProps = {

@@ -1,17 +1,5 @@
-import {
-	Component,
-	ReactiveValue,
-	ReadonlyReactiveValue,
-	computed,
-	css,
-	html,
-} from "destiny-ui";
-import {
-	themeRules,
-	type ThemeConfig,
-	type DarkTheme,
-	type LightTheme,
-} from "../config/style";
+import { Component, ReactiveValue, computed, css, html } from "destiny-ui";
+import { themeRules, type ThemeConfig } from "../config/style";
 import type { ThemeName } from "../config/style";
 import { Heading } from "../components/typography";
 import type { Config } from "../config";
@@ -259,7 +247,9 @@ class FontSelector extends Component<{
 	override template = html`
 		<${Demo}
 			tabindex="0"
-			prop:disabled=${computed(() => this.fonts.value.builtinKey === this.#preset.builtinKey)}
+			prop:disabled=${computed(
+				() => this.fonts.value.builtinKey === this.#preset.builtinKey
+			)}
 			on:click=${() => (this.fonts.value = this.#preset)}>
 			<span slot="label">${fontPresetLabels[this.demoPreset]}</span>
 			<div id="contents">
