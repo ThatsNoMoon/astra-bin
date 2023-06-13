@@ -81,24 +81,24 @@ export class Settings extends Component<{ config: Config }> {
 			<div class="demo-section">
 				<${ThemeSelector}
 					prop:theme=${this.config.theme}
-					prop:demoTheme=${"dark"}
+					prop:demoTheme="dark"
 					prop:autoTheme=${this.config.theme.autoDark.pass}
 				/>
 				<${ThemeSelector}
 					prop:theme=${this.config.theme}
-					prop:demoTheme=${"dim"}
+					prop:demoTheme="dim"
 					prop:autoTheme=${this.config.theme.autoDark.pass}
 				/>
 			</div>
 			<div class="demo-section">
 				<${ThemeSelector}
 					prop:theme=${this.config.theme}
-					prop:demoTheme=${"light"}
+					prop:demoTheme="light"
 					prop:autoTheme=${this.config.theme.autoLight.pass}
 				/>
 				<${ThemeSelector}
 					prop:theme=${this.config.theme}
-					prop:demoTheme=${"pale"}
+					prop:demoTheme="pale"
 					prop:autoTheme=${this.config.theme.autoLight.pass}
 				/>
 			</div>
@@ -419,30 +419,30 @@ class ThemeSkeleton extends Component {
 		<div id="nav" />
 		<div id="container">
 			<div id="content">
-				<${SkeletonRow} prop:width=${"75%"}>
+				<${SkeletonRow} prop:width="75%">
 					<${Skeleton} class="fg" prop:grow=${3} />
 					<${Skeleton} class="fg" prop:grow=${1.5} />
 					<${Skeleton} class="fg" prop:grow=${2.5} />
 				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"100%"}>
+				<${SkeletonRow} prop:width="100%">
 					<${Skeleton} class="fg" prop:grow=${1} />
 					<${Skeleton} class="fg" prop:grow=${4} />
 					<${Skeleton} class="fg" prop:grow=${1.5} />
 				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"80%"}>
+				<${SkeletonRow} prop:width="80%">
 					<${Skeleton} class="accent-1" prop:grow=${1} />
 					<${Skeleton} class="bg-3" prop:grow=${0.8} />
 					<${Skeleton} class="primary" prop:grow=${1} />
 				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"100%"}>
+				<${SkeletonRow} prop:width="100%">
 					<${Skeleton} class="bg-4" />
 				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"100%"}>
+				<${SkeletonRow} prop:width="100%">
 					<${Skeleton} class="fg" prop:grow=${2} />
 					<${Skeleton} class="fg" prop:grow=${1.5} />
 					<${Skeleton} class="fg" prop:grow=${2} />
 				</${SkeletonRow}>
-				<${SkeletonRow} prop:width=${"90%"}>
+				<${SkeletonRow} prop:width="90%">
 					<${Skeleton} class="bg-1" />
 					<${Skeleton} class="accent-2" />
 					<${Skeleton} class="danger" />

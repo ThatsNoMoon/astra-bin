@@ -41,7 +41,7 @@ export class CreatePaste extends Component<{ config: Config }> {
 
 	override template = html`
 		<div id="controls">
-			<${Button} on:click=${this.submit} prop:size=${"m"}>
+			<${Button} on:click=${this.submit} prop:size="m">
 				<${Save} />
 				Save
 			</${Button}>

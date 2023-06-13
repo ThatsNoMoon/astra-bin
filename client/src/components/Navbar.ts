@@ -41,34 +41,34 @@ export class Navbar extends Component {
 	override template = html`
 		<${Heading} prop:level=${1}>
 			<${RouterLink}
-				prop:to=${"/"}
-				prop:color=${"inherit"}
-				prop:underline=${"none"}
+				prop:to="/"
+				prop:color="inherit"
+				prop:underline="none"
 			>
 				Astra Bin
 			</${RouterLink}>
 		</${Heading}>
 		<${RouterLink}
-			prop:to=${"/"}
-			prop:type=${"button"}
-			prop:color=${"inherit"}
-			prop:underline=${"none"}
+			prop:to="/"
+			prop:type="button"
+			prop:color="inherit"
+			prop:underline="none"
 		>
-			<${Button} prop:size=${"s"} prop:tag=${"div"}>
+			<${Button} prop:size="s" prop:tag="div">
 				<${AddCircle} />
 				${this.#narrowButtons.truthy("New", "New paste")}
 			</${Button}>
 		</${RouterLink}>
 		<${RouterLink}
-			prop:to=${"/settings"}
-			prop:color=${"inherit"}
-			prop:underline=${"none"}
+			prop:to="/settings"
+			prop:color="inherit"
+			prop:underline="none"
 			prop:disabledHere=${true}
 		>
 			<${Button}
-				prop:type=${"neutral"}
-				prop:size=${"s"}
-				prop:tag=${"div"}
+				prop:type="neutral"
+				prop:size="s"
+				prop:tag="div"
 				prop:disabled=${computed(() => location.value === "/settings")}
 			>
 				<${Settings} />
@@ -76,15 +76,15 @@ export class Navbar extends Component {
 			</${Button}>
 		</${RouterLink}>
 		<${RouterLink}
-			prop:to=${"/about"}
-			prop:color=${"inherit"}
-			prop:underline=${"none"}
+			prop:to="/about"
+			prop:color="inherit"
+			prop:underline="none"
 			prop:disabledHere=${true}
 		>
 			<${Button}
-				prop:type=${"neutral"}
-				prop:size=${"s"}
-				prop:tag=${"div"}
+				prop:type="neutral"
+				prop:size="s"
+				prop:tag="div"
 				prop:disabled=${computed(() => location.value === "/about")}
 			>
 				<${Info} />
