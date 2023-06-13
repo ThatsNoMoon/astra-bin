@@ -301,11 +301,13 @@ export const fontVars = css`
 	:host {
 		--fs-scale: 1;
 
-		${[16, 18, 20, 24, 30, 36, 48, 60, 72].map(
-			(v, i) => `
-			--fs-${i + 1}: calc(${v}px * var(--fs-scale));
-		`
-		)}
+		${[16, 18, 20, 24, 30, 36, 48, 60, 72]
+			.map(
+				(v, i) => `
+					--fs-${i + 1}: calc(${v}px * var(--fs-scale));
+				`
+			)
+			.join("\n")}
 
 		--system-ui: -apple-system, BlinkMacSystemFont, avenir next, avenir,
 			segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto,
