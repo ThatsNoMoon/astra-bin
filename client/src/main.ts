@@ -66,27 +66,6 @@ function deserializeConfig(json: string): Config {
 	};
 }
 
-function serializeConfig(config: Config): string {
-	const fonts = config.fonts.value;
-
-	const raw: SerializedConfig = {
-		theme: {
-			autoDark: config.theme.autoDark.value,
-			autoLight: config.theme.autoLight.value,
-			static: config.theme.static.value,
-			auto: config.theme.auto.value,
-		},
-		fonts: {
-			builtinKey: fonts.builtinKey,
-			body: fonts.body.value,
-			scale: fonts.scale.value,
-			mono: fonts.mono.value,
-		},
-	};
-
-	return JSON.stringify(raw);
-}
-
 function loadConfig(): Config {
 	const stored = localStorage.getItem("astra-config");
 	const config =
@@ -104,7 +83,7 @@ function loadConfig(): Config {
 
 	computed(
 		() => {
-			localStorage.setItem("astra-config", serializeConfig(config));
+			localStorage.setItem("astra-config", JSON.stringify(config));
 		},
 		{ dependents: [window] }
 	);
