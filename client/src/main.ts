@@ -7,6 +7,7 @@ import {
 	html,
 	reactive,
 	register,
+	sideEffect,
 } from "destiny-ui";
 import { Router } from "./routing/Router";
 import { CreatePaste } from "./pages/CreatePaste";
@@ -81,12 +82,9 @@ function loadConfig(): Config {
 					fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
 			  };
 
-	computed(
-		() => {
-			localStorage.setItem("astra-config", JSON.stringify(config));
-		},
-		{ dependents: [window] }
-	);
+	sideEffect(() => {
+		localStorage.setItem("astra-config", JSON.stringify(config));
+	});
 
 	return config;
 }
@@ -133,31 +131,22 @@ register(
 
 		connectedCallback() {
 			const { theme } = this.#config;
-			computed(
-				() => {
+			sideEffect(() => {
+				this.classList.remove("auto", "dark", "dim", "pale", "light");
+				if (theme.auto.value) {
+					this.classList.add("auto");
+					this.updateAutoDark();
+					this.updateAutoLight();
+				} else {
 					this.classList.remove(
-						"auto",
-						"dark",
-						"dim",
-						"pale",
-						"light"
+						"auto-dark",
+						"auto-dim",
+						"auto-light",
+						"auto-pale"
 					);
-					if (theme.auto.value) {
-						this.classList.add("auto");
-						this.updateAutoDark();
-						this.updateAutoLight();
-					} else {
-						this.classList.remove(
-							"auto-dark",
-							"auto-dim",
-							"auto-light",
-							"auto-pale"
-						);
-						this.classList.add(theme.static.value);
-					}
-				},
-				{ dependents: [this] }
-			);
+					this.classList.add(theme.static.value);
+				}
+			});
 
 			theme.autoDark.bind(() => {
 				this.updateAutoDark();
@@ -166,21 +155,18 @@ register(
 				this.updateAutoLight();
 			});
 
-			computed(
-				() => {
-					const { body, mono, scale } = this.#config.fonts.value;
+			sideEffect(() => {
+				const { body, mono, scale } = this.#config.fonts.value;
 
-					this.style.setProperty(
-						"font-family",
-						`${body.value.family}, var(--system-ui)`
-					);
-					this.style.setProperty("--fs-scale", String(scale));
+				this.style.setProperty(
+					"font-family",
+					`${body.value.family}, var(--system-ui)`
+				);
+				this.style.setProperty("--fs-scale", String(scale));
 
-					addFont(body.value);
-					addFont(mono.value);
-				},
-				{ dependents: [this] }
-			);
+				addFont(body.value);
+				addFont(mono.value);
+			});
 		}
 
 		override template = html`

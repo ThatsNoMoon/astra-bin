@@ -35,7 +35,7 @@ const outfit: FontSpec = {
 			source: `url(${storage}/Outfit-Variable.woff2`,
 			descriptors: {
 				display: "swap",
-			}
+			},
 		},
 	],
 };
@@ -57,7 +57,7 @@ const fragment: FontSpec = {
 			descriptors: {
 				display: "swap",
 				style: "italic",
-			}
+			},
 		},
 	],
 };
@@ -165,7 +165,7 @@ export const presets = {
 					source: `url(${storage}/Firava.woff2)`,
 					descriptors: {
 						display: "swap",
-					}
+					},
 				},
 			],
 		}),
@@ -178,7 +178,7 @@ export const presets = {
 					source: `url(${storage}/FiraCode-Variable.woff2)`,
 					descriptors: {
 						display: "swap",
-					}
+					},
 				},
 			],
 		}),
@@ -241,7 +241,7 @@ export const presets = {
 					source: `url(${storage}/SpaceGrotesk-Variable.woff2`,
 					descriptors: {
 						display: "swap",
-					}
+					},
 				},
 			],
 		}),

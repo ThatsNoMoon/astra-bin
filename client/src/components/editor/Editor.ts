@@ -1,4 +1,11 @@
-import { Component, ReactiveValue, Ref, computed, css, html } from "destiny-ui";
+import {
+	Component,
+	ReactiveValue,
+	Ref,
+	css,
+	html,
+	sideEffect,
+} from "destiny-ui";
 import type { Ace } from "ace-builds";
 import type { Config } from "../../config";
 
@@ -28,16 +35,10 @@ export class Editor extends Component<{
 
 	#container = new Ref();
 	async connectedCallback() {
-		computed(
-			() => {
-				const mono = this.config.fonts.value.mono.value.family;
-				this.style.setProperty(
-					"font-family",
-					`${mono}, var(--monospace)`
-				);
-			},
-			{ dependents: [this] }
-		);
+		sideEffect(() => {
+			const mono = this.config.fonts.value.mono.value.family;
+			this.style.setProperty("font-family", `${mono}, var(--monospace)`);
+		});
 
 		const container = await this.#container;
 		const { ace } = await import("./ace");
