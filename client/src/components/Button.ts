@@ -1,11 +1,4 @@
-import {
-	Component,
-	ReadonlyReactiveValue,
-	classNames,
-	css,
-	html,
-	reactive,
-} from "destiny-ui";
+import { Component, classNames, css, html, reactive } from "destiny-ui";
 
 type ButtonType = {
 	color: string;

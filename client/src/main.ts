@@ -2,7 +2,6 @@ import {
 	Component,
 	ReactiveValue,
 	ReadonlyReactiveValue,
-	computed,
 	css,
 	html,
 	reactive,
@@ -26,7 +25,6 @@ import { About } from "./pages/About";
 import type { Config } from "./config";
 import {
 	presets as fontPresets,
-	type FontPair,
 	addFont,
 	fontVars,
 	type FontSpec,
@@ -52,13 +50,8 @@ type SerializedConfig = {
 function deserializeConfig(json: string): Config {
 	const raw: SerializedConfig = JSON.parse(json);
 	return {
-		theme: {
-			autoDark: new ReactiveValue<DarkTheme>(raw.theme.autoDark),
-			autoLight: new ReactiveValue<LightTheme>(raw.theme.autoLight),
-			static: new ReactiveValue<ThemeName>(raw.theme.static),
-			auto: reactive(raw.theme.auto),
-		},
-		fonts: new ReactiveValue<FontPair>({
+		theme: reactive(raw.theme),
+		fonts: new ReactiveValue({
 			builtinKey: raw.fonts.builtinKey,
 			body: new ReadonlyReactiveValue(raw.fonts.body),
 			scale: new ReadonlyReactiveValue(raw.fonts.scale),
@@ -69,17 +62,17 @@ function deserializeConfig(json: string): Config {
 
 function loadConfig(): Config {
 	const stored = localStorage.getItem("astra-config");
-	const config =
+	const config: Config =
 		stored !== null
 			? deserializeConfig(stored)
 			: {
 					theme: {
-						autoDark: new ReactiveValue<DarkTheme>("dark"),
-						autoLight: new ReactiveValue<LightTheme>("light"),
-						static: new ReactiveValue<ThemeName>("dark"),
+						autoDark: new ReactiveValue("dark"),
+						autoLight: new ReactiveValue("light"),
+						static: new ReactiveValue("dark"),
 						auto: reactive(true),
 					},
-					fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
+					fonts: new ReactiveValue(fontPresets.outfit),
 			  };
 
 	sideEffect(() => {

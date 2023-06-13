@@ -66,13 +66,13 @@ export const presets = {
 	outfit: {
 		builtinKey: "outfit",
 		scale: new ReadonlyReactiveValue(1.1),
-		body: new ReadonlyReactiveValue<FontSpec>(outfit),
-		mono: new ReadonlyReactiveValue<FontSpec>(fragment),
+		body: new ReadonlyReactiveValue(outfit),
+		mono: new ReadonlyReactiveValue(fragment),
 	},
 	jetbrains: {
 		builtinKey: "jetbrains",
 		scale: new ReadonlyReactiveValue(1),
-		body: new ReadonlyReactiveValue<FontSpec>({
+		body: new ReadonlyReactiveValue({
 			family: `"Inter"`,
 			label: "Inter",
 			variants: [
@@ -85,7 +85,7 @@ export const presets = {
 				},
 			],
 		}),
-		mono: new ReadonlyReactiveValue<FontSpec>({
+		mono: new ReadonlyReactiveValue({
 			family: `"JetBrains Mono"`,
 			label: "JetBrains Mono",
 			variants: [
@@ -110,7 +110,7 @@ export const presets = {
 	source: {
 		builtinKey: "source",
 		scale: new ReadonlyReactiveValue(1.18),
-		body: new ReadonlyReactiveValue<FontSpec>({
+		body: new ReadonlyReactiveValue({
 			family: `"Source Sans"`,
 			label: "Source Sans",
 			variants: [
@@ -131,7 +131,7 @@ export const presets = {
 				},
 			],
 		}),
-		mono: new ReadonlyReactiveValue<FontSpec>({
+		mono: new ReadonlyReactiveValue({
 			family: `"Source Code Pro"`,
 			label: "Source Code Pro",
 			variants: [
@@ -156,7 +156,7 @@ export const presets = {
 	fira: {
 		builtinKey: "fira",
 		scale: new ReadonlyReactiveValue(1.05),
-		body: new ReadonlyReactiveValue<FontSpec>({
+		body: new ReadonlyReactiveValue({
 			family: `"Firava"`,
 			label: "Firava",
 			variants: [
@@ -169,7 +169,7 @@ export const presets = {
 				},
 			],
 		}),
-		mono: new ReadonlyReactiveValue<FontSpec>({
+		mono: new ReadonlyReactiveValue({
 			family: `"Fira Code"`,
 			label: "Fira Code",
 			variants: [
@@ -186,7 +186,7 @@ export const presets = {
 	plex: {
 		builtinKey: "plex",
 		scale: new ReadonlyReactiveValue(1.05),
-		body: new ReadonlyReactiveValue<FontSpec>({
+		body: new ReadonlyReactiveValue({
 			family: `"IBM Plex Sans"`,
 			label: "IBM Plex Sans",
 			variants: [
@@ -207,7 +207,7 @@ export const presets = {
 				},
 			],
 		}),
-		mono: new ReadonlyReactiveValue<FontSpec>({
+		mono: new ReadonlyReactiveValue({
 			family: `"IBM Plex Mono"`,
 			label: "IBM Plex Mono",
 			variants: [
@@ -232,7 +232,7 @@ export const presets = {
 	space: {
 		builtinKey: "space",
 		scale: new ReadonlyReactiveValue(1),
-		body: new ReadonlyReactiveValue<FontSpec>({
+		body: new ReadonlyReactiveValue({
 			family: `"Space Grotesk"`,
 			label: "Space Grotesk",
 			variants: [
@@ -245,7 +245,7 @@ export const presets = {
 				},
 			],
 		}),
-		mono: new ReadonlyReactiveValue<FontSpec>({
+		mono: new ReadonlyReactiveValue({
 			family: `"Space Mono"`,
 			label: "Space Mono",
 			variants: [
@@ -282,8 +282,8 @@ export const presets = {
 	custom: {
 		builtinKey: undefined,
 		scale: reactive(1),
-		body: new ReactiveValue<FontSpec>(outfit),
-		mono: new ReactiveValue<FontSpec>(fragment),
+		body: new ReactiveValue(outfit),
+		mono: new ReactiveValue(fragment),
 	},
 } satisfies Record<string, FontPair>;
 
@@ -300,15 +300,12 @@ export function addFont(font: FontSpec) {
 export const fontVars = css`
 	:host {
 		--fs-scale: 1;
-		--fs-1: calc(16px * var(--fs-scale));
-		--fs-2: calc(18px * var(--fs-scale));
-		--fs-3: calc(20px * var(--fs-scale));
-		--fs-4: calc(24px * var(--fs-scale));
-		--fs-5: calc(30px * var(--fs-scale));
-		--fs-6: calc(36px * var(--fs-scale));
-		--fs-7: calc(48px * var(--fs-scale));
-		--fs-8: calc(60px * var(--fs-scale));
-		--fs-9: calc(72px * var(--fs-scale));
+
+		${[16, 18, 20, 24, 30, 36, 48, 60, 72].map(
+			(v, i) => `
+			--fs-${i + 1}: calc(${v}px * var(--fs-scale));
+		`
+		)}
 
 		--system-ui: -apple-system, BlinkMacSystemFont, avenir next, avenir,
 			segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto,
