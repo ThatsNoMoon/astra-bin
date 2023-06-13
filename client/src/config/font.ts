@@ -7,6 +7,7 @@ export type FontSpec = {
 };
 
 export type FontPair = {
+	builtinKey: string | undefined;
 	body: ReadonlyReactiveValue<FontSpec>;
 	scale: ReadonlyReactiveValue<number>;
 	mono: ReadonlyReactiveValue<FontSpec>;
@@ -17,7 +18,6 @@ const storage = "https://storage.thatsnomoon.dev/fonts";
 const outfit = {
 	family: `"Outfit"`,
 	label: "Outfit",
-	scale: 1.12,
 	variants: [
 		new FontFace("Outfit", `url(${storage}/Outfit-Variable.woff2`, {
 			display: "swap",
@@ -49,11 +49,13 @@ const fragment = {
 
 export const presets = {
 	outfit: {
+		builtinKey: "outfit",
 		scale: new ReadonlyReactiveValue(1.1),
 		body: new ReadonlyReactiveValue<FontSpec>(outfit),
 		mono: new ReadonlyReactiveValue<FontSpec>(fragment),
 	},
 	jetbrains: {
+		builtinKey: "jetbrains",
 		scale: new ReadonlyReactiveValue(1),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Inter"`,
@@ -87,6 +89,7 @@ export const presets = {
 		}),
 	},
 	source: {
+		builtinKey: "source",
 		scale: new ReadonlyReactiveValue(1.18),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Source Sans"`,
@@ -132,6 +135,7 @@ export const presets = {
 		}),
 	},
 	fira: {
+		builtinKey: "fira",
 		scale: new ReadonlyReactiveValue(1.05),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Firava"`,
@@ -157,6 +161,7 @@ export const presets = {
 		}),
 	},
 	plex: {
+		builtinKey: "plex",
 		scale: new ReadonlyReactiveValue(1.05),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"IBM Plex Sans"`,
@@ -202,6 +207,7 @@ export const presets = {
 		}),
 	},
 	space: {
+		builtinKey: "space",
 		scale: new ReadonlyReactiveValue(1),
 		body: new ReadonlyReactiveValue<FontSpec>({
 			family: `"Space Grotesk"`,
@@ -239,6 +245,7 @@ export const presets = {
 		}),
 	},
 	system: {
+		builtinKey: "system",
 		scale: new ReadonlyReactiveValue(1),
 		body: new ReadonlyReactiveValue({
 			family: "var(--system-ui)",
@@ -250,6 +257,7 @@ export const presets = {
 		}),
 	},
 	custom: {
+		builtinKey: undefined,
 		scale: reactive(1),
 		body: new ReactiveValue<FontSpec>(outfit),
 		mono: new ReactiveValue<FontSpec>(fragment),

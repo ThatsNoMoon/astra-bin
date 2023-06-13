@@ -1,6 +1,7 @@
 import {
 	Component,
 	ReactiveValue,
+	ReadonlyReactiveValue,
 	computed,
 	css,
 	html,
@@ -21,21 +22,93 @@ import {
 	type FontPair,
 	addFont,
 	fontVars,
+	type FontSpec,
 } from "./config/font";
 
 document.adoptedStyleSheets = [rootRules.styleSheet];
 
+type SerializedConfig = {
+	theme: {
+		autoDark: DarkTheme;
+		autoLight: LightTheme;
+		static: ThemeName;
+		auto: boolean;
+	};
+	fonts: {
+		builtinKey: string | undefined;
+		body: FontSpec;
+		scale: number;
+		mono: FontSpec;
+	};
+};
+
+function deserializeConfig(json: string): Config {
+	const raw: SerializedConfig = JSON.parse(json);
+	return {
+		theme: {
+			autoDark: new ReactiveValue<DarkTheme>(raw.theme.autoDark),
+			autoLight: new ReactiveValue<LightTheme>(raw.theme.autoLight),
+			static: new ReactiveValue<ThemeName>(raw.theme.static),
+			auto: reactive(raw.theme.auto),
+		},
+		fonts: new ReactiveValue<FontPair>({
+			builtinKey: raw.fonts.builtinKey,
+			body: new ReadonlyReactiveValue(raw.fonts.body),
+			scale: new ReadonlyReactiveValue(raw.fonts.scale),
+			mono: new ReadonlyReactiveValue(raw.fonts.mono),
+		}),
+	};
+}
+
+function serializeConfig(config: Config): string {
+	const fonts = config.fonts.value;
+
+	const raw: SerializedConfig = {
+		theme: {
+			autoDark: config.theme.autoDark.value,
+			autoLight: config.theme.autoLight.value,
+			static: config.theme.static.value,
+			auto: config.theme.auto.value,
+		},
+		fonts: {
+			builtinKey: fonts.builtinKey,
+			body: fonts.body.value,
+			scale: fonts.scale.value,
+			mono: fonts.mono.value,
+		},
+	};
+
+	return JSON.stringify(raw);
+}
+
+function loadConfig(): Config {
+	const stored = localStorage.getItem("astra-config");
+	const config =
+		stored !== null
+			? deserializeConfig(stored)
+			: {
+					theme: {
+						autoDark: new ReactiveValue<DarkTheme>("dark"),
+						autoLight: new ReactiveValue<LightTheme>("light"),
+						static: new ReactiveValue<ThemeName>("dark"),
+						auto: reactive(true),
+					},
+					fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
+			  };
+
+	computed(
+		() => {
+			localStorage.setItem("astra-config", serializeConfig(config));
+		},
+		{ dependents: [window] }
+	);
+
+	return config;
+}
+
 register(
 	class AppRoot extends Component {
-		#config: Config = {
-			theme: {
-				autoDark: new ReactiveValue<DarkTheme>("dark"),
-				autoLight: new ReactiveValue<LightTheme>("light"),
-				static: new ReactiveValue<ThemeName>("dark"),
-				auto: reactive(true),
-			},
-			fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
-		};
+		#config: Config = loadConfig();
 
 		static override styles = [
 			themeRules,

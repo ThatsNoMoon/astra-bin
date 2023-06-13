@@ -259,7 +259,7 @@ class FontSelector extends Component<{
 	override template = html`
 		<${Demo}
 			tabindex="0"
-			prop:disabled=${computed(() => this.fonts.value === this.#preset)}
+			prop:disabled=${computed(() => this.fonts.value.builtinKey === this.#preset.builtinKey)}
 			on:click=${() => (this.fonts.value = this.#preset)}>
 			<span slot="label">${fontPresetLabels[this.demoPreset]}</span>
 			<div id="contents">
