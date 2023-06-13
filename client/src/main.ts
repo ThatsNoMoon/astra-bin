@@ -124,6 +124,7 @@ register(
 
 		connectedCallback() {
 			const { theme } = this.#config;
+
 			sideEffect(() => {
 				this.classList.remove("auto", "dark", "dim", "pale", "light");
 				if (theme.auto.value) {
@@ -141,10 +142,11 @@ register(
 				}
 			});
 
-			theme.autoDark.bind(() => {
+			sideEffect(() => {
 				this.updateAutoDark();
 			});
-			theme.autoLight.bind(() => {
+
+			sideEffect(() => {
 				this.updateAutoLight();
 			});
 

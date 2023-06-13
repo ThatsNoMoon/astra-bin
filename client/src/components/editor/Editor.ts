@@ -24,7 +24,7 @@ export class Editor extends Component<{
 			min-height: 100%;
 			width: 100%;
 			height: 100%;
-			font-size: var(--fs-1);
+			font-size: 16px;
 			font-family: inherit;
 		}
 
