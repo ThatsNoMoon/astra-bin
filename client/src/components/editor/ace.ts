@@ -548,4 +548,4 @@ ace.config.setModuleUrl("ace/mode/xquery_worker", workerXquery);
 import workerYaml from "ace-builds/src-noconflict/worker-yaml?url";
 ace.config.setModuleUrl("ace/mode/yaml_worker", workerYaml);
 
-export { ace };
+export default ace;
