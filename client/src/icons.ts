@@ -14,6 +14,7 @@ class Icon extends Component {
 
 export class AddCircle extends Icon {
 	override template = html`<svg
+		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
 		height="20"
 		viewBox="0 -960 960 960"
@@ -38,6 +39,7 @@ export class AddCircle extends Icon {
 
 export class Info extends Icon {
 	override template = html`<svg
+		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
 		height="20"
 		viewBox="0 -960 960 960"
@@ -62,6 +64,7 @@ export class Info extends Icon {
 
 export class NewWindow extends Icon {
 	override template = html`<svg
+		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
 		height="20"
 		viewBox="0 -960 960 960"
@@ -84,6 +87,7 @@ export class NewWindow extends Icon {
 
 export class Settings extends Icon {
 	override template = html`<svg
+		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
 		height="20"
 		viewBox="0 -960 960 960"
@@ -109,6 +113,7 @@ export class Settings extends Icon {
 
 export class Save extends Icon {
 	override template = html`<svg
+		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
 		height="24"
 		viewBox="0 -960 960 960"
