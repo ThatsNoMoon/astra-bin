@@ -332,9 +332,10 @@ class ThemeSelector<Section extends ThemeName> extends Component<{
 		<${Demo}
 			tabindex="0"
 			prop:disabled=${computed(() => {
-				return this.theme.auto
-					.truthy(this.autoTheme.value, this.theme.static.value)
-					.pipe((selected) => selected === this.demoTheme).value;
+				const appliedTheme = this.theme.auto.value
+					? this.autoTheme.value
+					: this.theme.static.value;
+				return appliedTheme === this.demoTheme;
 			})}
 			on:click=${() =>
 				((this.theme.auto.value
