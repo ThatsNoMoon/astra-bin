@@ -29,6 +29,12 @@ export class Link extends Component<LinkProps> {
 			transition: var(--color-transition);
 		}
 
+		a:focus-visible {
+			box-shadow: none;
+			outline: var(--focus-outline);
+			outline-offset: var(--focus-outline-offset);
+		}
+
 		a.no-target {
 			pointer-events: none;
 		}
@@ -47,6 +53,7 @@ export class Link extends Component<LinkProps> {
 
 	override template = html`
 		<a
+			part="inner"
 			class=${classNames({
 				[this.underline ?? "hover"]: true,
 				"no-target": this.#disabled,

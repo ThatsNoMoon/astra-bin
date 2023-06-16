@@ -14,12 +14,20 @@ export class Navbar extends Component {
 			display: flex;
 			align-items: center;
 			gap: 1rem;
+			box-shadow: rgba(2, 2, 2, 0.2) 0px 1px 0px 0px,
+				rgba(6, 6, 7, 0.05) 0px 1.5px 0px 0px,
+				rgba(2, 2, 2, 0.05) 0px 2px 0px 0px;
+			z-index: 5;
 		}
 
 		${Heading}::part(inner) {
 			margin: 0;
 			color: var(--fg-2);
 			flex-grow: 1;
+		}
+
+		${RouterLink}::part(inner) {
+			border-radius: 0.5rem;
 		}
 	`;
 

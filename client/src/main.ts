@@ -102,6 +102,8 @@ register(
 						background-color var(--transition-time);
 					transition: var(--color-transition);
 					font-size: var(--fs-1);
+					--focus-outline: 5px solid var(--fg-1);
+					--focus-outline-offset: 2px;
 				}
 
 				main {

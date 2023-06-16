@@ -148,6 +148,15 @@ const paleRules = [generateCssVars("bg", palette.bg.pale), lighterRules].join(
 
 export const themeRules = css`
 	:host {
+		--elevation-1: 0 2px 3px hsla(0, 0%, 0%, 0.12),
+			0 1px 2px hsla(0, 0%, 0%, 0.24);
+		--elevation-2: 0 3px 6px hsla(0, 0%, 0%, 0.15),
+			0 2px 4px hsla(0, 0%, 0%, 0.12);
+		--elevation-3: 0 6px 20px hsla(0, 0%, 0%, 0.15),
+			0 3px 6px hsla(0, 0%, 0%, 0.1);
+		--elevation-4: 0 15px 25px hsla(0, 0%, 0%, 0.15),
+			0 5px 10px hsla(0, 0%, 0%, 0.05);
+		--elevation-5: 0 20px 40px hsla(0, 0%, 0%, 0.2);
 		${paletteRules}
 	}
 

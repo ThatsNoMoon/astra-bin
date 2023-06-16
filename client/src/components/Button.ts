@@ -120,7 +120,7 @@ export class Button extends Component<{
 			background-color: var(--button-base);
 			font-weight: var(--button-weight);
 			font-variation-settings: "wght" var(--button-weight);
-			transition: background-color 0.2s;
+			transition: background-color 0.2s, box-shadow 0.2s;
 		}
 
 		#inner:not(.disabled) {
@@ -132,12 +132,21 @@ export class Button extends Component<{
 			background-color: var(--button-disabled);
 		}
 
-		#inner:hover:not(.disabled) {
+		#inner:hover:not(.disabled),
+		#inner:focus-visible:not(.disabled) {
 			background-color: var(--button-hover);
+			box-shadow: var(--elevation-3);
+		}
+
+		#inner:focus-visible:not(.disabled) {
+			outline: var(--focus-outline);
+			outline-offset: var(--focus-outline-offset);
+			z-index: 12;
 		}
 
 		#inner:active:not(.disabled) {
 			background-color: var(--button-active);
+			box-shadow: none;
 		}
 	`;
 
@@ -182,6 +191,7 @@ export class Button extends Component<{
 	override template = html`
 		<${this.#tag}
 			id="inner"
+			part="inner"
 			class=${classNames({ disabled: this.#disabled })}
 			prop:disabled=${this.#disabled}
 		>
