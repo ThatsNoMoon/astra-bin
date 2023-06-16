@@ -199,7 +199,7 @@ export const presets = {
 				},
 				{
 					family: "IBM Plex Sans",
-					source: `url(${storage}/IBMPlexSans-Variable.woff2)`,
+					source: `url(${storage}/IBMPlexSans-Variable-Italic.woff2)`,
 					descriptors: {
 						style: "italic",
 						display: "swap",
