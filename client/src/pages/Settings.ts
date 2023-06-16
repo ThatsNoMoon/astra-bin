@@ -192,7 +192,7 @@ class FontSelector extends Component<{
 			font-variation-settings: "wght" 150;
 		}
 
-		:is(.sans, .name) > div {
+		:is(.sans, .mono) > div {
 			height: 1.3em;
 		}
 
