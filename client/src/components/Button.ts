@@ -1,4 +1,5 @@
 import { Component, classNames, css, html, reactive } from "destiny-ui";
+import { deepFreeze } from "../util";
 
 type ButtonType = {
 	color: string;
@@ -12,11 +13,11 @@ type ButtonType = {
 	weight?: string;
 };
 
-export const types = Object.freeze({
-	neutral: Object.freeze({
+export const types = deepFreeze({
+	neutral: {
 		color: "var(--fg-1)",
-	}),
-	primary: Object.freeze({
+	},
+	primary: {
 		color: "black",
 		disabledColor: "var(--palette-primary-6)",
 		bg: {
@@ -26,11 +27,11 @@ export const types = Object.freeze({
 			disabled: "var(--palette-primary-1)",
 		},
 		weight: "450",
-	}),
-	"primary-alt": Object.freeze({
+	},
+	"primary-alt": {
 		color: "var(--primary-1)",
-	}),
-	"accent-1": Object.freeze({
+	},
+	"accent-1": {
 		color: "white",
 		disabledColor: "var(--palette-accent-1-3)",
 		bg: {
@@ -40,11 +41,11 @@ export const types = Object.freeze({
 			disabled: "var(--palette-accent-1-1)",
 		},
 		weight: "500",
-	}),
-	"accent-1-alt": Object.freeze({
+	},
+	"accent-1-alt": {
 		color: "var(--accent-1-1)",
-	}),
-	"accent-2": Object.freeze({
+	},
+	"accent-2": {
 		color: "white",
 		disabledColor: "var(--palette-accent-2-4)",
 		bg: {
@@ -54,11 +55,11 @@ export const types = Object.freeze({
 			disabled: "var(--palette-accent-2-1)",
 		},
 		weight: "500",
-	}),
-	"accent-2-alt": Object.freeze({
+	},
+	"accent-2-alt": {
 		color: "var(--accent-2-2)",
-	}),
-	danger: Object.freeze({
+	},
+	danger: {
 		color: "white",
 		disabledColor: "var(--palette-danger-3)",
 		bg: {
@@ -68,10 +69,10 @@ export const types = Object.freeze({
 			disabled: "var(--palette-danger-1)",
 		},
 		weight: "500",
-	}),
-	"danger-alt": Object.freeze({
+	},
+	"danger-alt": {
 		color: "var(--danger-2)",
-	}),
+	},
 });
 
 type ButtonSize = {

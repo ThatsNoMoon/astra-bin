@@ -7,3 +7,13 @@ export async function ensure<T>(v: ReactiveValue<T | undefined>): Promise<T> {
 	}
 	return value;
 }
+
+export function deepFreeze<O>(obj: O): O {
+	if (typeof obj !== "object" || obj == null) {
+		return obj;
+	}
+
+	return Object.fromEntries(
+		Object.entries(obj).map(([k, v]) => [k, deepFreeze(v)])
+	) as any;
+}
