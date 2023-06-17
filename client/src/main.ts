@@ -45,6 +45,7 @@ type SerializedConfig = {
 		scale: number;
 		mono: FontSpec;
 	};
+	showMoreModes: boolean;
 };
 
 function deserializeConfig(json: string): Config {
@@ -57,6 +58,7 @@ function deserializeConfig(json: string): Config {
 			scale: new ReadonlyReactiveValue(raw.fonts.scale),
 			mono: new ReadonlyReactiveValue(raw.fonts.mono),
 		}),
+		showMoreModes: reactive(raw.showMoreModes),
 	};
 }
 
@@ -73,6 +75,7 @@ function loadConfig(): Config {
 						auto: reactive(true),
 					},
 					fonts: new ReactiveValue(fontPresets.outfit),
+					showMoreModes: reactive(false),
 			  };
 
 	sideEffect(() => {

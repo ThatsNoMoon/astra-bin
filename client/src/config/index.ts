@@ -5,4 +5,5 @@ import type { FontPair } from "./font";
 export type Config = {
 	theme: ThemeConfig;
 	fonts: ReactiveValue<FontPair>;
+	showMoreModes: ReactiveValue<boolean>;
 };

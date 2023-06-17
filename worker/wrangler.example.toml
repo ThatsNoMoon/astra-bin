@@ -1,6 +1,6 @@
 name = "astra-bin"
 main = "build/worker/shim.mjs"
-compatibility_date = "2023-05-18"
+compatibility_date = "2023-06-16"
 
 workers_dev = false
 [[kv_namespaces]]
@@ -8,10 +8,12 @@ binding = "pastes"
 id = "..."
 
 [vars]
-WORKERS_RS_VERSION = "0.0.16"
+WORKERS_RS_VERSION = "0.0.17"
 MAX_PASTE_LENGTH = "100000"
 KEY_LENGTH = "5"
 PASTE_TTL = "604800"
+CLIENT_ORIGIN = "http://localhost:5173"
+CONTENT_TYPE_PREFIX = "text/vnd.astra-bin."
 
 [env.production.route]
 pattern = "astra-bin.example.com"
@@ -27,10 +29,12 @@ binding = "pastes"
 id = "..."
 
 [env.staging.vars]
-WORKERS_RS_VERSION = "0.0.16"
+WORKERS_RS_VERSION = "0.0.17"
 MAX_PASTE_LENGTH = "100000"
 KEY_LENGTH = "5"
 PASTE_TTL = "300"
+CLIENT_ORIGIN = "https://staging.bin.example.com"
+CONTENT_TYPE_PREFIX = "text/vnd.astra-bin."
 
 [build]
 command = "cargo install -q worker-build --version 0.0.9 && worker-build --release"

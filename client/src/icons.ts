@@ -129,3 +129,37 @@ export class Save extends Icon {
 		/>
 	</svg>`;
 }
+
+export class Expand extends Icon {
+	override template = html`<svg
+		part="inner"
+		xmlns="http://www.w3.org/2000/svg"
+		height="24"
+		viewBox="0 -960 960 960"
+		width="24"
+	>
+		<path
+			d="M480-362q-8 0-15-2.5t-13-8.5L267-558q-11-11-10.5-27.5T268-613q11-11
+			28-11t28 11l156 156 157-157q11-11 27.5-10.5T692-613q11 11 11 28t-11
+			28L508-373q-6 6-13 8.5t-15 2.5Z"
+		/>
+	</svg>`;
+}
+
+export class Search extends Icon {
+	override template = html`<svg
+		part="inner"
+		xmlns="http://www.w3.org/2000/svg"
+		height="24"
+		viewBox="0 -960 960 960"
+		width="24"
+	>
+		<path
+			d="M380-320q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109
+			0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11
+			11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0
+			127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0
+			75 52.5 127.5T380-400Z"
+		/>
+	</svg>`;
+}

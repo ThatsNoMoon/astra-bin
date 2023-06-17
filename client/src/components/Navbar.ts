@@ -64,7 +64,7 @@ export class Navbar extends Component {
 		>
 			<${Button} prop:size="s" prop:tag="div">
 				<${AddCircle} />
-				${this.#narrowButtons.truthy("New", "New paste")}
+				${this.#narrowButtons.falsy("New paste")}
 			</${Button}>
 		</${RouterLink}>
 		<${RouterLink}
