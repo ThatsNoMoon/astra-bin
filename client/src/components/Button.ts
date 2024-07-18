@@ -1,4 +1,11 @@
-import { Component, classNames, css, html, reactive } from "destiny-ui";
+import {
+	CSSTemplate,
+	Component,
+	classNames,
+	css,
+	html,
+	reactive,
+} from "destiny-ui";
 import { deepFreeze } from "../util";
 
 type ButtonType = {
@@ -100,60 +107,66 @@ export const sizes = {
 export class Button extends Component<{
 	type?: keyof typeof types;
 	size?: keyof typeof sizes;
-	tag?: "button" | "a" | "div";
+	tag?: string;
 }> {
-	static override styles = css`
-		:host {
-			display: contents;
-		}
+	static override styles: CSSTemplate[] & { [0]: CSSTemplate } = [
+		css`
+			:host {
+				display: contents;
+			}
 
-		#inner {
-			display: flex;
-			flex-direction: row;
-			gap: var(--button-padding);
-			align-items: center;
-			font-family: inherit;
-			font-size: var(--button-size);
-			border: none;
-			padding: var(--button-padding);
-			border-radius: 0.5rem;
-			color: var(--button-color);
-			background-color: var(--button-base);
-			font-weight: var(--button-weight);
-			font-variation-settings: "wght" var(--button-weight);
-			transition: background-color 0.2s, box-shadow 0.2s;
-		}
+			#inner {
+				display: flex;
+				flex-direction: row;
+				gap: var(--button-padding);
+				align-items: center;
+				font-family: inherit;
+				font-size: var(--button-size);
+				border: none;
+				padding: var(--button-padding) calc(var(--button-padding) * 2);
+				border-radius: 0.5rem;
+				color: var(--button-color);
+				background-color: var(--button-base);
+				font-weight: var(--button-weight);
+				font-variation-settings: "wght" var(--button-weight);
+				transition: background-color 0.2s, box-shadow 0.2s;
+			}
 
-		#inner:not(.disabled) {
-			cursor: pointer;
-		}
+			#inner:not(.disabled) {
+				cursor: pointer;
+			}
 
-		#inner.disabled {
-			color: var(--button-disabled-color);
-			background-color: var(--button-disabled);
-		}
+			#inner.disabled {
+				color: var(--button-disabled-color);
+				background-color: var(--button-disabled);
+			}
 
-		#inner:hover:not(.disabled),
-		#inner:focus-visible:not(.disabled) {
-			background-color: var(--button-hover);
-			box-shadow: var(--elevation-3);
-		}
+			#inner:hover:not(.disabled),
+			#inner:focus-visible:not(.disabled) {
+				background-color: var(--button-hover);
+				box-shadow: var(--elevation-3);
+			}
 
-		#inner:focus-visible:not(.disabled) {
-			outline: var(--focus-outline);
-			outline-offset: var(--focus-outline-offset);
-			z-index: 12;
-		}
+			#inner:focus-visible:not(.disabled) {
+				outline: var(--focus-outline);
+				outline-offset: var(--focus-outline-offset);
+				z-index: 12;
+			}
 
-		#inner:active:not(.disabled) {
-			background-color: var(--button-active);
-			box-shadow: none;
-		}
-	`;
+			#inner:active:not(.disabled) {
+				background-color: var(--button-active);
+				box-shadow: none;
+			}
+		`,
+	];
 
 	#disabled = reactive(this.disabled);
 	set disabled(value: boolean) {
 		this.#disabled.value = value;
+	}
+
+	get _disabled() {
+		return this.#disabled.value;
 	}
 
 	#tag = this.tag ?? "button";
