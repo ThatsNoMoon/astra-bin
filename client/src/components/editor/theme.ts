@@ -181,7 +181,7 @@ const cssText = `
 
 	.astra-auto .ace_xml-pe {
 		color: #494949;
-	}*/
+	}
 
 	.astra-auto .ace_indent-guide {
 		background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNQUFD4z6Crq/sfAAuYAuYl+7lfAAAAAElFTkSuQmCC") right repeat-y;

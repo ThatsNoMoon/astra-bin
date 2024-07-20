@@ -1,6 +1,6 @@
 name = "astra-bin"
 main = "./src/index.ts"
-compatibility_date = "2024-07-15"
+compatibility_date = "2024-07-12"
 
 workers_dev = false
 [[kv_namespaces]]
