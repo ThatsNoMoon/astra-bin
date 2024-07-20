@@ -28,6 +28,7 @@ import {
 	addFont,
 	fontVars,
 	type FontSpec,
+	FontPair,
 } from "./config/font";
 
 document.adoptedStyleSheets = [rootRules.styleSheet];
@@ -51,7 +52,12 @@ type SerializedConfig = {
 function deserializeConfig(json: string): Config {
 	const raw: SerializedConfig = JSON.parse(json);
 	return {
-		theme: reactive(raw.theme),
+		theme: {
+			auto: reactive(raw.theme.auto),
+			static: new ReactiveValue<ThemeName>(raw.theme.static),
+			autoDark: new ReactiveValue<DarkTheme>(raw.theme.autoDark),
+			autoLight: new ReactiveValue<LightTheme>(raw.theme.autoLight),
+		},
 		fonts: new ReactiveValue({
 			builtinKey: raw.fonts.builtinKey,
 			body: new ReadonlyReactiveValue(raw.fonts.body),
@@ -67,16 +73,16 @@ function loadConfig(): Config {
 	const config: Config =
 		stored !== null
 			? deserializeConfig(stored)
-			: {
+			: ({
 					theme: {
-						autoDark: new ReactiveValue("dark"),
-						autoLight: new ReactiveValue("light"),
-						static: new ReactiveValue("dark"),
+						autoDark: new ReactiveValue<DarkTheme>("dark"),
+						autoLight: new ReactiveValue<LightTheme>("light"),
+						static: new ReactiveValue<ThemeName>("dark"),
 						auto: reactive(true),
 					},
-					fonts: new ReactiveValue(fontPresets.outfit),
+					fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
 					showMoreModes: reactive(false),
-			  };
+			  } satisfies Config);
 
 	sideEffect(() => {
 		localStorage.setItem("astra-config", JSON.stringify(config));
