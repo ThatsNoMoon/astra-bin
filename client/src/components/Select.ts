@@ -13,6 +13,36 @@ import { Expand, Search } from "../icons";
 import { TextInput } from "./TextInput";
 import { Resolvable } from "../util";
 
+class MenuItem extends Button {
+	declare key: string;
+	declare index: number;
+	declare selectedKey: ReactiveValue<string | undefined>;
+	declare focusedIndex: ReactiveValue<number>;
+	declare dropdownOpen: ReactiveValue<boolean>;
+
+	constructor() {
+		super();
+
+		this.type = "neutral";
+
+		this.onclick = () => {
+			this.selectedKey.value = this.key;
+			this.dropdownOpen.value = false;
+		};
+
+		sideEffect(() => {
+			if (this.index === this.focusedIndex.value) {
+				this.tabIndex = 0;
+				const button = this.shadowRoot?.getElementById("inner");
+				if (button == null || !(button instanceof HTMLElement)) return;
+				button.focus();
+			} else {
+				this.tabIndex = -1;
+			}
+		});
+	}
+}
+
 export class Select<T> extends Button {
 	static override styles: CSSTemplate[] & [CSSTemplate, CSSTemplate] = [
 		Button.styles[0],
@@ -56,7 +86,8 @@ export class Select<T> extends Button {
 				margin-top: calc(var(--button-padding) * 2);
 				border-radius: 0.5rem;
 				border: none;
-				outline: 5px solid var(--palette-accent-1-4);
+				outline: var(--focus-outline-width) solid
+					var(--palette-accent-1-4);
 				/* adjusted version of var(--elevation-4) to spread past outline */
 				box-shadow: 0 15px 25px 5px hsla(0, 0%, 0%, 0.15),
 					0 5px 10px 5px hsla(0, 0%, 0%, 0.05);
@@ -74,7 +105,10 @@ export class Select<T> extends Button {
 				flex-direction: column;
 				min-height: 0;
 				width: 100%;
-				padding: 0;
+				padding: calc(
+						var(--focus-outline-width) + var(--focus-outline-offset)
+					)
+					0;
 				margin: 0;
 				overflow-y: auto;
 				scrollbar-width: none;
@@ -95,18 +129,20 @@ export class Select<T> extends Button {
 				width: 100%;
 			}
 
-			dialog ${Button}::part(inner) {
+			dialog ${Button}::part(inner),
+			${MenuItem}::part(inner) {
 				border-radius: 0;
 				width: 100%;
 				box-shadow: none;
 				--button-base: transparent;
 			}
 
-			dialog ${Button}::part(inner):focus-visible {
+			dialog ${Button}::part(inner):focus-visible,
+			${MenuItem}::part(inner):focus-visible {
 				outline-offset: 0;
 			}
 
-			menu ${Button}::part(inner) {
+			${MenuItem}::part(inner) {
 				--button-base: transparent;
 				text-align: left;
 			}
@@ -143,11 +179,19 @@ export class Select<T> extends Button {
 
 	#dropdownOpen = reactive(false);
 
+	#focusedIndex = reactive<number>(0);
+
 	#dialog = new ReactiveValue<HTMLDialogElement | undefined>(undefined);
 
 	#searchInput = new Resolvable<HTMLInputElement>();
 
 	#searchTerm = reactive("");
+
+	#filteredOptions = computed(() =>
+		Object.keys(this.#options.value).filter((key) =>
+			key.toLowerCase().includes(this.#searchTerm.value.toLowerCase())
+		)
+	);
 
 	constructor() {
 		super();
@@ -169,6 +213,10 @@ export class Select<T> extends Button {
 		this.#dropdownOpen.value = false;
 	};
 
+	override onblur = () => {
+		this.#dropdownOpen.value = false;
+	};
+
 	override connectedCallback() {
 		super.connectedCallback();
 		sideEffect(() => {
@@ -185,6 +233,24 @@ export class Select<T> extends Button {
 
 		window.addEventListener("click", this.#windowClickListener);
 
+		this.onkeydown = (event: KeyboardEvent) => {
+			if (event.key === "ArrowDown") {
+				this.#focusedIndex.value = Math.min(
+					this.#filteredOptions.value.length - 1,
+					this.#focusedIndex.value + 1
+				);
+				event.stopPropagation();
+				event.preventDefault();
+			} else if (event.key === "ArrowUp") {
+				this.#focusedIndex.value = Math.max(
+					0,
+					this.#focusedIndex.value - 1
+				);
+				event.stopPropagation();
+				event.preventDefault();
+			}
+		};
+
 		sideEffect(() => {
 			if (this.#dialog.value === undefined) {
 				return;
@@ -200,26 +266,21 @@ export class Select<T> extends Button {
 				this.#searchTerm.value = "";
 			}
 		});
+
+		sideEffect(() => {
+			void this.#searchTerm.value;
+			this.#focusedIndex.value = 0;
+			queueMicrotask(() => {
+				if (this.searchBar) {
+					this.#searchInput.then((e) => e.focus());
+				}
+			});
+		});
 	}
 
 	disconnectedCallback() {
 		window.removeEventListener("click", this.#windowClickListener);
 	}
-
-	#menuItem = (key: string) =>
-		html`<li>
-			<${Button}
-				prop:disabled=${computed(() => key === this.#selectedKey.value)}
-				prop:type="neutral"
-				prop:size=${this.size}
-				on:click=${() => {
-					this.#selectedKey.value = key;
-					this.#dropdownOpen.value = false;
-				}}
-			>
-				${key}
-			</${Button}>
-		</li>`;
 
 	override template = html`
 		<button
@@ -265,15 +326,25 @@ export class Select<T> extends Button {
 					: undefined
 			}
 			
-			<menu part="menu">
+			<menu
+				part="menu"
+				prop:tabIndex="-1"
+			>
 				${computed(() => {
-					return Object.keys(this.#options.value)
-						.filter((key) =>
-							key
-								.toLowerCase()
-								.includes(this.#searchTerm.value.toLowerCase())
-						)
-						.map(this.#menuItem);
+					return this.#filteredOptions.value.map(
+						(key, index) =>
+							html`<${MenuItem}
+									prop:size=${this.size}
+									prop:key=${key}
+									prop:index=${index}
+									prop:selectedKey=${this.#selectedKey.pass}
+									prop:focusedIndex=${this.#focusedIndex.pass}
+									prop:dropdownOpen=${this.#dropdownOpen.pass}
+								>
+									${key}
+								</${MenuItem}>
+								`
+					);
 				})}
 			</menu>
 			<${Button}
