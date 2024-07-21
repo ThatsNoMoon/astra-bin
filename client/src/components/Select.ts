@@ -31,13 +31,14 @@ class MenuItem extends Button {
 		};
 
 		sideEffect(() => {
+			void this.focusedIndex.value;
+			const button = this.shadowRoot?.getElementById("inner");
+			if (button == null || !(button instanceof HTMLElement)) return;
 			if (this.index === this.focusedIndex.value) {
-				this.tabIndex = 0;
-				const button = this.shadowRoot?.getElementById("inner");
-				if (button == null || !(button instanceof HTMLElement)) return;
+				button.tabIndex = 0;
 				button.focus();
 			} else {
-				this.tabIndex = -1;
+				button.tabIndex = -1;
 			}
 		});
 	}
