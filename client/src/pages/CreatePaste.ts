@@ -1,4 +1,4 @@
-import { Component, ReactiveValue, css, html, sideEffect } from "destiny-ui";
+import { Component, ReactiveValue, css, html, reactive, sideEffect } from "destiny-ui";
 import { Editor } from "../components/editor/Editor";
 import { Button } from "../components/Button";
 import type { Ace } from "ace-builds";
@@ -43,25 +43,41 @@ export class CreatePaste extends Component<{ config: Config }> {
 	#editor = new ReactiveValue<Ace.Editor | undefined>(undefined);
 	#mode = new ReactiveValue<Mode>(aceModes["Plain Text"]!);
 	#modes = this.config.showMoreModes.truthy(moreAceModes, aceModes);
+	#saveDisabled = reactive(false);
 
-	submit = async () => {
-		const editor = await ensure(this.#editor);
+	#submit = async () => {
+		this.#saveDisabled.value = true;
+		try {
+			const editor = await ensure(this.#editor);
 
-		const contents = editor.getValue();
-		const key = await fetch(`${import.meta.env.VITE_API_ROOT}/p`, {
-			method: "POST",
-			body: contents,
-			headers: {
-				"Content-Type":
-					import.meta.env.VITE_CONTENT_TYPE_PREFIX +
-					this.#mode.value.name,
-			},
-		}).then((res) => res.text());
+			const contents = editor.getValue();
+			const key = await fetch(`${import.meta.env.VITE_API_ROOT}/p`, {
+				method: "POST",
+				body: contents,
+				headers: {
+					"Content-Type":
+						import.meta.env.VITE_CONTENT_TYPE_PREFIX +
+						this.#mode.value.name,
+				},
+			}).then((res) => res.text());
 
-		location.value = `/p/${key}`;
+			location.value = `/p/${key}`;
+		} finally {
+			this.#saveDisabled.value = false;
+		}
 	};
 
+	#onKeyDown = (event: KeyboardEvent) => {
+		if (event.key === "s" && event.ctrlKey) {
+			event.preventDefault();
+			event.stopPropagation();
+			this.#submit();
+		}
+	}
+
 	connectedCallback() {
+		document.addEventListener("keydown", this.#onKeyDown);
+
 		sideEffect(() => {
 			const mode = this.#mode.value.name;
 			(async () => {
@@ -71,9 +87,16 @@ export class CreatePaste extends Component<{ config: Config }> {
 		});
 	}
 
+	disconnectedCallback() {
+		document.removeEventListener("keydown", this.#onKeyDown)
+	}
+
 	override template = html`
 		<div id="controls">
-			<${Button} on:click=${this.submit}>
+			<${Button}
+				on:click=${this.#submit}
+				prop:disabled=${this.#saveDisabled}
+			>
 				<${Save} />
 				Save
 			</${Button}>
