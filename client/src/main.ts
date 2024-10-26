@@ -28,7 +28,7 @@ import {
 	addFont,
 	fontVars,
 	type FontSpec,
-	FontPair,
+	type FontPair,
 } from "./config/font";
 
 document.adoptedStyleSheets = [rootRules.styleSheet];
