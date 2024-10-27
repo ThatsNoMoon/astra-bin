@@ -73,8 +73,7 @@ export class Select<T> extends Button {
 				flex-shrink: 0;
 			}
 
-			dialog[open] {
-				display: flex;
+			dialog {
 				flex-direction: column;
 				position: absolute;
 				top: 100%;
@@ -87,12 +86,20 @@ export class Select<T> extends Button {
 				margin: calc(var(--button-padding) * 2) 0 calc(var(--button-padding) * 2);
 				border-radius: 0.5rem;
 				border: none;
-				outline: var(--focus-outline-width) solid
-					var(--palette-accent-1-4);
+				transition: outline var(--transition-time),
+					box-shadow var(--transition-time);
+			}
+
+			dialog[open] {
+				display: flex;
+			}
+			
+			dialog.outlined {
+				outline: var(--focus-outline-width) solid var(--palette-accent-1-4);
 				/* adjusted version of var(--elevation-4) to spread past outline */
-				box-shadow: 0 15px 25px 5px hsla(0, 0%, 0%, 0.15),
-					0 5px 10px 5px hsla(0, 0%, 0%, 0.05);
-}
+				box-shadow: 0 15px 25px var(--focus-outline-width) hsla(0, 0%, 0%, 0.15),
+					0 5px 10px var(--focus-outline-width) hsla(0, 0%, 0%, 0.05);
+			}
 
 			dialog.flipped {
 				top: unset;
@@ -258,17 +265,22 @@ export class Select<T> extends Button {
 		};
 
 		sideEffect(() => {
-			if (this.#dialog.value === undefined) {
+			const dialog = this.#dialog.value
+			if (dialog === undefined) {
 				return;
 			}
 
 			if (this.#dropdownOpen.value) {
-				this.#dialog.value.show();
+				dialog.show();
 				if (this.searchBar) {
 					this.#searchInput.then((e) => e.focus());
 				}
+
+				queueMicrotask(() => {
+					dialog.classList.add("outlined")
+				})
 			} else {
-				this.#dialog.value.close();
+				dialog.close();
 				this.#searchTerm.value = "";
 			}
 		});
@@ -320,8 +332,8 @@ export class Select<T> extends Button {
 		</button>
 
 		<dialog
-part="dialog"
-destiny:ref=${this.#dialog}
+			part="dialog"
+			destiny:ref=${this.#dialog}
 			class=${classNames({
 				flipped: computed(() => {
 					const dialog = this.#dialog.value;
