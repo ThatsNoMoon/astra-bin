@@ -83,21 +83,25 @@ export class Select<T> extends Button {
 				max-height: calc(min(100vh - 150px, 450px));
 				background-color: var(--bg-4);
 				padding: 0;
-				margin: calc(var(--button-padding) * 2) 0 calc(var(--button-padding) * 2);
+				margin: calc(var(--button-padding) * 2) 0
+					calc(var(--button-padding) * 2);
 				border-radius: 0.5rem;
 				border: none;
-				transition: outline var(--transition-time),
+				transition:
+					outline var(--transition-time),
 					box-shadow var(--transition-time);
 			}
 
 			dialog[open] {
 				display: flex;
 			}
-			
+
 			dialog.outlined {
-				outline: var(--focus-outline-width) solid var(--palette-accent-1-4);
+				outline: var(--focus-outline-width) solid
+					var(--palette-accent-1-4);
 				/* adjusted version of var(--elevation-4) to spread past outline */
-				box-shadow: 0 15px 25px var(--focus-outline-width) hsla(0, 0%, 0%, 0.15),
+				box-shadow:
+					0 15px 25px var(--focus-outline-width) hsla(0, 0%, 0%, 0.15),
 					0 5px 10px var(--focus-outline-width) hsla(0, 0%, 0%, 0.05);
 			}
 
@@ -202,8 +206,8 @@ export class Select<T> extends Button {
 
 	#filteredOptions = computed(() =>
 		Object.keys(this.#options.value).filter((key) =>
-			key.toLowerCase().includes(this.#searchTerm.value.toLowerCase())
-		)
+			key.toLowerCase().includes(this.#searchTerm.value.toLowerCase()),
+		),
 	);
 
 	constructor() {
@@ -247,25 +251,39 @@ export class Select<T> extends Button {
 		window.addEventListener("click", this.#windowClickListener);
 
 		this.onkeydown = (event: KeyboardEvent) => {
+			if (
+				this.shadowRoot?.activeElement instanceof TextInput &&
+				event.key === "ArrowDown"
+			) {
+				// run side effects on focusedIndex to make the focused menu item steal focus
+				this.#focusedIndex.update();
+				event.stopPropagation();
+				event.preventDefault();
+				return;
+			}
+
+
 			if (event.key === "ArrowDown") {
 				this.#focusedIndex.value = Math.min(
 					this.#filteredOptions.value.length - 1,
-					this.#focusedIndex.value + 1
+					this.#focusedIndex.value + 1,
 				);
 				event.stopPropagation();
 				event.preventDefault();
 			} else if (event.key === "ArrowUp") {
 				this.#focusedIndex.value = Math.max(
 					0,
-					this.#focusedIndex.value - 1
+					this.#focusedIndex.value - 1,
 				);
 				event.stopPropagation();
 				event.preventDefault();
+			} else if (event.key === "Escape") {
+				this.#dialog.value?.close();
 			}
 		};
 
 		sideEffect(() => {
-			const dialog = this.#dialog.value
+			const dialog = this.#dialog.value;
 			if (dialog === undefined) {
 				return;
 			}
@@ -277,8 +295,8 @@ export class Select<T> extends Button {
 				}
 
 				queueMicrotask(() => {
-					dialog.classList.add("outlined")
-				})
+					dialog.classList.add("outlined");
+				});
 			} else {
 				dialog.close();
 				this.#searchTerm.value = "";
@@ -315,13 +333,13 @@ export class Select<T> extends Button {
 			<div id="button-text">
 				<span class=${classNames({
 					hidden: computed(
-						() => this.#selectedKey.value === undefined
+						() => this.#selectedKey.value === undefined,
 					),
 				})}>${this.#selectedKey}</span>
 				<span
 					class=${classNames({
 						hidden: computed(
-							() => this.#selectedKey.value !== undefined
+							() => this.#selectedKey.value !== undefined,
 						),
 					})}
 				>
@@ -340,9 +358,9 @@ export class Select<T> extends Button {
 					if (!this.#dropdownOpen.value || !dialog) {
 						return false;
 					}
-					
+
 					const dialogRect = dialog.getBoundingClientRect();
-					
+
 					const spaceBelow = window.innerHeight - dialogRect.bottom;
 					const spaceAbove = dialogRect.top;
 					const height = dialog.offsetHeight;
@@ -352,7 +370,7 @@ export class Select<T> extends Button {
 					} else {
 						return false;
 					}
-				})
+				}),
 			})}
 		>
 			${
@@ -384,7 +402,7 @@ export class Select<T> extends Button {
 								>
 									${key}
 								</${MenuItem}>
-								`
+								`,
 					);
 				})}
 			</menu>
