@@ -84,7 +84,7 @@ export class Select<T> extends Button {
 				max-height: calc(min(100vh - 150px, 450px));
 				background-color: var(--bg-4);
 				padding: 0;
-				margin-top: calc(var(--button-padding) * 2);
+				margin: calc(var(--button-padding) * 2) 0 calc(var(--button-padding) * 2);
 				border-radius: 0.5rem;
 				border: none;
 				outline: var(--focus-outline-width) solid
@@ -92,6 +92,11 @@ export class Select<T> extends Button {
 				/* adjusted version of var(--elevation-4) to spread past outline */
 				box-shadow: 0 15px 25px 5px hsla(0, 0%, 0%, 0.15),
 					0 5px 10px 5px hsla(0, 0%, 0%, 0.05);
+}
+
+			dialog.flipped {
+				top: unset;
+				bottom: 100%;
 			}
 
 			${TextInput} {
@@ -287,8 +292,8 @@ export class Select<T> extends Button {
 		<button
 			part="button"
 			id="inner"
-			class=${classNames({ disabled: this._disabled })}
-			prop:disabled=${this._disabled}
+			class=${classNames({ disabled: computed(() => this._disabled) })}
+			prop:disabled=${computed(() => this._disabled)}
 			on:click=${async () => {
 				this.#dropdownOpen.value = !this.#dropdownOpen.value;
 				if (this.#dropdownOpen.value) {
@@ -314,7 +319,30 @@ export class Select<T> extends Button {
 			<${Expand} />
 		</button>
 
-		<dialog part="dialog" destiny:ref=${this.#dialog}>
+		<dialog
+part="dialog"
+destiny:ref=${this.#dialog}
+			class=${classNames({
+				flipped: computed(() => {
+					const dialog = this.#dialog.value;
+					if (!this.#dropdownOpen.value || !dialog) {
+						return false;
+					}
+					
+					const dialogRect = dialog.getBoundingClientRect();
+					
+					const spaceBelow = window.innerHeight - dialogRect.bottom;
+					const spaceAbove = dialogRect.top;
+					const height = dialog.offsetHeight;
+
+					if (spaceBelow < height && spaceAbove > height) {
+						return true;
+					} else {
+						return false;
+					}
+				})
+			})}
+		>
 			${
 				this.searchBar
 					? html`<${TextInput}

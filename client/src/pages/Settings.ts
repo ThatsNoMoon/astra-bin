@@ -1,9 +1,24 @@
-import { Component, ReactiveValue, computed, css, html } from "destiny-ui";
+import {
+	Component,
+	ReactiveValue,
+	computed,
+	css,
+	html,
+	sideEffect,
+} from "destiny-ui";
 import { themeRules, type ThemeConfig } from "../config/style";
 import type { ThemeName } from "../config/style";
 import { Heading } from "../components/typography";
 import type { Config } from "../config";
-import { presets, type FontPair, addFont } from "../config/font";
+import {
+	type FontPair,
+	addFont,
+	type FontSpec,
+	bodyFontSpecs,
+	monoFontSpecs,
+	fontPresets,
+} from "../config/font";
+import { Select } from "../components/Select";
 
 const themeLabels: Record<ThemeName, string> = {
 	dark: "Deep space",
@@ -12,7 +27,9 @@ const themeLabels: Record<ThemeName, string> = {
 	light: "Supernova",
 };
 
-const fontPresetLabels: Record<keyof typeof presets, string> = {
+type FontOptions = Record<keyof typeof fontPresets | "custom", FontPair>
+
+const fontOptionsLabels: Record<keyof FontOptions, string> = {
 	outfit: "Outfit",
 	jetbrains: "JetBrains",
 	source: "Source",
@@ -66,6 +83,8 @@ export class Settings extends Component<{ config: Config }> {
 		}
 	`;
 
+	#fontOptions: FontOptions = { ...fontPresets, custom: this.config.customFonts }
+
 	override template = html`
 		<${Heading} prop:level=${2}>Settings</${Heading}>
 		<section id="theme">
@@ -78,6 +97,7 @@ export class Settings extends Component<{ config: Config }> {
 					prop:theme=${this.config.theme}
 				/>
 			</div>
+			<${Heading} prop:level=${4}>Dark Themes</${Heading}>
 			<div class="demo-section">
 				<${ThemeSelector}
 					prop:theme=${this.config.theme}
@@ -90,6 +110,7 @@ export class Settings extends Component<{ config: Config }> {
 					prop:autoTheme=${this.config.theme.autoDark.pass}
 				/>
 			</div>
+			<${Heading} prop:level=${4}>Light Themes</${Heading}>
 			<div class="demo-section">
 				<${ThemeSelector}
 					prop:theme=${this.config.theme}
@@ -106,14 +127,16 @@ export class Settings extends Component<{ config: Config }> {
 		<section>
 			<${Heading} prop:level=${3}>Fonts</${Heading}>
 			<div class="demo-section">
-				${Object.keys(presets).map(
+				${Object.keys(this.#fontOptions).map(
 					(preset) =>
 						html`<${FontSelector}
 							prop:fonts=${this.config.fonts.pass}
-							prop:demoPreset=${preset}
+							prop:fontOptions=${this.#fontOptions}
+							prop:demoFontOption=${preset}
 						/>`
 				)}
 			</div>
+			<${CustomFontSettings} prop:config=${this.config} />
 		</section>
 	`;
 }
@@ -172,7 +195,8 @@ class Demo extends Component {
 const demoText = "The quick brown fox jumped over the lazy dog";
 
 class FontSelector extends Component<{
-	demoPreset: keyof typeof presets;
+	fontOptions: FontOptions;
+	demoFontOption: keyof FontOptions;
 	fonts: ReactiveValue<FontPair>;
 }> {
 	static override styles = css`
@@ -225,7 +249,7 @@ class FontSelector extends Component<{
 		}
 	`;
 
-	#preset = presets[this.demoPreset];
+	#preset = this.fontOptions[this.demoFontOption];
 
 	connectedCallback() {
 		addFont(this.#preset.body.value);
@@ -251,7 +275,7 @@ class FontSelector extends Component<{
 				() => this.fonts.value.builtinKey === this.#preset.builtinKey
 			)}
 			on:click=${() => (this.fonts.value = this.#preset)}>
-			<span slot="label">${fontPresetLabels[this.demoPreset]}</span>
+			<span slot="label">${fontOptionsLabels[this.demoFontOption]}</span>
 			<div id="contents">
 				<div class="sans">
 					<div class="name">${computed(() => this.#preset.body.value.label)}</div>
@@ -263,6 +287,104 @@ class FontSelector extends Component<{
 				</div>
 			</div>
 		</${Demo}>
+	`;
+}
+
+class CustomFontSettings extends Component<{ config: Config }> {
+	static override styles = css`
+		#select-container {
+			display: flex;
+			flex-direction: column;
+			gap: 1.25rem;
+		}
+		:host(.disabled) {
+			color: var(--fg-4);
+		}
+
+		label {
+			color: inherit;
+			display: inline-block;
+			margin: 0 0 0.5rem;
+			font-size: var(--fs-2);
+			font-weight: 325;
+			font-variation-settings: "wght" 325;
+		}
+	`;
+
+	static fontSpecsToFontOptions(
+		fontSpecs: Readonly<Record<string, FontSpec>>
+	): Readonly<Record<string, FontSpec>> {
+		return Object.fromEntries(
+			Object.values(fontSpecs).map((spec) => [spec.label, spec])
+		);
+	}
+
+	static bodyFontOptions = this.fontSpecsToFontOptions(bodyFontSpecs);
+
+	static monoFontOptions = this.fontSpecsToFontOptions(monoFontSpecs);
+
+	static allFontOptions = this.fontSpecsToFontOptions({
+		...bodyFontSpecs,
+		...monoFontSpecs,
+	});
+
+	#bodyOptions = computed(() => {
+		if (this.config.showAllForBodyFonts.value) {
+			return CustomFontSettings.allFontOptions;
+		} else {
+			return CustomFontSettings.bodyFontOptions;
+		}
+	});
+
+	#disabled = computed(
+		() => this.config.fonts.value.builtinKey !== undefined
+	);
+
+	connectedCallback() {
+		sideEffect(() => {
+			if (this.#disabled.value) {
+				this.classList.add("disabled");
+			} else {
+				this.classList.remove("disabled");
+			}
+		});
+	}
+
+	override template = html`
+		<${Heading} prop:level=${4}>Custom Font Settings</${Heading}>
+		<div id="select-container">
+			<div>
+				<label for="body">Body font</label>
+				<${Select}
+					id="body"
+					prop:disabled=${this.#disabled}
+					prop:options=${this.#bodyOptions}
+					prop:selected=${this.config.customFonts.body.pass}
+					prop:selectedKey=${this.config.customFonts.body.value.label}
+					prop:searchBar=${true}
+					prop:showMore=${this.config.showAllForBodyFonts.falsy(
+						() => (this.config.showAllForBodyFonts.value = true)
+					)}
+					prop:showLess=${this.config.showAllForBodyFonts.truthy(
+						() => (this.config.showAllForBodyFonts.value = false)
+					)}
+				>
+					<span slot="show-more">Show monospace fonts</span>
+					<span slot="show-less">Hide monospace fonts</span>
+				</${Select}>
+			</div>
+			<div>
+				<label for="mono">Monospace font</label>
+				<${Select}
+					id="body"
+					prop:disabled=${this.#disabled}
+					prop:options=${CustomFontSettings.monoFontOptions}
+					prop:selected=${this.config.customFonts.mono.pass}
+					prop:selectedKey=${this.config.customFonts.mono.value.label}
+					prop:searchBar=${true}
+				/>
+			</div>
+		</div>
 	`;
 }
 

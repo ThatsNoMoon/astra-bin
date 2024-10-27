@@ -1,7 +1,6 @@
 import {
 	Component,
 	ReactiveValue,
-	ReadonlyReactiveValue,
 	css,
 	html,
 	reactive,
@@ -24,11 +23,12 @@ import { Navbar } from "./components/Navbar";
 import { About } from "./pages/About";
 import type { Config } from "./config";
 import {
-	presets as fontPresets,
 	addFont,
 	fontVars,
 	type FontSpec,
 	type FontPair,
+	fontPresets,
+	fontSpecs,
 } from "./config/font";
 
 document.adoptedStyleSheets = [rootRules.styleSheet];
@@ -42,15 +42,59 @@ type SerializedConfig = {
 	};
 	fonts: {
 		builtinKey: string | undefined;
-		body: FontSpec;
 		scale: number;
+		body: FontSpec;
 		mono: FontSpec;
 	};
+	customFonts?: {
+		builtinKey: undefined;
+		body?: FontSpec;
+		mono?: FontSpec;
+		
+	}
 	showMoreModes: boolean;
+	showAllForBodyFonts: boolean;
 };
+
+const defaultConfig: Config = {
+	theme: {
+		autoDark: new ReactiveValue<DarkTheme>("dark"),
+		autoLight: new ReactiveValue<LightTheme>("light"),
+		static: new ReactiveValue<ThemeName>("dark"),
+		auto: reactive(true),
+	},
+	fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
+	customFonts: {
+		builtinKey: undefined,
+		scale: reactive(1),
+		body: new ReactiveValue(fontSpecs.outfit),
+		mono: new ReactiveValue(fontSpecs.fragment),
+	},
+	showMoreModes: reactive(false),
+	showAllForBodyFonts: reactive(false),
+};
+
+function realizeFonts(config: SerializedConfig): { selected: FontPair, custom: FontPair } {
+	const custom: FontPair = {
+		builtinKey: undefined,
+		scale: reactive(1),
+		body: new ReactiveValue(config.customFonts?.body ?? fontSpecs.outfit),
+		mono: new ReactiveValue(config.customFonts?.mono ?? fontSpecs.fragment),
+	}
+	const key = config.fonts.builtinKey;
+	if (key == null) {
+		return { selected: custom, custom }
+	}
+
+	const fontRecord: Record<string, FontPair> = fontPresets;
+	const selected: FontPair = fontRecord[key] ?? fontPresets.outfit;
+
+	return { selected, custom }
+}
 
 function deserializeConfig(json: string): Config {
 	const raw: SerializedConfig = JSON.parse(json);
+	const { selected, custom } = realizeFonts(raw)
 	return {
 		theme: {
 			auto: reactive(raw.theme.auto),
@@ -58,31 +102,19 @@ function deserializeConfig(json: string): Config {
 			autoDark: new ReactiveValue<DarkTheme>(raw.theme.autoDark),
 			autoLight: new ReactiveValue<LightTheme>(raw.theme.autoLight),
 		},
-		fonts: new ReactiveValue({
-			builtinKey: raw.fonts.builtinKey,
-			body: new ReadonlyReactiveValue(raw.fonts.body),
-			scale: new ReadonlyReactiveValue(raw.fonts.scale),
-			mono: new ReadonlyReactiveValue(raw.fonts.mono),
-		}),
+		fonts: new ReactiveValue(selected),
+		customFonts: custom,
 		showMoreModes: reactive(raw.showMoreModes),
+		showAllForBodyFonts: reactive(
+			raw.showAllForBodyFonts ?? defaultConfig.showAllForBodyFonts.value,
+		),
 	};
 }
 
 function loadConfig(): Config {
 	const stored = localStorage.getItem("astra-config");
 	const config: Config =
-		stored !== null
-			? deserializeConfig(stored)
-			: ({
-					theme: {
-						autoDark: new ReactiveValue<DarkTheme>("dark"),
-						autoLight: new ReactiveValue<LightTheme>("light"),
-						static: new ReactiveValue<ThemeName>("dark"),
-						auto: reactive(true),
-					},
-					fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
-					showMoreModes: reactive(false),
-			  } satisfies Config);
+		stored !== null ? deserializeConfig(stored) : defaultConfig;
 
 	sideEffect(() => {
 		localStorage.setItem("astra-config", JSON.stringify(config));
@@ -112,7 +144,8 @@ register(
 					transition: var(--color-transition);
 					font-size: var(--fs-1);
 					--focus-outline-width: 5px;
-					--focus-outline: var(--focus-outline-width) solid var(--fg-1);
+					--focus-outline: var(--focus-outline-width) solid
+						var(--fg-1);
 					--focus-outline-offset: 2px;
 				}
 
@@ -148,7 +181,7 @@ register(
 						"auto-dark",
 						"auto-dim",
 						"auto-light",
-						"auto-pale"
+						"auto-pale",
 					);
 					this.classList.add(theme.static.value);
 				}
@@ -167,7 +200,7 @@ register(
 
 				this.style.setProperty(
 					"font-family",
-					`${body.value.family}, var(--system-ui)`
+					`${body.value.family}, var(--system-ui)`,
 				);
 				this.style.setProperty("--fs-scale", String(scale));
 
@@ -198,5 +231,5 @@ register(
 				/>
 			</main>
 		`;
-	}
+	},
 );
