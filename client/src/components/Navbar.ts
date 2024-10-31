@@ -1,9 +1,9 @@
 import { Component, computed, css, html, reactive } from "destiny-ui";
 import { Button } from "./Button";
-import { RouterLink } from "../routing/Router";
+import { RouterLink } from "../Router";
 import { Heading } from "./typography";
 import { AddCircle, Info, Settings } from "../icons";
-import { location } from "../routing/location";
+import { location } from "../Router";
 
 export class Navbar extends Component {
 	static override styles = css`
@@ -14,9 +14,7 @@ export class Navbar extends Component {
 			display: flex;
 			align-items: center;
 			gap: 1rem;
-			box-shadow: rgba(2, 2, 2, 0.2) 0px 1px 0px 0px,
-				rgba(6, 6, 7, 0.05) 0px 1.5px 0px 0px,
-				rgba(2, 2, 2, 0.05) 0px 2px 0px 0px;
+			box-shadow: var(--elevation-2);
 			z-index: 5;
 		}
 
@@ -52,6 +50,7 @@ export class Navbar extends Component {
 				prop:to="/"
 				prop:color="inherit"
 				prop:underline="none"
+			prop:disabledHere=${true}
 			>
 				Astra Bin
 			</${RouterLink}>
@@ -61,6 +60,7 @@ export class Navbar extends Component {
 			prop:type="button"
 			prop:color="inherit"
 			prop:underline="none"
+			prop:disabledHere=${true}
 		>
 			<${Button} prop:size="s" prop:tag="div">
 				<${AddCircle} />

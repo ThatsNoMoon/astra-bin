@@ -31,6 +31,18 @@ export class Editor extends Component<{
 		#container.loading {
 			display: none;
 		}
+		
+		.ace_scrollbar {
+			z-index: 2;
+		}
+
+		.ace_gutter {
+			padding-top: 0.5em;
+		}
+
+		.ace_scroller {
+			top: 0.5em;
+		}
 	`;
 
 	#container = new Ref();

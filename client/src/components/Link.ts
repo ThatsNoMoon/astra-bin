@@ -1,5 +1,5 @@
 import { Component, classNames, computed, css, html } from "destiny-ui";
-import { location } from "../routing/location";
+import { location } from "../Router";
 
 type LinkProps = {
 	to: string;
@@ -47,7 +47,7 @@ export class Link extends Component<LinkProps> {
 	connectedCallback() {
 		this.style.setProperty(
 			"--link-color",
-			this.color ?? "var(--accent-1-3)"
+			this.color ?? "var(--accent-1-3)",
 		);
 	}
 

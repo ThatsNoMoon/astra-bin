@@ -7,7 +7,7 @@ import {
 	register,
 	sideEffect,
 } from "destiny-ui";
-import { Router } from "./routing/Router";
+import { Router, type Routes } from "./Router";
 import { CreatePaste } from "./pages/CreatePaste";
 import { ViewPaste } from "./pages/ViewPaste";
 import { NotFound } from "./components/NotFound";
@@ -50,8 +50,7 @@ type SerializedConfig = {
 		builtinKey: undefined;
 		body?: FontSpec;
 		mono?: FontSpec;
-		
-	}
+	};
 	showMoreModes: boolean;
 	showAllForBodyFonts: boolean;
 };
@@ -74,27 +73,30 @@ const defaultConfig: Config = {
 	showAllForBodyFonts: reactive(false),
 };
 
-function realizeFonts(config: SerializedConfig): { selected: FontPair, custom: FontPair } {
+function realizeFonts(config: SerializedConfig): {
+	selected: FontPair;
+	custom: FontPair;
+} {
 	const custom: FontPair = {
 		builtinKey: undefined,
 		scale: reactive(1),
 		body: new ReactiveValue(config.customFonts?.body ?? fontSpecs.outfit),
 		mono: new ReactiveValue(config.customFonts?.mono ?? fontSpecs.fragment),
-	}
+	};
 	const key = config.fonts.builtinKey;
 	if (key == null) {
-		return { selected: custom, custom }
+		return { selected: custom, custom };
 	}
 
 	const fontRecord: Record<string, FontPair> = fontPresets;
 	const selected: FontPair = fontRecord[key] ?? fontPresets.outfit;
 
-	return { selected, custom }
+	return { selected, custom };
 }
 
 function deserializeConfig(json: string): Config {
 	const raw: SerializedConfig = JSON.parse(json);
-	const { selected, custom } = realizeFonts(raw)
+	const { selected, custom } = realizeFonts(raw);
 	return {
 		theme: {
 			auto: reactive(raw.theme.auto),
@@ -132,6 +134,7 @@ register(
 			fontVars,
 			css`
 				:host {
+					position: relative;
 					width: 100%;
 					min-height: 100%;
 					display: flex;
@@ -214,19 +217,33 @@ register(
 			<main>
 				<${Router}
 					prop:routes=${{
-						"/": () =>
-							html`<${CreatePaste}
-								prop:config=${this.#config}
-							/>`,
-						"/p": ([key]: [string]) =>
-							html`<${ViewPaste}
-								prop:key=${key}
-								prop:config=${this.#config}
-							/>`,
-						"/settings": () =>
-							html`<${Settings} prop:config=${this.#config} />`,
-						"/about": () => html`<${About} />`,
-					}}
+						"/": {
+							type: "page",
+							target: () =>
+								html`<${CreatePaste}
+									prop:config=${this.#config}
+								/>`,
+						},
+						"/p": {
+							type: "page",
+							target: ([key]: ReadonlyArray<string>) =>
+								html`<${ViewPaste}
+									prop:key=${key}
+									prop:config=${this.#config}
+								/>`,
+						},
+						"/settings": {
+							type: "modal",
+							target: () =>
+								html`<${Settings}
+									prop:config=${this.#config}
+								/>`,
+						},
+						"/about": {
+							type: "modal",
+							target: () => html`<${About} />`,
+						},
+					} satisfies Routes}
 					prop:notFound=${() => html`<${NotFound} />`}
 				/>
 			</main>
