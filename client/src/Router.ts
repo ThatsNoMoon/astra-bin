@@ -1,26 +1,22 @@
-import { Component, css, html, reactive, ReactiveValue } from "destiny-ui";
-import type { ReactiveArray, TemplateResult } from "destiny-ui";
+import {
+	Component,
+	computed,
+	css,
+	html,
+	reactive,
+	ReactiveValue,
+} from "destiny-ui";
+import type { TemplateResult } from "destiny-ui";
 import { Link } from "./components/Link";
 
 export type View = (args: ReadonlyArray<string>) => TemplateResult;
-// type ViewLocation = {
-// 	view: View;
-// 	location: string;
-// };
 export type Route = {
 	target: View;
 	type: "page" | "modal";
 };
 export type Routes = Record<string, Route> & { "/": Route & { type: "page" } };
 
-// type ViewState = {
-// 	page: ViewLocation;
-// 	renderedPage: TemplateResult;
-// 	modals: Array<ViewLocation>;
-// 	renderedModal: TemplateResult | undefined;
-// };
-
-class Modal extends Component<{ modalStack: ReactiveArray<Route> }> {
+class Modal extends Component {
 	static override styles = css`
 		:host {
 			position: absolute;
@@ -54,7 +50,6 @@ class Modal extends Component<{ modalStack: ReactiveArray<Route> }> {
 	connectedCallback() {
 		this.onkeydown = (event: KeyboardEvent) => {
 			if (event.key === "Escape") {
-				this.modalStack.pop();
 				history.back();
 			}
 		};
@@ -88,76 +83,11 @@ export class Router extends Component<{
 
 	constructor() {
 		super();
-		// const [currentView, args] = this.#destructurePath(location.value);
-		// let page: ViewLocation;
-		// let renderedPage: TemplateResult;
-		// let renderedModal: TemplateResult | undefined;
-
-		// if (currentView.type === "page") {
-		// 	page = { view: currentView.target, location: location.value }
-		// 	renderedPage = currentView.target(args);
-		// } else {
-		// 	page = { view: this.routes["/"].target, location: "/" }
-		// 	renderedPage = page.view([]);
-		// 	renderedModal = currentView.target(args);
-		// }
-
-		// historyState.value[this.#routerKey] = page.location;
-
-		// this.#currentViews = new ReactiveValue({ page: renderedPage, pageLocation: page.location, modal: renderedModal });
-
-		// const [page, modal] =
-		// 	view.type === "page"
-		// 		? [view.target, undefined]
-		// 		: [this.routes["/"].target, view.target];
-		// const modals =
-		// 	modal === undefined
-		// 		? []
-		// 		: [{ view: modal, location: location.value }];
-		// this.#viewState = reactive({
-		// 	page: { view: page, location: location.value },
-		// 	renderedPage: page(args),
-		// 	modals,
-		// 	renderedModal: modal === undefined ? undefined : modal(args),
-		// });
-
-		// sideEffect(() => {
-		// 	const [route, args] = this.#destructurePath(location.value);
-		// 	if (route.type === "page") {
-		// 		this.#viewState.page.view.value = route.target;
-		// 		this.#viewState.page.location.value = location.value;
-		// 		this.#viewState.renderedPage.value = route.target(args);
-		// 		this.#viewState.modals.value = [];
-		// 		this.#viewState.renderedModal.value = undefined;
-		// 		return;
-		// 	}
-		// 	this.#viewState.modals.push({
-		// 		view: route.target,
-		// 		location: location.value,
-		// 	});
-		// 	this.#viewState.renderedModal.value = route.target(args);
-		// });
 		location.bind(this.#update, { dependents: [this] });
 		historyState.bind(this.#update, { dependents: [this] });
 	}
 
 	#routerKey = `${Router}-${routerNumber++}`;
-
-	// #viewState: TReactiveValueType<ViewState>;
-
-	// #currentViews: ReadonlyReactiveValue<CurrentViews> = computed(() => {
-	// 	const [component, args] = this.#destructurePath(location.value);
-	// 	if (component.type === "page") {
-	// 		return {
-	// 			page: component.target(args),
-	// 		};
-	// 	}
-
-	// 	return {
-	// 		page: page.target.value([]),
-	// 		modal: modal.target.value(args),
-	// 	};
-	// });
 
 	#currentViews: ReactiveValue<CurrentViews> = new ReactiveValue({
 		page: this.routes["/"].target([]),
@@ -165,16 +95,18 @@ export class Router extends Component<{
 		modal: undefined,
 	});
 
-	override template = html`
-		${this.#currentViews.value.page}
-		${!this.#currentViews.value.modal
-			? undefined
-			: html`
-			<${Modal} prop:modalStack>
+	override template = computed(
+		() => html`
+			${this.#currentViews.value.page}
+			${!this.#currentViews.value.modal
+				? undefined
+				: html`
+			<${Modal}>
 				${this.#currentViews.value.modal}
 			</${Modal}>
 		`}
-	`;
+		`,
+	);
 
 	#update = () => {
 		const [currentView, args] = this.#destructurePath(location.value);
