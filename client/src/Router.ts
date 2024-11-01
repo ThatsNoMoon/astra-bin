@@ -48,11 +48,17 @@ class Modal extends Component {
 	`;
 
 	connectedCallback() {
-		this.onkeydown = (event: KeyboardEvent) => {
-			if (event.key === "Escape") {
-				history.back();
-			}
-		};
+		window.addEventListener("keydown", this.keyDownListener);
+	}
+
+	disconnectedCallback() {
+		window.removeEventListener("keydown", this.keyDownListener);
+	}
+
+	keyDownListener(event: KeyboardEvent) {
+		if (event.key === "Escape") {
+			history.back();
+		}
 	}
 
 	override template = html`
@@ -62,12 +68,6 @@ class Modal extends Component {
 		</div>
 	`;
 }
-
-type CurrentViews = {
-	page: TemplateResult;
-	pageLocation: string;
-	modal: TemplateResult | undefined;
-};
 
 let routerNumber = 0;
 
@@ -89,47 +89,44 @@ export class Router extends Component<{
 
 	#routerKey = `${Router}-${routerNumber++}`;
 
-	#currentViews: ReactiveValue<CurrentViews> = new ReactiveValue({
-		page: this.routes["/"].target([]),
+	#currentViews = {
+		page: new ReactiveValue(this.routes["/"].target([])),
 		pageLocation: "/",
-		modal: undefined,
-	});
+		modal: new ReactiveValue<TemplateResult | undefined>(undefined),
+	};
 
-	override template = computed(
-		() => html`
-			${this.#currentViews.value.page}
-			${!this.#currentViews.value.modal
-				? undefined
-				: html`
-			<${Modal}>
-				${this.#currentViews.value.modal}
-			</${Modal}>
-		`}
-		`,
-	);
+	override template = html`
+		${this.#currentViews.page}
+		${computed(() => {
+			if (this.#currentViews.modal.value === undefined) {
+				return undefined;
+			}
+
+			return html`
+				<${Modal}>
+					${this.#currentViews.modal.value}
+				</${Modal}>
+			`;
+		})}
+	`;
 
 	#update = () => {
 		const [currentView, args] = this.#destructurePath(location.value);
 		let pageLocation = historyState.value[this.#routerKey] as string;
 		if (currentView.type === "page") {
-			pageLocation = location.value;
-			this.#currentViews.value = {
-				page: currentView.target(args),
-				pageLocation,
-				modal: undefined,
-			};
+			if (pageLocation !== location.value) {
+				pageLocation = location.value;
+				this.#currentViews.page.value = currentView.target(args);
+			}
+			this.#currentViews.modal.value = undefined;
 		} else {
-			const currentViews = this.#currentViews.value;
-
-			if (pageLocation !== currentViews.pageLocation) {
-				currentViews.pageLocation = pageLocation;
+			if (pageLocation !== this.#currentViews.pageLocation) {
+				this.#currentViews.pageLocation = pageLocation;
 				const [page, args] = this.#destructurePath(pageLocation);
-				currentViews.page = page.target(args);
+				this.#currentViews.page.value = page.target(args);
 			}
 
-			currentViews.modal = currentView.target(args);
-
-			this.#currentViews.value = { ...currentViews };
+			this.#currentViews.modal.value = currentView.target(args);
 		}
 
 		historyState.set(
