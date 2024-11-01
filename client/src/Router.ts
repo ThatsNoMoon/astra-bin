@@ -110,7 +110,6 @@ export class Router extends Component<{
 
 	#update = () => {
 		const [currentView, args] = this.#destructurePath(location.value);
-		console.log(location.value, currentView);
 		let pageLocation = historyState.value[this.#routerKey] as string;
 		if (currentView.type === "page") {
 			pageLocation = location.value;
