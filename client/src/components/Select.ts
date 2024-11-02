@@ -251,18 +251,6 @@ export class Select<T> extends Button {
 		window.addEventListener("click", this.#windowClickListener);
 
 		this.onkeydown = (event: KeyboardEvent) => {
-			if (
-				this.shadowRoot?.activeElement instanceof TextInput &&
-				event.key === "ArrowDown"
-			) {
-				// run side effects on focusedIndex to make the focused menu item steal focus
-				this.#focusedIndex.update();
-				event.stopPropagation();
-				event.preventDefault();
-				return;
-			}
-
-
 			if (event.key === "ArrowDown") {
 				this.#focusedIndex.value = Math.min(
 					this.#filteredOptions.value.length - 1,
@@ -303,15 +291,18 @@ export class Select<T> extends Button {
 			}
 		});
 
-		sideEffect(() => {
-			void this.#searchTerm.value;
-			this.#focusedIndex.value = 0;
-			queueMicrotask(() => {
-				if (this.searchBar) {
-					this.#searchInput.then((e) => e.focus());
-				}
-			});
-		});
+		sideEffect(
+			() => {
+				void this.#searchTerm.value;
+				this.#focusedIndex.value = 0;
+				queueMicrotask(() => {
+					if (this.searchBar) {
+						this.#searchInput.then((e) => e.focus());
+					}
+				});
+			},
+			{ dependents: [this] },
+		);
 	}
 
 	disconnectedCallback() {
@@ -379,6 +370,24 @@ export class Select<T> extends Button {
 						on:click=${(e: Event) => e.stopPropagation()}
 						prop:passInner=${this.#searchInput}
 						prop:content=${this.#searchTerm.pass}
+						on:keydown=${(event: KeyboardEvent) => {
+							if (event.key === "ArrowDown") {
+								// run side effects on focusedIndex to make the focused menu item steal focus
+								this.#focusedIndex.update();
+								event.stopPropagation();
+								event.preventDefault();
+							} else if (event.key === "Enter") {
+								const topResult =
+									this.#filteredOptions.value[0];
+								if (topResult == null) {
+									return;
+								}
+								this.#selectedKey.value = topResult;
+								this.#dropdownOpen.value = false;
+								event.stopPropagation();
+								event.preventDefault();
+							}
+						}}
 					>
 						<${Search} />
 					</${TextInput}>`
