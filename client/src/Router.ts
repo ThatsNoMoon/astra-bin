@@ -1,13 +1,61 @@
-import {
-	Component,
-	computed,
-	css,
-	html,
-	reactive,
-	ReactiveValue,
-} from "destiny-ui";
-import type { TemplateResult } from "destiny-ui";
+import { Component, css, html, ReactiveValue, Ref } from "destiny-ui";
+import type { ReadonlyReactiveValue, TemplateResult } from "destiny-ui";
 import { Link } from "./components/Link";
+
+export const location = new ReactiveValue(
+	new URL(window.location.href).pathname,
+);
+
+type StoredState = { location: string; state: Record<string, unknown> };
+
+const history = new (class RouterHistory {
+	constructor() {
+		this.state.bind(this.#updateHistory);
+
+		window.addEventListener("popstate", this.#updateStateOnHistoryChange);
+	}
+
+	#state: ReactiveValue<Record<string, unknown>> = new ReactiveValue({});
+
+	get state(): ReactiveValue<Record<string, unknown>> {
+		return this.#state;
+	}
+
+	#updateHistory = (newState: Record<string, unknown>) => {
+		const toStore: StoredState = {
+			location: location.value,
+			state: newState,
+		};
+		const currentState: StoredState | null = window.history.state;
+
+		if (currentState === null) {
+			this.#replaceState({ location: "/", state: {} });
+			this.#pushState(toStore);
+		} else if (toStore.location === currentState.location) {
+			this.#replaceState(toStore);
+		} else {
+			this.#pushState(toStore);
+		}
+	};
+
+	#updateStateOnHistoryChange = (event: PopStateEvent) => {
+		const { state, location: newLocation }: StoredState = event.state;
+		location.value = newLocation;
+		this.state.set(state, { noUpdate: [this.#updateHistory] });
+	};
+
+	#replaceState(toStore: StoredState) {
+		window.history.replaceState(toStore, "", toStore.location);
+	}
+
+	#pushState(toStore: StoredState) {
+		window.history.pushState(toStore, "", toStore.location);
+	}
+
+	back() {
+		window.history.back();
+	}
+})();
 
 export type View = (args: ReadonlyArray<string>) => TemplateResult;
 export type Route = {
@@ -16,7 +64,9 @@ export type Route = {
 };
 export type Routes = Record<string, Route> & { "/": Route & { type: "page" } };
 
-class Modal extends Component {
+class Modal extends Component<{
+	contents: ReadonlyReactiveValue<TemplateResult | undefined>;
+}> {
 	static override styles = css`
 		:host {
 			position: absolute;
@@ -24,23 +74,20 @@ class Modal extends Component {
 			left: 0;
 			width: 100vw;
 			min-height: 100vh;
-			overflow-x: hidden;
+			overflow-y: auto;
 		}
 
-		#shade {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+		dialog {
+			padding: 4rem;
+			box-sizing: border-box;
+			overflow-x: hidden;
+			background: none;
 			backdrop-filter: blur(3px) brightness(40%) saturate(70%);
 			z-index: 10;
 		}
 
 		#container {
-			position: relative;
 			border-radius: 3rem;
-			margin: 4rem;
 			padding: 2rem;
 			background-color: var(--bg-4);
 			z-index: 12;
@@ -48,24 +95,45 @@ class Modal extends Component {
 	`;
 
 	connectedCallback() {
-		window.addEventListener("keydown", this.keyDownListener);
+		window.addEventListener("keydown", this.#keyDownListener);
+		window.addEventListener("click", this.#clickListener);
+
+		this.contents.bind(
+			async (contents) => {
+				if (contents !== undefined) {
+					(await this.#dialog).show();
+				} else {
+					(await this.#dialog).close();
+				}
+			},
+			{ dependents: [this] },
+		);
 	}
 
 	disconnectedCallback() {
-		window.removeEventListener("keydown", this.keyDownListener);
+		window.removeEventListener("keydown", this.#keyDownListener);
+		window.removeEventListener("click", this.#clickListener);
 	}
 
-	keyDownListener(event: KeyboardEvent) {
+	#keyDownListener(event: KeyboardEvent) {
 		if (event.key === "Escape") {
 			history.back();
 		}
 	}
 
+	#clickListener = (event: MouseEvent) => {
+		const path = event.composedPath();
+		if (path[0] === this.#dialog.value) {
+			history.back();
+		}
+	};
+
+	#dialog = new Ref<HTMLDialogElement>();
+
 	override template = html`
-		<div id="shade" />
-		<div id="container">
-			<slot />
-		</div>
+		<dialog destiny:ref=${this.#dialog}>
+			<div id="container">${this.contents}</div>
+		</dialog>
 	`;
 }
 
@@ -84,7 +152,7 @@ export class Router extends Component<{
 	constructor() {
 		super();
 		location.bind(this.#update, { dependents: [this] });
-		historyState.bind(this.#update, { dependents: [this] });
+		history.state.bind(this.#update, { dependents: [this] });
 	}
 
 	#routerKey = `${Router}-${routerNumber++}`;
@@ -97,42 +165,39 @@ export class Router extends Component<{
 
 	override template = html`
 		${this.#currentViews.page}
-		${computed(() => {
-			if (this.#currentViews.modal.value === undefined) {
-				return undefined;
-			}
-
-			return html`
-				<${Modal}>
-					${this.#currentViews.modal.value}
-				</${Modal}>
-			`;
-		})}
+		<${Modal} prop:contents=${this.#currentViews.modal.readonly.pass} />
 	`;
 
 	#update = () => {
 		const [currentView, args] = this.#destructurePath(location.value);
-		let pageLocation = historyState.value[this.#routerKey] as string;
+		let pageLocation = history.state.value[this.#routerKey] as
+			| string
+			| undefined;
 		if (currentView.type === "page") {
+			this.#currentViews.modal.value = undefined;
+
 			if (pageLocation !== location.value) {
 				pageLocation = location.value;
 				this.#currentViews.page.value = currentView.target(args);
 			}
-			this.#currentViews.modal.value = undefined;
 		} else {
-			if (pageLocation !== this.#currentViews.pageLocation) {
+			this.#currentViews.modal.value = currentView.target(args);
+
+			if (pageLocation === undefined) {
+				pageLocation = "/";
+				this.#currentViews.pageLocation = "/";
+				this.#currentViews.page.value = this.routes["/"].target([]);
+			} else if (pageLocation !== this.#currentViews.pageLocation) {
 				this.#currentViews.pageLocation = pageLocation;
 				const [page, args] = this.#destructurePath(pageLocation);
 				this.#currentViews.page.value = page.target(args);
 			}
-
-			this.#currentViews.modal.value = currentView.target(args);
 		}
 
-		historyState.set(
+		history.state.set(
 			{
 				[this.#routerKey]: pageLocation,
-				...historyState.value,
+				...history.state.value,
 			},
 			{ noUpdate: [this.#update] },
 		);
@@ -166,26 +231,4 @@ export class RouterLink extends Link {
 			event.preventDefault();
 		});
 	}
-}
-
-export const location = reactive(new URL(window.location.href).pathname);
-
-export const historyState: ReactiveValue<Record<string, unknown>> =
-	new ReactiveValue({});
-
-type StoredState = { location: string; state: Record<string, unknown> };
-
-window.addEventListener("popstate", (event) => {
-	const { state, location: newLocation }: StoredState = event.state;
-	location.value = newLocation;
-	historyState.set(state, { noUpdate: [updateHistory] });
-});
-
-historyState.bind(updateHistory);
-function updateHistory(newState: Record<string, unknown>) {
-	const state: StoredState = {
-		location: location.value,
-		state: newState,
-	};
-	history.pushState(state, "", state.location);
 }
