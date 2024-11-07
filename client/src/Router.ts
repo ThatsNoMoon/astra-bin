@@ -69,21 +69,32 @@ class Modal extends Component<{
 }> {
 	static override styles = css`
 		:host {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100vw;
-			min-height: 100vh;
-			overflow-y: auto;
+			display: contents;
 		}
 
 		dialog {
-			padding: 4rem;
-			box-sizing: border-box;
-			overflow-x: hidden;
+			position: absolute;
+			top: -10rem;
+			left: 0;
+			width: 100vw;
+			height: calc(100vh + 20rem);
+			border: none;
+			margin: 0;
+			padding: 0;
+			overflow-y: auto;
+			overscroll-behavior: contain;
 			background: none;
-			backdrop-filter: blur(3px) brightness(40%) saturate(70%);
 			z-index: 10;
+			color: inherit;
+		}
+
+		#shade {
+			box-sizing: border-box;
+			width: 100%;
+			min-height: 100%;
+			padding: 14rem 4rem;
+			overflow-x: hidden;
+			backdrop-filter: blur(3px) brightness(40%) saturate(70%);
 		}
 
 		#container {
@@ -96,7 +107,6 @@ class Modal extends Component<{
 
 	connectedCallback() {
 		window.addEventListener("keydown", this.#keyDownListener);
-		window.addEventListener("click", this.#clickListener);
 
 		this.contents.bind(
 			async (contents) => {
@@ -112,7 +122,6 @@ class Modal extends Component<{
 
 	disconnectedCallback() {
 		window.removeEventListener("keydown", this.#keyDownListener);
-		window.removeEventListener("click", this.#clickListener);
 	}
 
 	#keyDownListener(event: KeyboardEvent) {
@@ -121,18 +130,18 @@ class Modal extends Component<{
 		}
 	}
 
-	#clickListener = (event: MouseEvent) => {
-		const path = event.composedPath();
-		if (path[0] === this.#dialog.value) {
-			history.back();
-		}
-	};
-
 	#dialog = new Ref<HTMLDialogElement>();
 
 	override template = html`
 		<dialog destiny:ref=${this.#dialog}>
-			<div id="container">${this.contents}</div>
+			<div
+				id="shade"
+				on:click=${function (this: HTMLDivElement, event: MouseEvent) {
+					if (event.composedPath()[0] === this) history.back();
+				}}
+			>
+				<div id="container">${this.contents}</div>
+			</div>
 		</dialog>
 	`;
 }
