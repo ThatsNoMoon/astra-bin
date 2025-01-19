@@ -18,8 +18,7 @@ export type BodyFontSpec = FontSpec & {
 
 export type FontPair = {
 	builtinKey: string | undefined;
-	body: ReadonlyReactiveValue<FontSpec>;
-	scale: ReadonlyReactiveValue<number>;
+	body: ReadonlyReactiveValue<BodyFontSpec>;
 	mono: ReadonlyReactiveValue<FontSpec>;
 };
 
@@ -288,45 +287,38 @@ export const fontSpecs: Readonly<Record<FontSpecName, FontSpec>> = {
 export const fontPresets = {
 	outfit: {
 		builtinKey: "outfit",
-		scale: new ReadonlyReactiveValue(1.1),
-		body: new ReadonlyReactiveValue(fontSpecs.outfit),
-		mono: new ReadonlyReactiveValue(fontSpecs.fragment),
+		body: new ReadonlyReactiveValue(bodyFontSpecs.outfit),
+		mono: new ReadonlyReactiveValue(monoFontSpecs.fragment),
 	},
 	jetbrains: {
 		builtinKey: "jetbrains",
-		scale: new ReadonlyReactiveValue(1),
-		body: new ReadonlyReactiveValue<FontSpec>(fontSpecs.inter),
-		mono: new ReadonlyReactiveValue<FontSpec>(fontSpecs.jetbrainsMono),
+		body: new ReadonlyReactiveValue(bodyFontSpecs.inter),
+		mono: new ReadonlyReactiveValue(monoFontSpecs.jetbrainsMono),
 	},
 	source: {
 		builtinKey: "source",
-		scale: new ReadonlyReactiveValue(1.18),
-		body: new ReadonlyReactiveValue<FontSpec>(fontSpecs.sourceSans),
-		mono: new ReadonlyReactiveValue<FontSpec>(fontSpecs.sourceCode),
+		body: new ReadonlyReactiveValue(bodyFontSpecs.sourceSans),
+		mono: new ReadonlyReactiveValue(monoFontSpecs.sourceCode),
 	},
 	fira: {
 		builtinKey: "fira",
-		scale: new ReadonlyReactiveValue(1.05),
-		body: new ReadonlyReactiveValue<FontSpec>(fontSpecs.firava),
-		mono: new ReadonlyReactiveValue<FontSpec>(fontSpecs.firaCode),
+		body: new ReadonlyReactiveValue(bodyFontSpecs.firava),
+		mono: new ReadonlyReactiveValue(monoFontSpecs.firaCode),
 	},
 	plex: {
 		builtinKey: "plex",
-		scale: new ReadonlyReactiveValue(1.05),
-		body: new ReadonlyReactiveValue<FontSpec>(fontSpecs.plexSans),
-		mono: new ReadonlyReactiveValue<FontSpec>(fontSpecs.plexMono),
+		body: new ReadonlyReactiveValue(bodyFontSpecs.plexSans),
+		mono: new ReadonlyReactiveValue(monoFontSpecs.plexMono),
 	},
 	space: {
 		builtinKey: "space",
-		scale: new ReadonlyReactiveValue(1),
-		body: new ReadonlyReactiveValue<FontSpec>(fontSpecs.spaceGrotesk),
-		mono: new ReadonlyReactiveValue<FontSpec>(fontSpecs.spaceMono),
+		body: new ReadonlyReactiveValue(bodyFontSpecs.spaceGrotesk),
+		mono: new ReadonlyReactiveValue(monoFontSpecs.spaceMono),
 	},
 	system: {
 		builtinKey: "system",
-		scale: new ReadonlyReactiveValue(1),
-		body: new ReadonlyReactiveValue(fontSpecs.systemUi),
-		mono: new ReadonlyReactiveValue(fontSpecs.monospace),
+		body: new ReadonlyReactiveValue(bodyFontSpecs.systemUi),
+		mono: new ReadonlyReactiveValue(monoFontSpecs.monospace),
 	},
 } satisfies Record<string, FontPair>;
 

@@ -86,16 +86,18 @@ register(
 			});
 
 			sideEffect(() => {
-				const { body, mono, scale } = this.#config.fonts.value;
+				const fonts = this.#config.fonts.value;
+				const body = fonts.body.value;
+				const mono = fonts.mono.value;
 
 				this.style.setProperty(
 					"font-family",
-					`${body.value.family}, var(--system-ui)`,
+					`${body.family}, var(--system-ui)`,
 				);
-				this.style.setProperty("--fs-scale", String(scale));
+				this.style.setProperty("--fs-scale", String(body.scale));
 
-				addFont(body.value);
-				addFont(mono.value);
+				addFont(body);
+				addFont(mono);
 			});
 		}
 

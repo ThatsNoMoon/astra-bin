@@ -1,6 +1,14 @@
 import { reactive, ReactiveValue, sideEffect } from "destiny-ui";
 import type { DarkTheme, LightTheme, ThemeConfig, ThemeName } from "./style";
-import { fontPresets, fontSpecs, type FontPair, type FontSpec } from "./font";
+import {
+	bodyFontSpecs,
+	fontPresets,
+	fontSpecs,
+	monoFontSpecs,
+	type BodyFontSpec,
+	type FontPair,
+	type FontSpec,
+} from "./font";
 
 export type Config = {
 	theme: ThemeConfig;
@@ -19,13 +27,12 @@ type SerializedConfig = {
 	};
 	fonts: {
 		builtinKey: string | undefined;
-		scale: number;
-		body: FontSpec;
+		body: BodyFontSpec;
 		mono: FontSpec;
 	};
 	customFonts?: {
 		builtinKey: undefined;
-		body?: FontSpec;
+		body?: BodyFontSpec;
 		mono?: FontSpec;
 	};
 	showMoreModes: boolean;
@@ -42,9 +49,8 @@ const defaultConfig: Config = {
 	fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
 	customFonts: {
 		builtinKey: undefined,
-		scale: reactive(1),
-		body: new ReactiveValue(fontSpecs.outfit),
-		mono: new ReactiveValue(fontSpecs.fragment),
+		body: new ReactiveValue(bodyFontSpecs.outfit),
+		mono: new ReactiveValue(monoFontSpecs.fragment),
 	},
 	showMoreModes: reactive(false),
 	showAllForBodyFonts: reactive(false),
@@ -56,8 +62,9 @@ function realizeFonts(config: SerializedConfig): {
 } {
 	const custom: FontPair = {
 		builtinKey: undefined,
-		scale: reactive(1),
-		body: new ReactiveValue(config.customFonts?.body ?? fontSpecs.outfit),
+		body: new ReactiveValue(
+			config.customFonts?.body ?? bodyFontSpecs.outfit,
+		),
 		mono: new ReactiveValue(config.customFonts?.mono ?? fontSpecs.fragment),
 	};
 	const key = config.fonts.builtinKey;
