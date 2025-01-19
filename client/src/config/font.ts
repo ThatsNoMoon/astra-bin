@@ -1,7 +1,4 @@
-import {
-	ReadonlyReactiveValue,
-	css,
-} from "destiny-ui";
+import { ReadonlyReactiveValue, css } from "destiny-ui";
 
 export type FontFaceData = {
 	family: string;
@@ -13,6 +10,10 @@ export type FontSpec = {
 	family: string;
 	label: string;
 	variants?: ReadonlyArray<FontFaceData>;
+};
+
+export type BodyFontSpec = FontSpec & {
+	scale: number;
 };
 
 export type FontPair = {
@@ -44,7 +45,7 @@ type MonoFontName =
 
 type FontSpecName = BodyFontName | MonoFontName;
 
-export const bodyFontSpecs: Readonly<Record<BodyFontName, FontSpec>> = {
+export const bodyFontSpecs: Readonly<Record<BodyFontName, BodyFontSpec>> = {
 	outfit: {
 		family: `"Outfit"`,
 		label: "Outfit",
@@ -57,6 +58,7 @@ export const bodyFontSpecs: Readonly<Record<BodyFontName, FontSpec>> = {
 				},
 			},
 		],
+		scale: 1.1,
 	},
 	inter: {
 		family: `"Inter"`,
@@ -70,6 +72,7 @@ export const bodyFontSpecs: Readonly<Record<BodyFontName, FontSpec>> = {
 				},
 			},
 		],
+		scale: 1,
 	},
 	sourceSans: {
 		family: `"Source Sans"`,
@@ -91,6 +94,7 @@ export const bodyFontSpecs: Readonly<Record<BodyFontName, FontSpec>> = {
 				},
 			},
 		],
+		scale: 1.18,
 	},
 	firava: {
 		family: `"Firava"`,
@@ -104,6 +108,7 @@ export const bodyFontSpecs: Readonly<Record<BodyFontName, FontSpec>> = {
 				},
 			},
 		],
+		scale: 1.05,
 	},
 	plexSans: {
 		family: `"IBM Plex Sans"`,
@@ -125,6 +130,7 @@ export const bodyFontSpecs: Readonly<Record<BodyFontName, FontSpec>> = {
 				},
 			},
 		],
+		scale: 1.05,
 	},
 	spaceGrotesk: {
 		family: `"Space Grotesk"`,
@@ -138,10 +144,12 @@ export const bodyFontSpecs: Readonly<Record<BodyFontName, FontSpec>> = {
 				},
 			},
 		],
+		scale: 1,
 	},
 	systemUi: {
 		family: "var(--system-ui)",
 		label: "System UI",
+		scale: 1,
 	},
 };
 
@@ -274,8 +282,8 @@ export const monoFontSpecs: Readonly<Record<MonoFontName, FontSpec>> = {
 
 export const fontSpecs: Readonly<Record<FontSpecName, FontSpec>> = {
 	...bodyFontSpecs,
-	... monoFontSpecs,
-}
+	...monoFontSpecs,
+};
 
 export const fontPresets = {
 	outfit: {
@@ -340,7 +348,7 @@ export const fontVars = css`
 			.map(
 				(v, i) => `
 					--fs-${i + 1}: calc(${v}px * var(--fs-scale));
-				`
+				`,
 			)
 			.join("\n")}
 

@@ -96,8 +96,9 @@ export class CreatePaste extends Component<{ config: Config }> {
 			</${Button}>
 			<${Select}
 				id="language-select"
+				prop:type="transparent"
 				prop:options=${this.#modes}
-				prop:selected=${this.#mode.pass}
+				prop:selectedValue=${this.#mode.pass}
 				prop:selectedKey="Plain Text"
 				prop:searchBar=${true}
 				prop:showMore=${this.config.showMoreModes.falsy(

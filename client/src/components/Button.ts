@@ -1,10 +1,13 @@
 import {
 	CSSTemplate,
 	Component,
+	ReactiveValue,
 	classNames,
+	computed,
 	css,
 	html,
 	reactive,
+	sideEffect,
 } from "destiny-ui";
 import { deepFreeze } from "../util";
 
@@ -43,7 +46,7 @@ export const types = deepFreeze({
 		disabledColor: "var(--palette-accent-1-3)",
 		bg: {
 			base: "var(--palette-accent-1-4)",
-			hover: "var(--palette-accent-1-2)",
+			hover: "var(--palette-accent-1-3)",
 			active: "var(--palette-accent-1-1)",
 			disabled: "var(--palette-accent-1-1)",
 		},
@@ -80,7 +83,18 @@ export const types = deepFreeze({
 	"danger-alt": {
 		color: "var(--danger-2)",
 	},
+	transparent: {
+		color: "var(--fg-1)",
+		bg: {
+			base: "transparent",
+			hover: "var(--bg-2)",
+			active: "var(--bg-1)",
+			disabled: "var(--bg-1)",
+		},
+	},
 });
+
+export type ButtonTypeName = keyof typeof types;
 
 type ButtonSize = {
 	font: string;
@@ -104,9 +118,9 @@ export const sizes = {
 	},
 };
 
+export type ButtonSizeName = keyof typeof sizes;
+
 export class Button extends Component<{
-	type?: keyof typeof types;
-	size?: keyof typeof sizes;
 	tag?: string;
 }> {
 	static override styles: CSSTemplate[] & { [0]: CSSTemplate } = [
@@ -129,10 +143,12 @@ export class Button extends Component<{
 				background-color: var(--button-base);
 				font-weight: var(--button-weight);
 				font-variation-settings: "wght" var(--button-weight);
-				transition: background-color 0.2s, box-shadow 0.2s;
+				transition:
+					var(--color-transition),
+					box-shadow var(--transition-time);
 			}
 
-			#inner:not(.disabled) {
+			#inner:not(.disabled, .selected) {
 				cursor: pointer;
 			}
 
@@ -141,19 +157,19 @@ export class Button extends Component<{
 				background-color: var(--button-disabled);
 			}
 
-			#inner:hover:not(.disabled),
-			#inner:focus-visible:not(.disabled) {
+			#inner:hover:not(.disabled, .selected),
+			#inner:focus-visible:not(.disabled, .selected) {
 				background-color: var(--button-hover);
 				box-shadow: var(--elevation-3);
 			}
 
-			#inner:focus-visible:not(.disabled) {
+			#inner:focus-visible:not(.disabled, .selected) {
 				outline: var(--focus-outline);
 				outline-offset: var(--focus-outline-offset);
 				z-index: 12;
 			}
 
-			#inner:active:not(.disabled) {
+			#inner:active:not(.disabled, .selected) {
 				background-color: var(--button-active);
 				box-shadow: none;
 			}
@@ -169,45 +185,102 @@ export class Button extends Component<{
 		return this.#disabled.value;
 	}
 
+	#selected = reactive(this.selected);
+	set selected(value: boolean) {
+		this.#selected.value = value;
+	}
+
+	static defaultType: ButtonTypeName = "primary";
+
+	#type: ReactiveValue<ButtonType> = new ReactiveValue(
+		types[
+			this.type ??
+				(Object.getPrototypeOf(this).constructor
+					.defaultType as ButtonTypeName)
+		],
+	);
+	set type(type: ButtonTypeName | undefined) {
+		if (type === undefined) {
+			return;
+		}
+		this.#type.value = types[type];
+	}
+
+	static defaultSize: ButtonSizeName = "m";
+
+	#size: ReactiveValue<ButtonSize> = new ReactiveValue(
+		sizes[
+			this.size ??
+				(Object.getPrototypeOf(this).constructor
+					.defaultSize as ButtonSizeName)
+		],
+	);
+	set size(size: ButtonSizeName | undefined) {
+		if (size === undefined) {
+			return;
+		}
+		this.#size.value = sizes[size];
+	}
+
 	#tag = this.tag ?? "button";
 
 	connectedCallback() {
-		const size: Readonly<ButtonSize> = sizes[this.size ?? "m"];
-		this.style.setProperty("--button-size", size.font);
-		this.style.setProperty("--button-padding", size.padding);
-		const type: Readonly<ButtonType> = types[this.type ?? "primary"];
+		sideEffect(
+			() => {
+				const size: Readonly<ButtonSize> = this.#size.value;
 
-		this.style.setProperty("--button-color", type.color);
-		const bg = type.bg ?? {
-			base: "var(--bg-3)",
-			hover: "var(--bg-2)",
-			active: "var(--bg-1)",
-			disabled: "var(--bg-1)",
-		};
-		this.style.setProperty("--button-base", bg.base);
-		this.style.setProperty("--button-hover", bg.hover);
-		this.style.setProperty("--button-active", bg.active);
-		this.style.setProperty("--button-disabled", bg.disabled);
-		this.style.setProperty(
-			"--button-disabled-color",
-			type.disabledColor ?? "var(--fg-2)"
+				this.style.setProperty("--button-size", size.font);
+				this.style.setProperty("--button-padding", size.padding);
+			},
+			{ dependents: [this] },
 		);
 
-		if ("weight" in size) {
-			if (size.weight !== undefined) {
-				this.style.setProperty("--button-weight", size.weight);
-			}
-		} else if (type.weight !== undefined) {
-			this.style.setProperty("--button-weight", type.weight);
-		}
+		sideEffect(
+			() => {
+				const type: Readonly<ButtonType> = this.#type.value;
+
+				this.style.setProperty("--button-color", type.color);
+				const bg = type.bg ?? {
+					base: "var(--bg-3)",
+					hover: "var(--bg-2)",
+					active: "var(--bg-1)",
+					disabled: "var(--bg-1)",
+				};
+				this.style.setProperty("--button-base", bg.base);
+				this.style.setProperty("--button-hover", bg.hover);
+				this.style.setProperty("--button-active", bg.active);
+				this.style.setProperty("--button-disabled", bg.disabled);
+				this.style.setProperty(
+					"--button-disabled-color",
+					type.disabledColor ?? "var(--fg-2)",
+				);
+			},
+			{ dependents: [this] },
+		);
+
+		sideEffect(
+			() => {
+				const size: Readonly<ButtonSize> = this.#size.value;
+				const type: Readonly<ButtonType> = this.#type.value;
+
+				if ("weight" in size) {
+					if (size.weight !== undefined) {
+						this.style.setProperty("--button-weight", size.weight);
+					}
+				} else if (type.weight !== undefined) {
+					this.style.setProperty("--button-weight", type.weight);
+				}
+			},
+			{ dependents: [this] },
+		);
 	}
 
 	override template = html`
 		<${this.#tag}
 			id="inner"
 			part="inner"
-			class=${classNames({ disabled: this.#disabled })}
-			prop:disabled=${this.#disabled}
+			class=${classNames({ disabled: this.#disabled, selected: this.#selected })}
+			prop:disabled=${computed(() => this.#disabled.value || this.#selected.value)}
 		>
 			<slot />
 		</${this.#tag}>

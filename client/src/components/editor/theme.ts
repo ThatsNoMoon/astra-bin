@@ -8,16 +8,19 @@ const cssText = `
 	.astra-auto {
 		color: var(--fg-1);
 		background-color: var(--bg-4);
+		transition: var(--color-transition);
 	}
 
 	.astra-auto .ace_gutter {
 		color: var(--fg-3);
 		background-color: var(--bg-3);
+		transition: var(--color-transition);
 	}
 
 	.astra-auto .ace_gutter-active-line {
 		background-color: var(--bg-2);
 		color: var(--fg-1);
+		transition: var(--color-transition);
 	}
 
 	.astra-auto .ace_fold-widget {
@@ -194,7 +197,7 @@ const cssText = `
 
 define("astra/theme/auto", ["require", "exports", "module", "ace/lib/dom"], (
 	_require: unknown,
-	exports: Record<string, unknown>
+	exports: Record<string, unknown>,
 ) => {
 	exports["isDark"] = true;
 	exports["cssClass"] = "astra-auto";

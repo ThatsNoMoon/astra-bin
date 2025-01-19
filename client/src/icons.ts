@@ -16,9 +16,9 @@ export class AddCircle extends Icon {
 	override template = html`<svg
 		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
-		height="20"
+		height="24px"
+		width="24px"
 		viewBox="0 -960 960 960"
-		width="20"
 	>
 		<path
 			d="M444-444v120q0 15.3 10.289 25.65 10.29 10.35 25.5 10.35Q495-288
@@ -41,9 +41,9 @@ export class Info extends Icon {
 	override template = html`<svg
 		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
-		height="20"
+		height="24px"
+		width="24px"
 		viewBox="0 -960 960 960"
-		width="20"
 	>
 		<path
 			d="M479.789-288Q495-288 505.5-298.35 516-308.7
@@ -66,9 +66,9 @@ export class NewWindow extends Icon {
 	override template = html`<svg
 		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
-		height="20"
+		height="24px"
+		width="24px"
 		viewBox="0 -960 960 960"
-		width="20"
 	>
 		<path
 			d="M216-144q-29.7 0-50.85-21.15Q144-186.3 144-216v-528q0-29.7
@@ -89,9 +89,9 @@ export class Settings extends Icon {
 	override template = html`<svg
 		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
-		height="20"
+		height="24px"
+		width="24px"
 		viewBox="0 -960 960 960"
-		width="20"
 	>
 		<path
 			d="M556-80H404q-16 0-27.5-10.5T363-117l-11-89q-10-6-22-13t-22-13l-83
@@ -115,9 +115,9 @@ export class Save extends Icon {
 	override template = html`<svg
 		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
-		height="24"
+		height="24px"
+		width="24px"
 		viewBox="0 -960 960 960"
-		width="24"
 	>
 		<path
 			d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h447q16 
@@ -134,9 +134,9 @@ export class Expand extends Icon {
 	override template = html`<svg
 		part="inner"
 		xmlns="http://www.w3.org/2000/svg"
-		height="24"
+		height="24px"
+		width="24px"
 		viewBox="0 -960 960 960"
-		width="24"
 	>
 		<path
 			d="M480-362q-8 0-15-2.5t-13-8.5L267-558q-11-11-10.5-27.5T268-613q11-11
@@ -176,6 +176,35 @@ export class Copy extends Icon {
 			d="M760-200H320q-33 0-56.5-23.5T240-280v-560q0-33 23.5-56.5T320-920h280l240
 			240v400q0 33-23.5 56.5T760-200ZM560-640v-200H320v560h440v-360H560ZM160-40q-33
 			0-56.5-23.5T80-120v-560h80v560h440v80H160Zm160-800v200-200 560-560Z"
+		/>
+	</svg>`;
+}
+
+export class Close extends Icon {
+	override template = html`<svg
+		xmlns="http://www.w3.org/2000/svg"
+		part="inner"
+		height="24px"
+		viewBox="0 -960 960 960"
+		width="24px"
+	>
+		<path
+			d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224
+			224-56 56-224-224-224 224Z"
+		/>
+	</svg>`;
+}
+
+export class CloseLarge extends Icon {
+	override template = html`<svg
+		xmlns="http://www.w3.org/2000/svg"
+		height="48px"
+		width="48px"
+		viewBox="0 -960 960 960"
+	>
+		<path
+			d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231
+			231-42 42-231-231-231 231Z"
 		/>
 	</svg>`;
 }

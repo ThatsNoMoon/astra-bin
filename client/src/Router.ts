@@ -64,7 +64,7 @@ export type Route = {
 };
 export type Routes = Record<string, Route> & { "/": Route & { type: "page" } };
 
-class Modal extends Component<{
+class ModalDialog extends Component<{
 	contents: ReadonlyReactiveValue<TemplateResult | undefined>;
 }> {
 	static override styles = css`
@@ -99,9 +99,22 @@ class Modal extends Component<{
 
 		#container {
 			border-radius: 3rem;
-			padding: 2rem;
-			background-color: var(--bg-4);
+			padding: 4rem;
 			z-index: 12;
+			background-color: var(--bg-5);
+			transition: var(--color-transition);
+		}
+
+		@media screen and (width < 1000px) {
+			#shade {
+				padding: 10rem 0;
+				backdrop-filter: none;
+				background-color: var(--bg-4);
+			}
+
+			#container {
+				border-radius: 0;
+			}
 		}
 	`;
 
@@ -174,7 +187,9 @@ export class Router extends Component<{
 
 	override template = html`
 		${this.#currentViews.page}
-		<${Modal} prop:contents=${this.#currentViews.modal.readonly.pass} />
+		<${ModalDialog}
+			prop:contents=${this.#currentViews.modal.readonly.pass}
+		/>
 	`;
 
 	#update = () => {

@@ -1,5 +1,8 @@
 import { ReactiveValue, css } from "destiny-ui";
 
+export type Theme = {
+	type: "light" | "dark";
+};
 export type DarkTheme = "dark" | "dim";
 export type LightTheme = "light" | "pale";
 export type ThemeName = DarkTheme | LightTheme;
@@ -101,7 +104,7 @@ const palette = {
 
 function generateCssVars(
 	prefix: string,
-	values: ReadonlyArray<string>
+	values: ReadonlyArray<string>,
 ): string {
 	return values.map((v, i) => `--${prefix}-${i + 1}: ${v};`).join("\n");
 }
@@ -123,11 +126,11 @@ const darkerRules = [
 ].join("\n");
 
 const darkRules = [generateCssVars("bg", palette.bg.dark), darkerRules].join(
-	"\n"
+	"\n",
 );
 
 const dimRules = [generateCssVars("bg", palette.bg.dim), darkerRules].join(
-	"\n"
+	"\n",
 );
 
 const lighterRules = [
@@ -139,11 +142,11 @@ const lighterRules = [
 ].join("\n");
 
 const lightRules = [generateCssVars("bg", palette.bg.light), lighterRules].join(
-	"\n"
+	"\n",
 );
 
 const paleRules = [generateCssVars("bg", palette.bg.pale), lighterRules].join(
-	"\n"
+	"\n",
 );
 
 export const themeRules = css`

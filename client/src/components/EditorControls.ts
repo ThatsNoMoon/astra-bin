@@ -1,7 +1,7 @@
 import { Component, css } from "destiny-ui";
 
 export class EditorControls extends Component {
-    static override styles = css`
+	static override styles = css`
 		:host {
 			position: absolute;
 			top: 0;
@@ -14,8 +14,9 @@ export class EditorControls extends Component {
 			align-items: stretch;
 			gap: 1rem;
 			background-color: var(--bg-3);
+			transition: var(--color-transition);
 			border-bottom-left-radius: 1rem;
 			box-shadow: var(--elevation-1);
 		}
-    `;
+	`;
 }

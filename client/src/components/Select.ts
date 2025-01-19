@@ -8,7 +8,7 @@ import {
 	reactive,
 	sideEffect,
 } from "destiny-ui";
-import { Button } from "./Button";
+import { Button, type ButtonTypeName } from "./Button";
 import { Expand, Search } from "../icons";
 import { TextInput } from "./TextInput";
 import { Resolvable } from "../util";
@@ -171,7 +171,9 @@ export class Select<T> extends Button {
 		`,
 	];
 
-	declare selected: ReactiveValue<T | undefined>;
+	static override defaultType: ButtonTypeName = "neutral";
+
+	declare selectedValue: ReactiveValue<T | undefined>;
 	declare searchBar?: boolean;
 
 	#options = new ReactiveValue<Record<string, T>>(this.options ?? {});
@@ -210,14 +212,6 @@ export class Select<T> extends Button {
 		),
 	);
 
-	constructor() {
-		super();
-		this.type ??= "neutral";
-		if (this.type !== "neutral") {
-			throw new Error("Select cannot use types other than neutral");
-		}
-	}
-
 	#windowClickListener = (event: MouseEvent) => {
 		if (!this.#dropdownOpen.value) {
 			return;
@@ -236,6 +230,7 @@ export class Select<T> extends Button {
 
 	override connectedCallback() {
 		super.connectedCallback();
+
 		sideEffect(() => {
 			const key = this.#selectedKey.value;
 			if (key === undefined) {
@@ -245,7 +240,7 @@ export class Select<T> extends Button {
 			if (value === undefined) {
 				return;
 			}
-			this.selected.value = value;
+			this.selectedValue.value = value;
 		});
 
 		window.addEventListener("click", this.#windowClickListener);
