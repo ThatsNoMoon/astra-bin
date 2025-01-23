@@ -1,16 +1,62 @@
+import { Type as T, type Static } from "@sinclair/typebox";
 import { ReadonlyReactiveValue, css } from "destiny-ui";
 
-export type FontFaceData = {
-	family: string;
-	source: string;
-	descriptors?: FontFaceDescriptors;
-};
+const FontDisplay = T.Union([
+	T.Literal("auto"),
+	T.Literal("block"),
+	T.Literal("fallback"),
+	T.Literal("optional"),
+	T.Literal("swap"),
+]);
 
-export type FontSpec = {
-	family: string;
-	label: string;
-	variants?: ReadonlyArray<FontFaceData>;
-};
+export const FontFaceData = T.Object({
+	family: T.String(),
+	source: T.String(),
+	descriptors: T.Optional(
+		T.Object({
+			ascentOverride: T.Optional(T.String()),
+			descentOverride: T.Optional(T.String()),
+			display: T.Optional(FontDisplay),
+			featureSettings: T.Optional(T.String()),
+			lineGapOverride: T.Optional(T.String()),
+			stretch: T.Optional(T.String()),
+			style: T.Optional(T.String()),
+			unicodeRange: T.Optional(T.String()),
+			weight: T.Optional(T.String()),
+		}),
+	),
+});
+
+export const FontSpec = T.Object({
+	family: T.String(),
+	label: T.String(),
+	variants: T.Optional(
+		T.Unsafe<ReadonlyArray<FontFaceData>>(T.Array(FontFaceData)),
+	),
+});
+
+export const BodyFontSpec = T.Intersect([
+	FontSpec,
+	T.Object({
+		scale: T.Number(),
+	}),
+]);
+
+const FontPair = T.Object({
+	body: BodyFontSpec,
+	mono: FontSpec,
+});
+
+export const BuiltinFontPair = T.Intersect([
+	T.Object({ builtinKey: T.String() }),
+	FontPair,
+]);
+
+export const CustomFontPair = FontPair;
+
+export type FontFaceData = Static<typeof FontFaceData>;
+
+export type FontSpec = Static<typeof FontSpec>;
 
 export type BodyFontSpec = FontSpec & {
 	scale: number;

@@ -1,14 +1,16 @@
 import { reactive, ReactiveValue, sideEffect } from "destiny-ui";
-import type { DarkTheme, LightTheme, ThemeConfig, ThemeName } from "./style";
+import { DarkTheme, LightTheme, type ThemeConfig, ThemeName } from "./style";
 import {
 	bodyFontSpecs,
+	BuiltinFontPair,
+	CustomFontPair,
+	type FontPair,
 	fontPresets,
 	fontSpecs,
 	monoFontSpecs,
-	type BodyFontSpec,
-	type FontPair,
-	type FontSpec,
 } from "./font";
+import { Type as T, type Static } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 export type Config = {
 	theme: ThemeConfig;
@@ -18,26 +20,20 @@ export type Config = {
 	showAllForBodyFonts: ReactiveValue<boolean>;
 };
 
-type SerializedConfig = {
-	theme: {
-		autoDark: DarkTheme;
-		autoLight: LightTheme;
-		static: ThemeName;
-		auto: boolean;
-	};
-	fonts: {
-		builtinKey: string | undefined;
-		body: BodyFontSpec;
-		mono: FontSpec;
-	};
-	customFonts?: {
-		builtinKey: undefined;
-		body?: BodyFontSpec;
-		mono?: FontSpec;
-	};
-	showMoreModes: boolean;
-	showAllForBodyFonts: boolean;
-};
+const SerializedConfig = T.Object({
+	theme: T.Object({
+		autoDark: DarkTheme,
+		autoLight: LightTheme,
+		static: ThemeName,
+		auto: T.Boolean(),
+	}),
+	fonts: T.Union([BuiltinFontPair, CustomFontPair]),
+	customFonts: CustomFontPair,
+	showMoreModes: T.Boolean(),
+	showAllForBodyFonts: T.Boolean(),
+});
+
+type SerializedConfig = Static<typeof SerializedConfig>;
 
 const defaultConfig: Config = {
 	theme: {
@@ -67,19 +63,31 @@ function realizeFonts(config: SerializedConfig): {
 		),
 		mono: new ReactiveValue(config.customFonts?.mono ?? fontSpecs.fragment),
 	};
-	const key = config.fonts.builtinKey;
-	if (key == null) {
+
+	if (!("builtinKey" in config.fonts) || config.fonts.builtinKey == null) {
 		return { selected: custom, custom };
 	}
 
 	const fontRecord: Record<string, FontPair> = fontPresets;
-	const selected: FontPair = fontRecord[key] ?? fontPresets.outfit;
+	const selected: FontPair =
+		fontRecord[config.fonts.builtinKey] ?? fontPresets.outfit;
 
 	return { selected, custom };
 }
 
-function deserializeConfig(json: string): Config {
-	const raw: SerializedConfig = JSON.parse(json);
+function deserializeConfig(json: string | null): Config {
+	if (json == null) {
+		return defaultConfig;
+	}
+
+	let raw;
+	try {
+		raw = Value.Parse(SerializedConfig, JSON.parse(json));
+	} catch (e) {
+		console.error("Error deserializing config:", e);
+		return defaultConfig;
+	}
+
 	const { selected, custom } = realizeFonts(raw);
 	return {
 		theme: {
@@ -99,8 +107,7 @@ function deserializeConfig(json: string): Config {
 
 export function loadConfig(): Config {
 	const stored = localStorage.getItem("astra-config");
-	const config: Config =
-		stored !== null ? deserializeConfig(stored) : defaultConfig;
+	const config = deserializeConfig(stored);
 
 	sideEffect(() => {
 		localStorage.setItem("astra-config", JSON.stringify(config));

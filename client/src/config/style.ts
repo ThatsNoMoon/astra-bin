@@ -1,11 +1,15 @@
+import { Type as T, type Static } from "@sinclair/typebox";
 import { ReactiveValue, css } from "destiny-ui";
 
-export type Theme = {
-	type: "light" | "dark";
-};
-export type DarkTheme = "dark" | "dim";
-export type LightTheme = "light" | "pale";
-export type ThemeName = DarkTheme | LightTheme;
+export const Theme = T.Union([T.Literal("light"), T.Literal("dark")]);
+export const DarkTheme = T.Union([T.Literal("dark"), T.Literal("dim")]);
+export const LightTheme = T.Union([T.Literal("light"), T.Literal("pale")]);
+export const ThemeName = T.Union([DarkTheme, LightTheme]);
+
+export type Theme = Static<typeof Theme>;
+export type DarkTheme = Static<typeof DarkTheme>;
+export type LightTheme = Static<typeof LightTheme>;
+export type ThemeName = Static<typeof ThemeName>;
 
 export type ThemeConfig = {
 	auto: ReactiveValue<boolean>;
