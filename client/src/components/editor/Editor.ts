@@ -31,7 +31,7 @@ export class Editor extends Component<{
 		#container.loading {
 			display: none;
 		}
-		
+
 		.ace_scrollbar {
 			z-index: 2;
 		}
@@ -48,7 +48,7 @@ export class Editor extends Component<{
 	#container = new Ref();
 	async connectedCallback() {
 		sideEffect(() => {
-			const mono = this.config.fonts.value.mono.value.family;
+			const mono = this.config.fonts.mono.value.family;
 			this.style.setProperty("font-family", `${mono}, var(--monospace)`);
 		});
 
@@ -56,7 +56,7 @@ export class Editor extends Component<{
 		const { default: ace } = await import("./ace");
 		const editor: Ace.Editor = ace.edit(container);
 		editor.setTheme("astra/theme/auto", () =>
-			container.classList.remove("loading")
+			container.classList.remove("loading"),
 		);
 		editor.session.setMode("ace/mode/typescript");
 		editor.renderer.attachToShadowRoot();

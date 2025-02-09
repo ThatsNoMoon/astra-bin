@@ -1,15 +1,38 @@
 import { Type as T, type Static } from "@sinclair/typebox";
 import { ReactiveValue, css } from "destiny-ui";
 
-export const Theme = T.Union([T.Literal("light"), T.Literal("dark")]);
-export const DarkTheme = T.Union([T.Literal("dark"), T.Literal("dim")]);
-export const LightTheme = T.Union([T.Literal("light"), T.Literal("pale")]);
-export const ThemeName = T.Union([DarkTheme, LightTheme]);
+export const Theme = T.Union([T.Literal("light"), T.Literal("dark")], {
+	default: "dark",
+});
+export const DarkTheme = T.Union([T.Literal("dark"), T.Literal("dim")], {
+	default: "dark",
+});
+export const LightTheme = T.Union([T.Literal("light"), T.Literal("pale")], {
+	default: "light",
+});
+export const ThemeName = T.Union([DarkTheme, LightTheme], { default: "dark" });
 
 export type Theme = Static<typeof Theme>;
 export type DarkTheme = Static<typeof DarkTheme>;
 export type LightTheme = Static<typeof LightTheme>;
 export type ThemeName = Static<typeof ThemeName>;
+
+export const ThemeConfig = T.Object(
+	{
+		autoDark: DarkTheme,
+		autoLight: LightTheme,
+		static: ThemeName,
+		auto: T.Boolean(),
+	},
+	{
+		default: () => ({
+			autoDark: DarkTheme.default,
+			autoLight: LightTheme.default,
+			static: ThemeName.default,
+			auto: true,
+		}),
+	},
+);
 
 export type ThemeConfig = {
 	auto: ReactiveValue<boolean>;

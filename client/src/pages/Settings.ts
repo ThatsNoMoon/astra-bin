@@ -2,8 +2,8 @@ import { Component, css, html } from "destiny-ui";
 import { Heading } from "../components/typography";
 import type { Config } from "../config";
 import { Modal } from "../components/Modal";
-import { FontSettings } from "../components/settings/fontSettings";
-import { ThemeSettings } from "../components/settings/themeSettings";
+import { FontSettings } from "../components/settings/FontSettings";
+import { ThemeSettings } from "../components/settings/ThemeSettings";
 
 export class Settings extends Component<{ config: Config }> {
 	static override styles = css`

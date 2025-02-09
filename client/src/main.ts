@@ -86,7 +86,7 @@ register(
 			});
 
 			sideEffect(() => {
-				const fonts = this.#config.fonts.value;
+				const fonts = this.#config.fonts;
 				const body = fonts.body.value;
 				const mono = fonts.mono.value;
 

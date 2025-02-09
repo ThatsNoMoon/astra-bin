@@ -1,81 +1,35 @@
 import { reactive, ReactiveValue, sideEffect } from "destiny-ui";
-import { DarkTheme, LightTheme, type ThemeConfig, ThemeName } from "./style";
-import {
-	bodyFontSpecs,
-	BuiltinFontPair,
-	CustomFontPair,
-	type FontPair,
-	fontPresets,
-	fontSpecs,
-	monoFontSpecs,
-} from "./font";
+import { DarkTheme, LightTheme, ThemeConfig, ThemeName } from "./style";
+import { FontConfig } from "./font";
 import { Type as T, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
 export type Config = {
 	theme: ThemeConfig;
-	fonts: ReactiveValue<FontPair>;
-	customFonts: FontPair;
+	fonts: FontConfig;
 	showMoreModes: ReactiveValue<boolean>;
 	showAllForBodyFonts: ReactiveValue<boolean>;
 };
 
 const SerializedConfig = T.Object({
-	theme: T.Object({
-		autoDark: DarkTheme,
-		autoLight: LightTheme,
-		static: ThemeName,
-		auto: T.Boolean(),
-	}),
-	fonts: T.Union([BuiltinFontPair, CustomFontPair]),
-	customFonts: CustomFontPair,
-	showMoreModes: T.Boolean(),
-	showAllForBodyFonts: T.Boolean(),
+	theme: ThemeConfig,
+	fonts: FontConfig,
+	showMoreModes: T.Boolean({ default: false }),
+	showAllForBodyFonts: T.Boolean({ default: false }),
 });
 
 type SerializedConfig = Static<typeof SerializedConfig>;
 
-const defaultConfig: Config = {
-	theme: {
-		autoDark: new ReactiveValue<DarkTheme>("dark"),
-		autoLight: new ReactiveValue<LightTheme>("light"),
-		static: new ReactiveValue<ThemeName>("dark"),
-		auto: reactive(true),
-	},
-	fonts: new ReactiveValue<FontPair>(fontPresets.outfit),
-	customFonts: {
-		builtinKey: undefined,
-		body: new ReactiveValue(bodyFontSpecs.outfit),
-		mono: new ReactiveValue(monoFontSpecs.fragment),
-	},
-	showMoreModes: reactive(false),
-	showAllForBodyFonts: reactive(false),
-};
+const defaultConfig = makeDefaultConfig();
 
-function realizeFonts(config: SerializedConfig): {
-	selected: FontPair;
-	custom: FontPair;
-} {
-	const custom: FontPair = {
-		builtinKey: undefined,
-		body: new ReactiveValue(
-			config.customFonts?.body ?? bodyFontSpecs.outfit,
-		),
-		mono: new ReactiveValue(config.customFonts?.mono ?? fontSpecs.fragment),
-	};
-
-	if (!("builtinKey" in config.fonts) || config.fonts.builtinKey == null) {
-		return { selected: custom, custom };
-	}
-
-	const fontRecord: Record<string, FontPair> = fontPresets;
-	const selected: FontPair =
-		fontRecord[config.fonts.builtinKey] ?? fontPresets.outfit;
-
-	return { selected, custom };
+function makeDefaultConfig(): SerializedConfig {
+	const config = Value.Default(SerializedConfig, {});
+	Value.Assert(SerializedConfig, config);
+	return config;
 }
 
-function deserializeConfig(json: string | null): Config {
+function getSerializedConfig(): SerializedConfig {
+	const json = localStorage.getItem("astra-config");
 	if (json == null) {
 		return defaultConfig;
 	}
@@ -88,7 +42,10 @@ function deserializeConfig(json: string | null): Config {
 		return defaultConfig;
 	}
 
-	const { selected, custom } = realizeFonts(raw);
+	return raw;
+}
+
+function makeConfigReactive(raw: SerializedConfig): Config {
 	return {
 		theme: {
 			auto: reactive(raw.theme.auto),
@@ -96,18 +53,17 @@ function deserializeConfig(json: string | null): Config {
 			autoDark: new ReactiveValue<DarkTheme>(raw.theme.autoDark),
 			autoLight: new ReactiveValue<LightTheme>(raw.theme.autoLight),
 		},
-		fonts: new ReactiveValue(selected),
-		customFonts: custom,
+		fonts: {
+			body: new ReactiveValue(raw.fonts.body),
+			mono: new ReactiveValue(raw.fonts.mono),
+		},
 		showMoreModes: reactive(raw.showMoreModes),
-		showAllForBodyFonts: reactive(
-			raw.showAllForBodyFonts ?? defaultConfig.showAllForBodyFonts.value,
-		),
+		showAllForBodyFonts: reactive(raw.showAllForBodyFonts),
 	};
 }
 
 export function loadConfig(): Config {
-	const stored = localStorage.getItem("astra-config");
-	const config = deserializeConfig(stored);
+	const config = makeConfigReactive(getSerializedConfig());
 
 	sideEffect(() => {
 		localStorage.setItem("astra-config", JSON.stringify(config));

@@ -46,7 +46,7 @@ export class Demo extends Component {
 	`;
 
 	override template = html`
-		<label for="inner"><slot name="label" /></label>
+		<label for="inner" part="label"><slot name="label" /></label>
 		<button id="inner" part="inner" destiny:data=${this.elementData}>
 			<slot />
 		</button>

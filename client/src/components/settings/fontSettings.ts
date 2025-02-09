@@ -1,264 +1,191 @@
 import {
 	Component,
 	ReactiveValue,
+	computed,
 	css,
 	xml as html,
-	computed,
-	sideEffect,
 } from "destiny-ui";
 import {
-	type FontPair,
 	type FontSpec,
 	addFont,
-	bodyFontSpecs,
 	fontPresets,
-	monoFontSpecs,
+	fontVars,
 } from "../../config/font";
-import { Demo } from "./Demo";
 import type { Config } from "../../config";
-import { Select } from "../Select";
-import { Heading } from "../typography";
+
+const presetList = Object.values(fontPresets);
 
 export class FontSettings extends Component<{ config: Config }> {
-	#fontOptions: FontOptions = {
-		...fontPresets,
-		custom: this.config.customFonts,
-	};
-
-	static override styles = css`
-		.demo-section {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
-			gap: 2rem;
-		}
-	`;
-
-	override template = html`
-		<div class="demo-section">
-			${Object.keys(this.#fontOptions).map(
-				(preset) =>
-					html`<${FontSelector}
-						prop:fonts=${this.config.fonts.pass}
-						prop:fontOptions=${this.#fontOptions}
-						prop:demoFontOption=${preset}
-					/>`,
-			)}
-		</div>
-		<${CustomFontSettings} prop:config=${this.config} />
-	`;
-}
-
-export class FontSelector extends Component<{
-	fontOptions: FontOptions;
-	demoFontOption: keyof FontOptions;
-	fonts: ReactiveValue<FontPair>;
-}> {
-	static override styles = css`
-		${Demo}::part(inner) {
-			background-color: var(--bg-3);
-			transition: var(--color-transition);
-			width: 20rem;
-			height: auto;
-		}
-
-		.name {
-			text-align: left;
-		}
-
-		.sans > .name {
-			font-size: var(--fs-7);
-			font-weight: 150;
-			font-variation-settings: "wght" 150;
-		}
-
-		:is(.sans, .mono) > div {
-			height: 1.3em;
-		}
-
-		.mono > .name {
-			font-size: var(--fs-4);
-		}
-
-		.demo-text {
-			font-size: var(--fs-2);
-		}
-
-		#contents {
-			box-sizing: border-box;
-			width: 100%;
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-			justify-content: space-evenly;
-			gap: 1.2rem;
-			padding: 1.2rem;
-			overflow: hidden;
-			white-space: nowrap;
-			-webkit-mask-image: linear-gradient(
-				90deg,
-				var(--bg-3) 90%,
-				transparent
-			);
-			mask-image: linear-gradient(90deg, var(--bg-3) 90%, transparent);
-		}
-	`;
-
-	#preset = this.fontOptions[this.demoFontOption];
-
-	connectedCallback() {
-		addFont(this.#preset.body.value);
-		addFont(this.#preset.mono.value);
-		this.shadowRoot!.adoptedStyleSheets =
-			this.shadowRoot!.adoptedStyleSheets!.concat([
-				css`
-					.sans {
-						font-family: ${this.#preset.body.value.family};
-					}
-
-					.mono {
-						font-family: ${this.#preset.mono.value.family};
-					}
-				`.styleSheet,
-			]);
-	}
-
-	override template = html`
-		<${Demo}
-			tabindex="0"
-			prop:disabled=${computed(
-				() => this.fonts.value.builtinKey === this.#preset.builtinKey,
-			)}
-			on:click=${() => (this.fonts.value = this.#preset)}>
-			<span slot="label">${fontOptionsLabels[this.demoFontOption]}</span>
-			<div id="contents">
-				<div class="sans">
-					<div class="name">${computed(() => this.#preset.body.value.label)}</div>
-					<div class="demo-text">${demoText}</div>
-				</div>
-				<div class="mono">
-					<div class="name">${computed(() => this.#preset.mono.value.label)}</div>
-					<div class="demo-text">${demoText}</div>
-				</div>
-			</div>
-		</${Demo}>
-	`;
-}
-export class CustomFontSettings extends Component<{ config: Config }> {
 	static override styles = css`
 		:host {
-			transition: var(--color-transition);
+			display: grid;
+			grid-auto-flow: column;
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 3rem repeat(var(--preset-count), 1fr);
+			column-gap: 3rem;
+			max-width: 800px;
 		}
 
-		#select-container {
-			display: flex;
-			flex-direction: column;
-			gap: 1.25rem;
-		}
-		:host(.disabled) {
-			color: var(--fg-4);
+		.divider {
+			grid-column: 1 / span 2;
+			border-top: 1px solid var(--fg-3);
+			height: 1px;
+			box-sizing: border-box;
 		}
 
-		label {
-			color: inherit;
-			display: inline-block;
-			margin: 0 0 0.5rem;
-			font-size: var(--fs-2);
-			font-weight: 325;
-			font-variation-settings: "wght" 325;
+		.grid-heading {
+			font-size: var(--fs-3);
+			font-weight: var(--fw-3);
+			font-variation-settings: "wght" var(--fw-3);
 		}
 	`;
 
-	static fontSpecsToFontOptions(
-		fontSpecs: Readonly<Record<string, FontSpec>>,
-	): Readonly<Record<string, FontSpec>> {
-		return Object.fromEntries(
-			Object.values(fontSpecs).map((spec) => [spec.label, spec]),
-		);
-	}
+	#bodyFonts = presetList.map(({ body }) => body);
 
-	static bodyFontOptions = this.fontSpecsToFontOptions(bodyFontSpecs);
-
-	static monoFontOptions = this.fontSpecsToFontOptions(monoFontSpecs);
-
-	static allFontOptions = this.fontSpecsToFontOptions({
-		...bodyFontSpecs,
-		...monoFontSpecs,
-	});
-
-	#bodyOptions = computed(() => {
-		if (this.config.showAllForBodyFonts.value) {
-			return CustomFontSettings.allFontOptions;
-		} else {
-			return CustomFontSettings.bodyFontOptions;
-		}
-	});
-
-	#disabled = computed(
-		() => this.config.fonts.value.builtinKey !== undefined,
-	);
+	#monoFonts = presetList.map(({ mono }) => mono);
 
 	connectedCallback() {
-		sideEffect(() => {
-			if (this.#disabled.value) {
-				this.classList.add("disabled");
-			} else {
-				this.classList.remove("disabled");
-			}
-		});
+		this.style.setProperty("--preset-count", String(presetList.length));
 	}
 
 	override template = html`
-		<${Heading} prop:level=${4}>Custom Font Settings</${Heading}>
-		<div id="select-container">
-			<div>
-				<label for="body">Body font</label>
-				<${Select}
-					id="body"
-					prop:disabled=${this.#disabled}
-					prop:options=${this.#bodyOptions}
-					prop:selectedValue=${this.config.customFonts.body.pass}
-					prop:selectedKey=${this.config.customFonts.body.value.label}
-					prop:searchBar=${true}
-					prop:showMore=${this.config.showAllForBodyFonts.falsy(
-						() => (this.config.showAllForBodyFonts.value = true),
-					)}
-					prop:showLess=${this.config.showAllForBodyFonts.truthy(
-						() => (this.config.showAllForBodyFonts.value = false),
-					)}
-				>
-					<span slot="show-more">Show monospace fonts</span>
-					<span slot="show-less">Hide monospace fonts</span>
-				</${Select}>
-			</div>
-			<div>
-				<label for="mono">Monospace font</label>
-				<${Select}
-					id="body"
-					prop:disabled=${this.#disabled}
-					prop:options=${CustomFontSettings.monoFontOptions}
-					prop:selectedValue=${this.config.customFonts.mono.pass}
-					prop:selectedKey=${this.config.customFonts.mono.value.label}
-					prop:searchBar=${true}
+		<div class="grid-heading">Body font</div>
+		${this.#bodyFonts.map((body) => {
+			return html`
+				<${FontSelector}
+					prop:font=${body}
+					prop:configReactive=${this.config.fonts.body.pass}
 				/>
-			</div>
-		</div>
+			`;
+		})}
+		<div class="grid-heading">Code font</div>
+		${this.#monoFonts.map((mono) => {
+			return html`
+				<${FontSelector}
+					prop:font=${mono}
+					prop:configReactive=${this.config.fonts.mono.pass}
+				/>
+			`;
+		})}
 	`;
 }
 
-export type FontOptions = Record<keyof typeof fontPresets | "custom", FontPair>;
+const demoText = "The quick brown fox jumps over the lazy dog";
 
-export const fontOptionsLabels: Record<keyof FontOptions, string> = {
-	outfit: "Outfit",
-	jetbrains: "JetBrains",
-	source: "Source",
-	fira: "Fira",
-	plex: "IBM Plex",
-	space: "Space",
-	system: "System UI",
-	custom: "Custom",
-};
+class FontSelector<Spec extends FontSpec> extends Component<{
+	font: Spec;
+	configReactive: ReactiveValue<Spec>;
+}> {
+	static override styles = [
+		fontVars,
+		css`
+			:host {
+				display: contents;
+			}
 
-const demoText = "The quick brown fox jumped over the lazy dog";
+			#inner {
+				position: relative;
+				box-sizing: content-box;
+				height: 5rem;
+				border-radius: 0;
+				background-color: transparent;
+				color: inherit;
+				border: none;
+				padding: 0.5rem;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				justify-content: space-evenly;
+				gap: 1.2rem;
+				padding: 1.2rem;
+				border-top: 1px solid var(--fg-3);
+				overflow: hidden;
+				white-space: nowrap;
+				-webkit-mask-image: linear-gradient(
+					90deg,
+					var(--bg-3) 90%,
+					transparent
+				);
+				mask-image: linear-gradient(
+					90deg,
+					var(--bg-3) 90%,
+					transparent
+				);
+				font-family: var(--font);
+				transition: background-color var(--transition-time);
+			}
+
+			#inner:not(:disabled) {
+				cursor: pointer;
+			}
+
+			#inner:hover {
+				background-color: var(--bg-2);
+			}
+
+			#inner::before {
+				content: "";
+				--width: 4px;
+				--padding: 1rem;
+				position: absolute;
+				left: 0;
+				top: var(--padding);
+				height: calc(100% - var(--padding) * 2);
+				width: var(--width);
+				border-top-left-radius: var(--width);
+				border-bottom-left-radius: var(--width);
+				background-color: var(--bg-5);
+				transition: background-color var(--transition-time);
+			}
+
+			#inner:disabled::before {
+				background-color: var(--accent-1-4);
+			}
+
+			#inner:not(:disabled):hover::before {
+				background-color: var(--accent-1-2);
+			}
+
+			.name,
+			.demo-text {
+				height: 1.3em;
+			}
+
+			.name {
+				text-align: left;
+				font-size: var(--fs-4);
+				font-weight: var(--fw-4);
+				font-variation-settings: "wght" var(--fw-4);
+			}
+
+			.demo-text {
+				font-size: var(--fs-2);
+			}
+		`,
+	];
+
+	connectedCallback() {
+		addFont(this.font);
+		this.style.setProperty("--font", this.font.family);
+		if ("scale" in this.font) {
+			this.style.setProperty("--fs-scale", String(this.font.scale));
+		} else {
+			this.style.setProperty("--fs-scale", "1");
+		}
+	}
+
+	override template = html`
+		<button
+			id="inner"
+			tabindex="0"
+			prop:disabled=${computed(
+				() => this.configReactive.value.family === this.font.family,
+			)}
+			on:click=${() => (this.configReactive.value = this.font)}
+		>
+			<div class="name">${this.font.label}</div>
+			<div class="demo-text">${demoText}</div>
+		</button>
+	`;
+}

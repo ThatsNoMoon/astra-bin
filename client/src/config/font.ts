@@ -1,94 +1,8 @@
 import { Type as T, type Static } from "@sinclair/typebox";
-import { ReadonlyReactiveValue, css } from "destiny-ui";
-
-const FontDisplay = T.Union([
-	T.Literal("auto"),
-	T.Literal("block"),
-	T.Literal("fallback"),
-	T.Literal("optional"),
-	T.Literal("swap"),
-]);
-
-export const FontFaceData = T.Object({
-	family: T.String(),
-	source: T.String(),
-	descriptors: T.Optional(
-		T.Object({
-			ascentOverride: T.Optional(T.String()),
-			descentOverride: T.Optional(T.String()),
-			display: T.Optional(FontDisplay),
-			featureSettings: T.Optional(T.String()),
-			lineGapOverride: T.Optional(T.String()),
-			stretch: T.Optional(T.String()),
-			style: T.Optional(T.String()),
-			unicodeRange: T.Optional(T.String()),
-			weight: T.Optional(T.String()),
-		}),
-	),
-});
-
-export const FontSpec = T.Object({
-	family: T.String(),
-	label: T.String(),
-	variants: T.Optional(
-		T.Unsafe<ReadonlyArray<FontFaceData>>(T.Array(FontFaceData)),
-	),
-});
-
-export const BodyFontSpec = T.Intersect([
-	FontSpec,
-	T.Object({
-		scale: T.Number(),
-	}),
-]);
-
-const FontPair = T.Object({
-	body: BodyFontSpec,
-	mono: FontSpec,
-});
-
-export const BuiltinFontPair = T.Intersect([
-	T.Object({ builtinKey: T.String() }),
-	FontPair,
-]);
-
-export const CustomFontPair = FontPair;
-
-export type FontFaceData = Static<typeof FontFaceData>;
-
-export type FontSpec = Static<typeof FontSpec>;
-
-export type BodyFontSpec = FontSpec & {
-	scale: number;
-};
-
-export type FontPair = {
-	builtinKey: string | undefined;
-	body: ReadonlyReactiveValue<BodyFontSpec>;
-	mono: ReadonlyReactiveValue<FontSpec>;
-};
+import { Value } from "@sinclair/typebox/value";
+import { ReactiveValue, css } from "destiny-ui";
 
 const storage = "https://storage.thatsnomoon.dev/fonts";
-
-type BodyFontName =
-	| "outfit"
-	| "inter"
-	| "sourceSans"
-	| "firava"
-	| "plexSans"
-	| "spaceGrotesk"
-	| "systemUi";
-
-type MonoFontName =
-	| "fragment"
-	| "jetbrainsMono"
-	| "sourceCode"
-	| "firaCode"
-	| "plexMono"
-	| "spaceMono"
-	| "monospace";
-
-type FontSpecName = BodyFontName | MonoFontName;
 
 export const bodyFontSpecs: Readonly<Record<BodyFontName, BodyFontSpec>> = {
 	outfit: {
@@ -97,7 +11,7 @@ export const bodyFontSpecs: Readonly<Record<BodyFontName, BodyFontSpec>> = {
 		variants: [
 			{
 				family: "Outfit",
-				source: `url(${storage}/Outfit-Variable.woff2`,
+				source: `url(${storage}/Outfit-Variable.woff2)`,
 				descriptors: {
 					display: "swap",
 				},
@@ -330,43 +244,138 @@ export const fontSpecs: Readonly<Record<FontSpecName, FontSpec>> = {
 	...monoFontSpecs,
 };
 
+const FontDisplay = T.Union([
+	T.Literal("auto"),
+	T.Literal("block"),
+	T.Literal("fallback"),
+	T.Literal("optional"),
+	T.Literal("swap"),
+]);
+
+export const FontFaceData = T.Object({
+	family: T.String(),
+	source: T.String(),
+	descriptors: T.Optional(
+		T.Object({
+			ascentOverride: T.Optional(T.String()),
+			descentOverride: T.Optional(T.String()),
+			display: T.Optional(FontDisplay),
+			featureSettings: T.Optional(T.String()),
+			lineGapOverride: T.Optional(T.String()),
+			stretch: T.Optional(T.String()),
+			style: T.Optional(T.String()),
+			unicodeRange: T.Optional(T.String()),
+			weight: T.Optional(T.String()),
+		}),
+	),
+});
+
+export const FontSpec = T.Object({
+	family: T.String(),
+	label: T.String(),
+	variants: T.Optional(
+		T.Unsafe<ReadonlyArray<FontFaceData>>(T.Array(FontFaceData)),
+	),
+	scale: T.Optional(T.Number()),
+});
+
+export const BodyFontSpec = T.Intersect(
+	[
+		FontSpec,
+		T.Object({
+			scale: T.Number(),
+		}),
+	],
+	{ default: bodyFontSpecs.outfit },
+);
+
+export const MonoFontSpec = T.Intersect([FontSpec], {
+	default: monoFontSpecs.fragment,
+});
+
+export type FontFaceData = Static<typeof FontFaceData>;
+
+export type FontSpec = Static<typeof FontSpec>;
+
+export type BodyFontSpec = FontSpec & {
+	scale: number;
+};
+
+export type MonoFontSpec = FontSpec;
+
+export const FontConfig = T.Object(
+	{
+		body: BodyFontSpec,
+		mono: MonoFontSpec,
+	},
+	{
+		default: () => ({
+			body: Value.Default(BodyFontSpec, {}),
+			mono: Value.Default(MonoFontSpec, {}),
+		}),
+	},
+);
+
+export type FontConfig = {
+	body: ReactiveValue<BodyFontSpec>;
+	mono: ReactiveValue<MonoFontSpec>;
+};
+
+export type FontPreset = {
+	body: BodyFontSpec;
+	mono: MonoFontSpec;
+};
+
+type BodyFontName =
+	| "outfit"
+	| "inter"
+	| "sourceSans"
+	| "firava"
+	| "plexSans"
+	| "spaceGrotesk"
+	| "systemUi";
+
+type MonoFontName =
+	| "fragment"
+	| "jetbrainsMono"
+	| "sourceCode"
+	| "firaCode"
+	| "plexMono"
+	| "spaceMono"
+	| "monospace";
+
+type FontSpecName = BodyFontName | MonoFontName;
+
 export const fontPresets = {
 	outfit: {
-		builtinKey: "outfit",
-		body: new ReadonlyReactiveValue(bodyFontSpecs.outfit),
-		mono: new ReadonlyReactiveValue(monoFontSpecs.fragment),
+		body: bodyFontSpecs.outfit,
+		mono: monoFontSpecs.fragment,
 	},
 	jetbrains: {
-		builtinKey: "jetbrains",
-		body: new ReadonlyReactiveValue(bodyFontSpecs.inter),
-		mono: new ReadonlyReactiveValue(monoFontSpecs.jetbrainsMono),
+		body: bodyFontSpecs.inter,
+		mono: monoFontSpecs.jetbrainsMono,
 	},
 	source: {
-		builtinKey: "source",
-		body: new ReadonlyReactiveValue(bodyFontSpecs.sourceSans),
-		mono: new ReadonlyReactiveValue(monoFontSpecs.sourceCode),
+		body: bodyFontSpecs.sourceSans,
+		mono: monoFontSpecs.sourceCode,
 	},
 	fira: {
-		builtinKey: "fira",
-		body: new ReadonlyReactiveValue(bodyFontSpecs.firava),
-		mono: new ReadonlyReactiveValue(monoFontSpecs.firaCode),
+		body: bodyFontSpecs.firava,
+		mono: monoFontSpecs.firaCode,
 	},
 	plex: {
-		builtinKey: "plex",
-		body: new ReadonlyReactiveValue(bodyFontSpecs.plexSans),
-		mono: new ReadonlyReactiveValue(monoFontSpecs.plexMono),
+		body: bodyFontSpecs.plexSans,
+		mono: monoFontSpecs.plexMono,
 	},
 	space: {
-		builtinKey: "space",
-		body: new ReadonlyReactiveValue(bodyFontSpecs.spaceGrotesk),
-		mono: new ReadonlyReactiveValue(monoFontSpecs.spaceMono),
+		body: bodyFontSpecs.spaceGrotesk,
+		mono: monoFontSpecs.spaceMono,
 	},
 	system: {
-		builtinKey: "system",
-		body: new ReadonlyReactiveValue(bodyFontSpecs.systemUi),
-		mono: new ReadonlyReactiveValue(monoFontSpecs.monospace),
+		body: bodyFontSpecs.systemUi,
+		mono: monoFontSpecs.monospace,
 	},
-} satisfies Record<string, FontPair>;
+} satisfies Record<string, FontPreset>;
 
 export function addFont(font: FontSpec) {
 	if (font.variants === undefined || font.label === "Outfit") {
