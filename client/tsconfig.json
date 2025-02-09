@@ -3,7 +3,7 @@
 		"plugins": [],
 		"target": "es2021",
 		"module": "es2020",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"lib": ["es2022", "dom", "DOM.Iterable"],
 		"jsx": "react",
 		"sourceMap": true,
