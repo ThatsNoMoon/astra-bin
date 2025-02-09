@@ -390,6 +390,14 @@ export const fontVars = css`
 			)
 			.join("\n")}
 
+		${[300, 300, 200, 175, 150]
+			.map(
+				(v, i) => `
+					--fw-${i + 3}: ${v};
+				`,
+			)
+			.join("\n")}
+
 		--system-ui: -apple-system, BlinkMacSystemFont, avenir next, avenir,
 			segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto,
 			arial, sans-serif;
