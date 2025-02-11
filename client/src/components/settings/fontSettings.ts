@@ -17,23 +17,32 @@ const presetList = Object.values(fontPresets);
 
 export class FontSettings extends Component<{ config: Config }> {
 	static override styles = css`
-		:host {
-			display: grid;
-			grid-auto-flow: column;
-			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 3rem repeat(var(--preset-count), 1fr);
-			column-gap: 3rem;
-			max-width: 800px;
+		@media screen and (width >= 750px) {
+			:host {
+				max-width: 900px;
+				display: grid;
+				grid-auto-flow: column;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				grid-template-rows: 3rem repeat(var(--preset-count), 1fr);
+				column-gap: 6rem;
+			}
 		}
 
-		.divider {
-			grid-column: 1 / span 2;
-			border-top: 1px solid var(--fg-3);
-			height: 1px;
-			box-sizing: border-box;
+		@media screen and (width < 750px) {
+			:host {
+				width: 100%;
+				max-width: 375px;
+				display: grid;
+				grid-template-columns: 100%;
+				grid-template-rows:
+					3rem repeat(var(--preset-count), 1fr)
+					6rem repeat(var(--preset-count), 1fr);
+			}
 		}
 
 		.grid-heading {
+			padding: 1rem 0;
+			align-self: end;
 			font-size: var(--fs-3);
 			font-weight: var(--fw-3);
 			font-variation-settings: "wght" var(--fw-3);
@@ -85,35 +94,33 @@ class FontSelector<Spec extends FontSpec> extends Component<{
 
 			#inner {
 				position: relative;
-				box-sizing: content-box;
-				height: 5rem;
+				width: 100%;
 				border-radius: 0;
 				background-color: transparent;
 				color: inherit;
 				border: none;
-				padding: 0.5rem;
-				overflow: hidden;
+				border-top: 1px solid var(--fg-3);
+				transition: background-color var(--transition-time);
+			}
+
+			#content {
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
 				justify-content: space-evenly;
-				gap: 1.2rem;
+				box-sizing: border-box;
+				height: 100%;
+				width: 100%;
 				padding: 1.2rem;
-				border-top: 1px solid var(--fg-3);
+				gap: 1.2rem;
 				overflow: hidden;
 				white-space: nowrap;
-				-webkit-mask-image: linear-gradient(
-					90deg,
-					var(--bg-3) 90%,
-					transparent
-				);
 				mask-image: linear-gradient(
 					90deg,
 					var(--bg-3) 90%,
 					transparent
 				);
 				font-family: var(--font);
-				transition: background-color var(--transition-time);
 			}
 
 			#inner:not(:disabled) {
@@ -129,7 +136,7 @@ class FontSelector<Spec extends FontSpec> extends Component<{
 				--width: 4px;
 				--padding: 1rem;
 				position: absolute;
-				left: 0;
+				left: calc(-3 * var(--width));
 				top: var(--padding);
 				height: calc(100% - var(--padding) * 2);
 				width: var(--width);
@@ -184,8 +191,10 @@ class FontSelector<Spec extends FontSpec> extends Component<{
 			)}
 			on:click=${() => (this.configReactive.value = this.font)}
 		>
-			<div class="name">${this.font.label}</div>
-			<div class="demo-text">${demoText}</div>
+			<div id="content">
+				<div class="name">${this.font.label}</div>
+				<div class="demo-text">${demoText}</div>
+			</div>
 		</button>
 	`;
 }
