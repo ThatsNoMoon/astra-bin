@@ -99,7 +99,7 @@ class ModalDialog extends Component<{
 
 		#container {
 			border-radius: 3rem;
-			padding: 4rem;
+			padding: calc(min(4rem, max(10vw, 1rem)));
 			z-index: 12;
 			background-color: var(--bg-5);
 			transition: var(--color-transition);
